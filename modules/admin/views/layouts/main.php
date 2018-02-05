@@ -84,6 +84,7 @@ $user = Yii::$app->user->identity;
 
 
     <div class="content-wrapper">
+        <?= \app\modules\admin\widgets\ProxyAlert::widget() ?>
         <section class="content-header">
             <h1>
                 <?php
