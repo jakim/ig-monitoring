@@ -4,6 +4,7 @@
 Early dev stage.  **Use at your own risk.**
 
 # Install
+- git clone
 - composer install
 
 # Config
