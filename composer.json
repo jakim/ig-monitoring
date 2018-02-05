@@ -1,0 +1,82 @@
+{
+  "name": "yiisoft/yii2-app-basic",
+  "description": "Yii 2 Basic Project Template",
+  "keywords": [
+    "yii2",
+    "framework",
+    "basic",
+    "project template"
+  ],
+  "homepage": "http://www.yiiframework.com/",
+  "type": "project",
+  "license": "BSD-3-Clause",
+  "support": {
+    "issues": "https://github.com/yiisoft/yii2/issues?state=open",
+    "forum": "http://www.yiiframework.com/forum/",
+    "wiki": "http://www.yiiframework.com/wiki/",
+    "irc": "irc://irc.freenode.net/yii",
+    "source": "https://github.com/yiisoft/yii2"
+  },
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.1.0",
+    "yiisoft/yii2": "~2.0.14@dev",
+    "yiisoft/yii2-bootstrap": "~2.0.0",
+    "yiisoft/yii2-swiftmailer": "~2.0.0",
+    "fxp/composer-asset-plugin": "^1.4",
+    "yiisoft/yii2-queue": "^2.0",
+    "guzzlehttp/guzzle": "^6.3",
+    "jakim-pj/ua": "@dev",
+    "dmstr/yii2-adminlte-asset": "^2.6",
+    "yiisoft/yii2-authclient": "^2.1",
+    "kartik-v/yii2-widget-select2": "^2.1",
+    "pahanini/yii2-consolelog": "^3.0"
+  },
+  "require-dev": {
+    "yiisoft/yii2-debug": "~2.0.0",
+    "yiisoft/yii2-gii": "~2.0.0",
+    "yiisoft/yii2-faker": "~2.0.0",
+    "codeception/base": "^2.2.3",
+    "codeception/verify": "~0.3.1",
+    "codeception/specify": "~0.4.3"
+  },
+  "config": {
+    "process-timeout": 1800
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "yii\\composer\\Installer::postInstall"
+    ],
+    "post-create-project-cmd": [
+      "yii\\composer\\Installer::postCreateProject",
+      "yii\\composer\\Installer::postInstall"
+    ]
+  },
+  "extra": {
+    "yii\\composer\\Installer::postCreateProject": {
+      "setPermission": [
+        {
+          "runtime": "0777",
+          "web/assets": "0777",
+          "yii": "0755"
+        }
+      ]
+    },
+    "yii\\composer\\Installer::postInstall": {
+      "generateCookieValidationKey": [
+        "config/web.php"
+      ]
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "jakim\\ig\\": "components/jakim/ig"
+    }
+  }
+}

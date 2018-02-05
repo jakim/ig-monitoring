@@ -1,0 +1,17 @@
+<?php
+/**
+ * Created for IG Monitoring.
+ * User: jakim <pawel@jakimowski.info>
+ * Date: 26.01.2018
+ */
+
+return [
+    'class' => \yii\authclient\Collection::class,
+    'clients' => [
+        'google' => [
+            'class' => \yii\authclient\clients\Google::class,
+            'clientId' => '',
+            'clientSecret' => '',
+        ],
+    ],
+];
