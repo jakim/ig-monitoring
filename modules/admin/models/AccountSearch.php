@@ -92,11 +92,7 @@ class AccountSearch extends Account
             'monitoring' => $this->monitoring,
         ]);
 
-        $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'full_name', $this->full_name])
-            ->andFilterWhere(['like', 'biography', $this->biography])
-            ->andFilterWhere(['like', 'external_url', $this->external_url])
-            ->andFilterWhere(['like', 'instagram_id', $this->instagram_id]);
+        $query->andFilterWhere(['like', 'username', $this->username]);
 
         if ($this->s_tags) {
             $accountIds = AccountTag::find()

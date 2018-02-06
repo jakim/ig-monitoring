@@ -103,16 +103,12 @@ class TagSearch extends Tag
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
             'main_tag_id' => $this->main_tag_id,
-            'updated_at' => $this->updated_at,
-            'created_at' => $this->created_at,
             'monitoring' => $this->monitoring,
             'proxy_id' => $this->proxy_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'slug', $this->slug]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }
