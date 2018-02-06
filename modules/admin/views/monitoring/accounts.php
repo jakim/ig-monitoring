@@ -63,5 +63,7 @@ $this->params['breadcrumbs'][] = 'Accounts';
             ],
         ]); ?>
 
+        <?= \app\modules\admin\widgets\CreateMonitoringWidget::widget() ?>
+
     </div>
 </div>
