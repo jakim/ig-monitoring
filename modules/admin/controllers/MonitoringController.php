@@ -8,6 +8,8 @@
 namespace app\modules\admin\controllers;
 
 
+use app\dictionaries\ProxyType;
+use app\models\Proxy;
 use app\modules\admin\models\Account;
 use app\modules\admin\models\AccountSearch;
 use app\modules\admin\models\TagSearch;
@@ -32,17 +34,20 @@ class MonitoringController extends Controller
     {
         $request = \Yii::$app->request;
         $username = $request->post('username');
-        $proxyId = $request->post('proxy_id');
 
         $account = Account::findOne(['username' => $username]);
         if ($account === null) {
             $account = new Account(['username' => $username]);
         }
         $account->monitoring = 1;
-        $account->proxy_id = $proxyId ?: null;
+
+        $proxy = Proxy::findOne(['id' => $request->post('proxy_id'), 'type' => ProxyType::ACCOUNT]);
+        $account->proxy_id = $proxy ? $proxy->id : null;
+
         if ($account->save()) {
             \Yii::$app->session->setFlash('success', 'OK!');
         } else {
+            \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
             \Yii::$app->session->setFlash('error', 'ERR!');
         }
 
