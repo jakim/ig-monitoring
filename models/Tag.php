@@ -36,6 +36,11 @@ use yii\helpers\ArrayHelper;
  */
 class Tag extends \yii\db\ActiveRecord
 {
+    public function proxyType()
+    {
+        return ProxyType::TAG;
+    }
+
     public $occurs;
 
     public function getNamePrefixed()

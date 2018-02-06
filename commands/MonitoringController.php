@@ -33,17 +33,7 @@ class MonitoringController extends Controller
             $account = new Account(['username' => $username]);
         }
 
-        $proxy = Proxy::findOne(['id' => $proxy_id, 'type' => ProxyType::ACCOUNT]);
-        if ($proxy) {
-            $account->proxy_id = $proxy->id;
-
-        } elseif ($proxy === null && $proxy_id) {
-            $this->stdout("ERR: Proxy '$proxy_id' not found.\n", Console::FG_RED);
-
-            return ExitCode::UNSPECIFIED_ERROR;
-        } elseif (!$proxy_id && !Proxy::find()->andWhere(['type' => ProxyType::ACCOUNT])->exists()) {
-            $this->stdout("ERR: There MUST be at least one proxy for accounts.\n", Console::FG_RED);
-
+        if (!$this->checkProxy($account, $proxy_id)) {
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
@@ -86,16 +76,8 @@ class MonitoringController extends Controller
                 $tag->main_tag_id = $mainTag->id;
             }
         }
-        $proxy = Proxy::findOne(['id' => $proxy_id, 'type' => ProxyType::TAG]);
-        if ($proxy) {
-            $tag->proxy_id = $proxy->id;
-        } elseif ($proxy === null && $proxy_id) {
-            $this->stdout("ERR: Proxy '$proxy_id' not found.\n", Console::FG_RED);
 
-            return ExitCode::UNSPECIFIED_ERROR;
-        } elseif (!$proxy_id && !Proxy::find()->andWhere(['type' => ProxyType::TAG])->exists()) {
-            $this->stdout("ERR: There MUST be at least one proxy for accounts.\n", Console::FG_RED);
-
+        if (!$this->checkProxy($tag, $proxy_id)) {
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
@@ -126,5 +108,30 @@ class MonitoringController extends Controller
                 ->asArray()
                 ->all(),
         ]);
+    }
+
+    /**
+     * @param Account|Tag $model
+     * @param $proxy_id
+     * @return int
+     */
+    private function checkProxy($model, $proxy_id)
+    {
+        $proxy = Proxy::findOne(['id' => $proxy_id, 'type' => $model->proxyType()]);
+
+        if ($proxy === null && $proxy_id) {
+            $this->stdout("ERR: Proxy '$proxy_id' not found.\n", Console::FG_RED);
+
+            return false;
+
+        } elseif (!$proxy_id && !Proxy::find()->andWhere(['type' => $model->proxyType()])->exists()) {
+            $this->stdout("ERR: There MUST be at least one valid proxy.\n", Console::FG_RED);
+
+            return false;
+        } elseif ($proxy) {
+            $model->proxy_id = $proxy->id;
+        }
+
+        return true;
     }
 }

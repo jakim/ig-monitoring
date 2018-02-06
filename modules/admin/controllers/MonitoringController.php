@@ -41,7 +41,7 @@ class MonitoringController extends Controller
         }
         $account->monitoring = 1;
 
-        $proxy = Proxy::findOne(['id' => $request->post('proxy_id'), 'type' => ProxyType::ACCOUNT]);
+        $proxy = Proxy::findOne(['id' => $request->post('proxy_id'), 'type' => $account->proxyType()]);
         $account->proxy_id = $proxy ? $proxy->id : null;
 
         if ($account->save()) {

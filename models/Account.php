@@ -38,6 +38,11 @@ class Account extends \yii\db\ActiveRecord
 {
     public $occurs;
 
+    public function proxyType()
+    {
+        return ProxyType::ACCOUNT;
+    }
+
     public function behaviors()
     {
         return ArrayHelper::merge(parent::behaviors(), [
