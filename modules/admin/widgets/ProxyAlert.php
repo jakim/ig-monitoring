@@ -15,7 +15,7 @@ use yii\helpers\Html;
 
 class ProxyAlert extends Widget
 {
-    protected $items;
+    protected $items = [];
 
     public function init()
     {
@@ -30,19 +30,6 @@ class ProxyAlert extends Widget
 
     public function run()
     {
-        if ($this->items) {
-            return null;
-        }
-
-        echo "<section class=\"content-header\">";
-        echo "<div class=\"alert alert-error\">";
-        echo $this->renderContent();
-        echo "</div>";
-        echo "</section>";
-    }
-
-    private function renderContent()
-    {
         $items = [];
         if (!isset($this->items[ProxyType::ACCOUNT])) {
             $items[] = 'Add at least one proxy for accounts.';
@@ -51,6 +38,12 @@ class ProxyAlert extends Widget
             $items[] = 'Add at least one proxy for tags.';
         }
 
-        return Html::ul($items);
+        if ($items) {
+            echo "<section class=\"content-header\">";
+            echo "<div class=\"alert alert-error\">";
+            echo Html::ul($items);
+            echo "</div>";
+            echo "</section>";
+        }
     }
 }
