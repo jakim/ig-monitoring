@@ -27,8 +27,27 @@ $lastAccountStats = $model->lastAccountStats;
                         'dataProvider' => $dataProvider,
                         'columns' => [
                             ['class' => \yii\grid\SerialColumn::class],
-                            'username',
+                            [
+                                'attribute' => 'username',
+                                'format' => 'html',
+                                'value' => function (\app\models\Account $model, $key, $index, $column) {
+                                    if ($model->monitoring) {
+                                        return Html::a($model->usernamePrefixed, ['account/stats', 'id' => $model->id]);
+                                    }
+
+                                    return $model->{$column->attribute};
+                                },
+                            ],
                             'occurs',
+                            [
+                                'format' => 'raw',
+                                'value' => function (\app\models\Account $model) {
+                                    return \app\modules\admin\widgets\MonitoringButton::widget([
+                                        'model' => $model,
+                                        'linkCssClass' => 'btn btn-xs',
+                                    ]);
+                                },
+                            ],
                         ],
                     ]) ?>
                 </div>

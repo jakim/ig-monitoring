@@ -56,12 +56,8 @@ $lastAccountStats = $model->lastAccountStats;
                 </li>
             </ul>
         <?php endif; ?>
-        <?= Html::a($model->monitoring ? '<span class="fa fa-stop"></span> Turn off monitoring' : '<span class="fa fa-play"></span> Turn on monitoring', ['monitoring', 'id' => $model->id], [
-            'class' => 'btn btn-block ' . ($model->monitoring ? 'btn-danger' : 'btn-success'),
-            'data' => [
-                'method' => 'post',
-                'confirm' => 'Are you sure?',
-            ],
+        <?= \app\modules\admin\widgets\MonitoringButton::widget([
+                'model' => $model,
         ]) ?>
         <?= \app\modules\admin\widgets\FavoriteButton::widget([
             'model' => $model,
