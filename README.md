@@ -9,7 +9,7 @@ Early dev stage.  **Use at your own risk.**
 
 # Config
 - create database: mysql, utf8mb4
-- copy config/db.dist => config/db.dist
+- copy config/db.dist => config/db.php
 - register google project for Google Sign-In
 - copy config/authClientCollection.php.dist => config/authClientCollection.php
 - [configure worker](https://github.com/yiisoft/yii2-queue/blob/master/docs/guide/worker.md)
@@ -27,7 +27,9 @@ See `./yii` for more commands.
 
 
 # Limitations
-You need at least one, **WORKING proxy** for accounts and one for tags.
+- You need at least one, **WORKING proxy** for accounts and one for tags.
+- php >= 7.1
+- mysql >= 5.5
 
 # Legal
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries.
