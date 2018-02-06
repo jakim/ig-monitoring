@@ -12,5 +12,8 @@ return [
             'ensureUnique' => true,
             'attribute' => 'name',
         ],
+        \kartik\select2\Select2::class => [
+            'theme' => \kartik\select2\Select2::THEME_DEFAULT,
+        ],
     ],
 ];
