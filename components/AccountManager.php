@@ -8,7 +8,9 @@
 namespace app\components;
 
 
+use app\components\ArrayHelper;
 use app\components\http\Client;
+use app\components\MediaManager;
 use app\models\Account;
 use app\models\AccountStats;
 use app\models\AccountTag;
@@ -19,6 +21,8 @@ use app\models\Tag;
 use jakim\ig\Endpoint;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\caching\Cache;
+use yii\di\Instance;
 use yii\helpers\Json;
 use yii\helpers\StringHelper;
 
@@ -28,6 +32,19 @@ class AccountManager extends Component
      * @var Proxy
      */
     public $proxy;
+
+    /**
+     * @var \yii\caching\Cache
+     */
+    public $cache = 'cache';
+
+    public function init()
+    {
+        parent::init();
+        if ($this->cache !== false) {
+            $this->cache = Instance::ensure($this->cache, Cache::class);
+        }
+    }
 
     /**
      * @param \app\models\Account $account
@@ -57,14 +74,15 @@ class AccountManager extends Component
      */
     public function fetchDetails(Account $account): array
     {
-        $proxy = $this->getProxy($account);
-        $client = Client::factory($proxy);
-
         $url = (new Endpoint())->accountDetails($account->username);
-        $res = $client->get($url);
-        $content = Json::decode($res->getBody()->getContents());
 
-        return $content;
+        if ($this->cache === false) {
+            return $this->fetchContent($url, $account);
+        }
+
+        return $this->cache->getOrSet([$url], function () use ($url, $account) {
+            return $this->fetchContent($url, $account);
+        }, 3600);
     }
 
     /**
@@ -232,6 +250,15 @@ class AccountManager extends Component
         }
 
         return $proxy;
+    }
+
+    protected function fetchContent($url, Account $account): array
+    {
+        $proxy = $this->getProxy($account);
+        $client = Client::factory($proxy);
+        $res = $client->get($url);
+
+        return Json::decode($res->getBody()->getContents());
     }
 
     /**

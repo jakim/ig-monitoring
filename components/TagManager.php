@@ -9,11 +9,14 @@ namespace app\components;
 
 
 use app\components\http\Client;
+use app\models\Proxy;
 use app\models\Tag;
 use app\models\TagStats;
 use jakim\ig\Endpoint;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\caching\Cache;
+use yii\di\Instance;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
 
@@ -25,24 +28,35 @@ class TagManager extends Component
     public $proxy;
 
     /**
+     * @var Cache
+     */
+    public $cache = 'cache';
+
+    public function init()
+    {
+        parent::init();
+        if ($this->cache !== false) {
+            $this->cache = Instance::ensure($this->cache, Cache::class);
+        }
+    }
+
+    /**
      * @param \app\models\Tag $tag
      * @return array
      * @throws \yii\base\InvalidConfigException
      */
     public function fetchDetails(Tag $tag): array
     {
-        $proxy = $tag->proxy;
-        if ($proxy === null || !$proxy->active) {
-            throw new InvalidConfigException('Tag proxy must be set and active.');
+        $url = (new Endpoint())->exploreTags($tag->name);
+
+        if ($this->cache === false) {
+            return $this->fetchContent($url, $tag);
         }
 
-        $client = Client::factory($proxy);
+        return $this->cache->getOrSet([$url], function () use ($url, $tag) {
+            return $this->fetchContent($url, $tag);
+        }, 3600);
 
-        $url = (new Endpoint())->exploreTags($tag->name);
-        $res = $client->get($url);
-        $content = Json::decode($res->getBody()->getContents());
-
-        return $content;
     }
 
     /**
@@ -120,5 +134,29 @@ class TagManager extends Component
         $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
         \Yii::$app->db->createCommand($sql)
             ->execute();
+    }
+
+    /**
+     * @param \app\models\Tag $tag
+     * @return \app\models\Proxy
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function getProxy(Tag $tag): Proxy
+    {
+        $proxy = $this->proxy ?: $tag->proxy;
+        if ($proxy === null || !$proxy->active) {
+            throw new InvalidConfigException('Tag proxy must be set and active.');
+        }
+
+        return $proxy;
+    }
+
+    protected function fetchContent($url, Tag $tag): array
+    {
+        $proxy = $this->getProxy($tag);
+        $client = Client::factory($proxy);
+        $res = $client->get($url);
+
+        return Json::decode($res->getBody()->getContents());
     }
 }
