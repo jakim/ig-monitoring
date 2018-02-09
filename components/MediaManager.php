@@ -20,10 +20,28 @@ use yii\base\Exception;
 
 class MediaManager extends Component
 {
+    const PROPERTY_MAP_ACCOUNT_DETAILS = [
+        'shortcode' => 'code',
+        'is_video' => 'is_video',
+        'caption' => 'caption',
+        'instagram_id' => 'id',
+        'taken_at' => 'date',
+    ];
+
+    const PROPERTY_MAP_ACCOUNT_MEDIA = [
+        'shortcode' => 'node.shortcode',
+        'is_video' => 'node.is_video',
+        'caption' => 'node.edge_media_to_caption.edges.0.node.text',
+        'instagram_id' => 'node.id',
+        'taken_at' => 'node.taken_at_timestamp',
+    ];
+
     /**
      * @var \app\models\Account
      */
     public $account;
+
+    public $propertyMap = self::PROPERTY_MAP_ACCOUNT_DETAILS;
 
     /**
      * @param \app\models\Media $media
@@ -60,15 +78,9 @@ class MediaManager extends Component
      */
     public function updateDetails(Media $media, array $content): Media
     {
-        $mediaData = ArrayHelper::arrayMap($content, [
-            'shortcode' => 'code',
-            'is_video' => 'is_video',
-            'caption' => 'caption',
-            'instagram_id' => 'id',
-            'taken_at' => function ($array) {
-                return (new \DateTime('@' . ArrayHelper::getValue($array, 'date')))->format('Y-m-d H:i:s');
-            },
-        ]);
+        $mediaData = ArrayHelper::arrayMap($content, $this->propertyMap);
+        $mediaData['taken_at'] = (new \DateTime('@' . $mediaData['taken_at']))->format('Y-m-d H:i:s');
+
         $media->attributes = $mediaData;
 
         if (!$media->account_id && $this->account) {
