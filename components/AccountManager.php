@@ -237,6 +237,29 @@ class AccountManager extends Component
         }
     }
 
+    public function updateMediaHistory(Account $account)
+    {
+        $url = (new Endpoint())->accountMedia($account->instagram_id, 200);
+        $content = $this->fetchContent($url, $account);
+
+        $items = ArrayHelper::getValue($content, 'data.user.edge_owner_to_timeline_media.edges', []);
+
+        $manager = \Yii::createObject([
+            'class' => MediaManager::class,
+            'account' => $account,
+            'propertyMap' => MediaManager::PROPERTY_MAP_ACCOUNT_MEDIA,
+        ]);
+
+        foreach ($items as $item) {
+            $id = ArrayHelper::getValue($item, 'node.id');
+            $media = Media::findOne(['instagram_id' => $id]);
+            if ($media === null) {
+                $media = new Media(['account_id' => $account->id]);
+            }
+            $manager->update($media, $item);
+        }
+    }
+
     /**
      * @param \app\models\Account $account
      * @return \app\models\Proxy
