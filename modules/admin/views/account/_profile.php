@@ -49,7 +49,7 @@ $lastAccountStats = $model->lastAccountStats;
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <b><?= $lastAccountStats->getAttributeLabel('created_at') ?></b>
+                    <b><?= $model->getAttributeLabel('updated_at') ?></b>
                     <a class="pull-right">
                         <?= $formatter->asDatetime($lastAccountStats->created_at) ?>
                     </a>
