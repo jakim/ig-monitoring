@@ -73,7 +73,7 @@ class NotesWidget extends Widget
     private function renderNotes()
     {
         echo "<p class=\"text-muted\">\n";
-        echo \Yii::$app->formatter->asNtext($this->model->notes);
+        echo \Yii::$app->formatter->asNtext($this->model->notes ?: null);
         echo "</p>\n";
     }
 }

@@ -41,7 +41,7 @@ class FavoritesMenu extends Menu
     protected function isItemActive($item)
     {
         if (isset($item['url'])) {
-            $url = Url::to(["/admin/{$this->view->context->id}/stats", 'id' => \Yii::$app->request->get('id')]);
+            $url = Url::to(["/admin/{$this->view->context->id}/dashboard", 'id' => \Yii::$app->request->get('id')]);
 
             return $item['url'] == $url;
         }

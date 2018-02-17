@@ -88,9 +88,11 @@ class AccountController extends Controller
         ]);
     }
 
-    public function actionView($id)
+    public function actionDashboard($id)
     {
-        return $this->redirect(['account/stats', 'id' => $id]);
+        return $this->render('dashboard', [
+            'model' => $this->findModel($id),
+        ]);
     }
 
     public function actionStats($id)
@@ -185,7 +187,7 @@ class AccountController extends Controller
         $model = new Account();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['account/dashboard', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -205,7 +207,7 @@ class AccountController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['account/dashboard', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,

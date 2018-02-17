@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 
 $this->title = "{$model->usernamePrefixed} :: Statistics";
 $this->params['breadcrumbs'][] = ['label' => 'Monitoring', 'url' => ['monitoring/accounts']];
-$this->params['breadcrumbs'][] = ['label' => $model->usernamePrefixed, 'url' => ['stats', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->usernamePrefixed, 'url' => ['dashboard', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Statistics';
 
 $formatter = Yii::$app->formatter;

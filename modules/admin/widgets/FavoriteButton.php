@@ -62,6 +62,6 @@ class FavoriteButton extends Widget
      */
     protected function getUrl()
     {
-        return Url::to(["/admin/{$this->view->context->id}/stats", 'id' => $this->model->id]);
+        return Url::to(["/admin/{$this->view->context->id}/dashboard", 'id' => $this->model->id]);
     }
 }

@@ -12,6 +12,9 @@ use yii\grid\GridView;
 $this->title = 'Monitoring :: Accounts';
 $this->params['breadcrumbs'][] = 'Monitoring';
 $this->params['breadcrumbs'][] = 'Accounts';
+
+/** @var \app\components\Formatter $formatter */
+$formatter = Yii::$app->formatter;
 ?>
 <div class="account-index nav-tabs-custom">
 
@@ -27,27 +30,29 @@ $this->params['breadcrumbs'][] = 'Accounts';
                 [
                     'attribute' => 'username',
                     'content' => function (\app\models\Account $model) {
-                        return Html::a($model->usernamePrefixed, ['account/stats', 'id' => $model->id]);
+                        return Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]);
                     },
                 ],
                 [
                     'class' => AccountStatsColumn::class,
-                    'statsAttribute' => 'followed_by',
                     'attribute' => 'as_followed_by',
+                    'statsAttribute' => 'followed_by',
                 ],
                 [
                     'class' => AccountStatsColumn::class,
-                    'statsAttribute' => 'follows',
                     'attribute' => 'as_follows',
+                    'statsAttribute' => 'follows',
                 ],
                 [
                     'class' => AccountStatsColumn::class,
-                    'statsAttribute' => 'media',
                     'attribute' => 'as_media',
+                    'statsAttribute' => 'media',
                 ],
                 [
+                    'class' => AccountStatsColumn::class,
                     'attribute' => 'as_er',
-                    'format' => ['percent', 2],
+                    'statsAttribute' => 'er',
+                    'numberFormat' => ['percent', 2],
                 ],
                 [
                     'attribute' => 's_tags',

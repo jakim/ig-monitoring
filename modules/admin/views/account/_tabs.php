@@ -9,6 +9,7 @@ use yii\bootstrap\Nav;
 
 <?= Nav::widget([
     'items' => [
+        ['label' => 'Dashboard', 'url' => ['/admin/account/dashboard', 'id' => $model->id]],
         ['label' => 'Statistics', 'url' => ['/admin/account/stats', 'id' => $model->id]],
         ['label' => 'Media Tags', 'url' => ['/admin/account/media-tags', 'id' => $model->id]],
         ['label' => 'Media Accounts', 'url' => ['/admin/account/media-accounts', 'id' => $model->id]],

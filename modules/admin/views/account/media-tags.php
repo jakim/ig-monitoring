@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 
 $this->title = "{$model->usernamePrefixed} :: Media Tags";
 $this->params['breadcrumbs'][] = ['label' => 'Monitoring', 'url' => ['monitoring/accounts']];
-$this->params['breadcrumbs'][] = ['label' => $model->usernamePrefixed, 'url' => ['media-tags', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->usernamePrefixed, 'url' => ['dashboard', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Media Tags';
 
 $formatter = Yii::$app->formatter;
