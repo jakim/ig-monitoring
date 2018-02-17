@@ -22,6 +22,7 @@ use yii\helpers\ArrayHelper;
  * @property string $created_at
  * @property int $monitoring
  * @property int $proxy_id
+ * @property string $notes
  *
  * @property string $usernamePrefixed
  *
@@ -72,7 +73,7 @@ class Account extends \yii\db\ActiveRecord
             [['username'], 'required'],
             [['updated_at', 'created_at'], 'safe'],
             [['monitoring', 'proxy_id', 'occurs'], 'integer'],
-            [['username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id'], 'string', 'max' => 255],
+            [['username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes'], 'string', 'max' => 255],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::className(), 'targetAttribute' => ['proxy_id' => 'id']],
         ];
@@ -95,6 +96,7 @@ class Account extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'monitoring' => 'Monitoring',
             'proxy_id' => 'Proxy ID',
+            'notes' => 'Notes',
         ];
     }
 

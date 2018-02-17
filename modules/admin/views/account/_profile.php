@@ -57,7 +57,7 @@ $lastAccountStats = $model->lastAccountStats;
             </ul>
         <?php endif; ?>
         <?= \app\modules\admin\widgets\MonitoringButton::widget([
-                'model' => $model,
+            'model' => $model,
         ]) ?>
         <?= \app\modules\admin\widgets\FavoriteButton::widget([
             'model' => $model,
@@ -94,15 +94,9 @@ $lastAccountStats = $model->lastAccountStats;
             'model' => $model,
         ]); ?>
         <hr>
-
-        <strong>
-            <i class="fa fa-file-text-o margin-r-5"></i> Notes (TODO)
-            <a href="#" class="btn btn-xs btn-link">add</a>
-        </strong>
-
-        <p>
-            Administrator notes
-        </p>
+        <?= \app\modules\admin\widgets\NotesWidget::widget([
+            'model' => $model,
+        ]); ?>
     </div>
     <!-- /.box-body -->
 </div>
