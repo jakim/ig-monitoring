@@ -120,6 +120,9 @@ class TagsWidget extends Widget
         foreach ($this->modelTags as $tag) {
             echo sprintf('<span class="label label-default">%s</span> ', Html::encode($tag->name));
         }
+        if (!$this->modelTags){
+            echo \Yii::$app->formatter->nullDisplay;
+        }
         echo "</p>";
     }
 }
