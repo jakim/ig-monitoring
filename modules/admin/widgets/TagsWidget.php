@@ -51,8 +51,8 @@ class TagsWidget extends Widget
     {
         echo "<strong>";
         $this->renderHeader();
-        $this->renderPopup();
         echo "</strong>";
+        $this->renderPopup();
 
         $this->renderList();
     }
