@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
 
 class NotesWidget extends Widget
 {
-    public $header = 'Administrator notes';
+    public $header = 'Notes';
     public $headerIcon = 'comment';
     /**
      * @var array
