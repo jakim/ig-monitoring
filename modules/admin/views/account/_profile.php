@@ -45,7 +45,7 @@ $lastAccountStats = $model->lastAccountStats;
                 <li class="list-group-item">
                     <b><?= $lastAccountStats->getAttributeLabel('er') ?></b>
                     <a class="pull-right">
-                        <?= $formatter->asPercent($lastAccountStats->er) ?>
+                        <?= $formatter->asPercent($lastAccountStats->er, 2) ?>
                     </a>
                 </li>
                 <li class="list-group-item">

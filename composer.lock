@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "aca55af884557b895dd2bb9103b699bc",
+    "content-hash": "a8dfbeb09b5766c751f0ed3f78c753e8",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -1154,16 +1154,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "dev-master",
+            "version": "2.0.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "e09c086682d6310bc687eed022ed4a2acc26fe91"
+                "reference": "7af96d8da5ea3e9a5dd05d0e734b21c5726a6ddf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/e09c086682d6310bc687eed022ed4a2acc26fe91",
-                "reference": "e09c086682d6310bc687eed022ed4a2acc26fe91",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/7af96d8da5ea3e9a5dd05d0e734b21c5726a6ddf",
+                "reference": "7af96d8da5ea3e9a5dd05d0e734b21c5726a6ddf",
                 "shasum": ""
             },
             "require": {
@@ -1250,7 +1250,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2018-02-17T00:26:27+00:00"
+            "time": "2017-11-14T11:08:21+00:00"
         },
         {
             "name": "yiisoft/yii2-authclient",
@@ -4031,7 +4031,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "yiisoft/yii2": 20,
         "jakim-pj/ua": 20
     },
     "prefer-stable": false,

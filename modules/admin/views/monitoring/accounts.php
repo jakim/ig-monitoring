@@ -45,7 +45,10 @@ $this->params['breadcrumbs'][] = 'Accounts';
                     'statsAttribute' => 'media',
                     'attribute' => 'as_media',
                 ],
-                'as_er:percent',
+                [
+                    'attribute' => 'as_er',
+                    'format' => ['percent', 2],
+                ],
                 [
                     'attribute' => 's_tags',
                     'value' => function (Account $model) {

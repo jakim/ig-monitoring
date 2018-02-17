@@ -191,7 +191,7 @@ class AccountManager extends Component
 
         $er = $er ? array_sum($er) / count($er) : 0;
 
-        return round($er, 2);
+        return round($er, 4);
     }
 
     public function saveUsernames(array $usernames)
@@ -268,7 +268,7 @@ class AccountManager extends Component
     protected function getProxy(Account $account): Proxy
     {
         $proxy = $this->proxy ?: $account->proxy;
-        if ($proxy === null || !$proxy->active) {
+        if (!$proxy || !$proxy->active) {
             throw new InvalidConfigException('Account proxy must be set and active.');
         }
 

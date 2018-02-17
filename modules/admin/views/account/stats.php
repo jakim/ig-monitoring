@@ -30,7 +30,10 @@ $lastAccountStats = $model->lastAccountStats;
                             'followed_by:integer',
                             'follows:integer',
                             'media:integer',
-                            'er:percent',
+                            [
+                                'attribute' => 'er',
+                                'format' => ['percent', 2],
+                            ],
                             'created_at:dateTime',
                         ],
                     ]) ?>
