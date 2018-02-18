@@ -68,9 +68,6 @@ $user = Yii::$app->user->identity;
                 </div>
             </div>
 
-
-            <?= \app\modules\admin\widgets\FavoritesMenu::widget() ?>
-
             <?= dmstr\widgets\Menu::widget([
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
                 'items' => [
@@ -78,6 +75,8 @@ $user = Yii::$app->user->identity;
                         ['label' => 'Monitoring', 'icon' => 'line-chart', 'url' => ['/admin/monitoring/accounts'], 'active' => $this->context->id == 'monitoring'],
                 ],
             ]) ?>
+
+            <?= \app\modules\admin\widgets\FavoritesMenu::widget() ?>
 
         </section>
 

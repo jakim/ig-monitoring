@@ -24,7 +24,7 @@ class FavoritesMenu extends Menu
     public function run()
     {
         $favorites = Favorite::find()
-            ->orderBy('id DESC')
+            ->orderBy('label ASC')
             ->all();
         foreach ($favorites as $favorite) {
             $this->items[] = [
