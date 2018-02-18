@@ -29,10 +29,14 @@ class AccountStatsColumn extends DataColumn
      * @param \app\modules\admin\models\Account $model
      * @param mixed $key
      * @param int $index
-     * @return string
+     * @return string|null
      */
     public function getDataCellValue($model, $key, $index)
     {
+        if (!$model->lastAccountStats) {
+            return null;
+        }
+
         /** @var \app\components\Formatter $formatter */
         $formatter = $this->grid->formatter;
 
