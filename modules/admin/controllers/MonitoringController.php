@@ -51,7 +51,7 @@ class MonitoringController extends Controller
             \Yii::$app->session->setFlash('error', 'ERR!');
         }
 
-        return $this->redirect(['account/stats', 'id' => $account->id]);
+        return $this->redirect(['account/dashboard', 'id' => $account->id]);
     }
 
     public function actionTags()
