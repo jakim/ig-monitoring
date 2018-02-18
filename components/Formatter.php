@@ -23,4 +23,15 @@ class Formatter extends \yii\i18n\Formatter
 
         return sprintf($number > 0 ? '<span class="text-success">+%s</span>' : '<span class="text-danger">%s</span>', $value);
     }
+
+    public function asPercent($value, $decimals = null, $options = [], $textOptions = [])
+    {
+        $sign = ArrayHelper::remove($options, 'sign', true);
+        $value = parent::asPercent($value, $decimals, $options, $textOptions);
+        if (!$sign) {
+            $value = substr($value, 0, -1);
+        }
+
+        return $value;
+    }
 }

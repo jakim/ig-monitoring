@@ -52,7 +52,7 @@ $formatter = Yii::$app->formatter;
                     'class' => AccountStatsColumn::class,
                     'attribute' => 'as_er',
                     'statsAttribute' => 'er',
-                    'numberFormat' => ['percent', 2],
+                    'numberFormat' => ['percent', 2, ['sign' => false]],
                 ],
                 [
                     'attribute' => 's_tags',
