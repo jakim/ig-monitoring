@@ -20,7 +20,12 @@ class HistoryController extends Controller
     {
         $account = Account::findOne(['username' => $username]);
         if ($account === null) {
-            $this->stdout("Account '{$username}' not found\n", Console::FG_RED);
+            $this->stdout("Account '{$username}' not found.\n", Console::FG_RED);
+
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
+        if (!$account->instagram_id) {
+            $this->stdout("First update the account details (instagram Id is needed).\n", Console::FG_CYAN);
 
             return ExitCode::UNSPECIFIED_ERROR;
         }
