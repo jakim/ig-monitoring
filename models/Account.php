@@ -176,7 +176,7 @@ class Account extends \yii\db\ActiveRecord
             [['monitoring', 'proxy_id', 'occurs'], 'integer'],
             [['username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes'], 'string', 'max' => 255],
             [['username'], 'unique'],
-            [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::className(), 'targetAttribute' => ['proxy_id' => 'id']],
+            [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
         ];
     }
 
@@ -207,7 +207,7 @@ class Account extends \yii\db\ActiveRecord
     public function getProxy()
     {
         if ($this->proxy_id) {
-            return $this->hasOne(Proxy::className(), ['id' => 'proxy_id']);
+            return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
         }
 
         return Proxy::find()
@@ -220,7 +220,7 @@ class Account extends \yii\db\ActiveRecord
      */
     public function getAccountStats()
     {
-        return $this->hasMany(AccountStats::className(), ['account_id' => 'id']);
+        return $this->hasMany(AccountStats::class, ['account_id' => 'id']);
     }
 
     /**
@@ -228,7 +228,7 @@ class Account extends \yii\db\ActiveRecord
      */
     public function getAccountTags()
     {
-        return $this->hasMany(AccountTag::className(), ['account_id' => 'id']);
+        return $this->hasMany(AccountTag::class, ['account_id' => 'id']);
     }
 
     /**
@@ -236,7 +236,7 @@ class Account extends \yii\db\ActiveRecord
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])->via('accountTags');
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->via('accountTags');
     }
 
     /**
@@ -244,7 +244,7 @@ class Account extends \yii\db\ActiveRecord
      */
     public function getMedia()
     {
-        return $this->hasMany(Media::className(), ['account_id' => 'id']);
+        return $this->hasMany(Media::class, ['account_id' => 'id']);
     }
 
     /**
@@ -252,7 +252,7 @@ class Account extends \yii\db\ActiveRecord
      */
     public function getMediaAccounts()
     {
-        return $this->hasMany(MediaAccount::className(), ['account_id' => 'id']);
+        return $this->hasMany(MediaAccount::class, ['account_id' => 'id']);
     }
 
     /**

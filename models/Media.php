@@ -61,8 +61,8 @@ class Media extends \yii\db\ActiveRecord
             [['taken_at', 'updated_at', 'created_at'], 'safe'],
             [['shortcode', 'instagram_id'], 'string', 'max' => 255],
             [['shortcode'], 'unique'],
-            [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::className(), 'targetAttribute' => ['account_id' => 'id']],
-            [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::className(), 'targetAttribute' => ['proxy_id' => 'id']],
+            [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::class, 'targetAttribute' => ['account_id' => 'id']],
+            [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
         ];
     }
 
@@ -91,7 +91,7 @@ class Media extends \yii\db\ActiveRecord
      */
     public function getAccount()
     {
-        return $this->hasOne(Account::className(), ['id' => 'account_id']);
+        return $this->hasOne(Account::class, ['id' => 'account_id']);
     }
 
     /**
@@ -99,7 +99,7 @@ class Media extends \yii\db\ActiveRecord
      */
     public function getProxy()
     {
-        return $this->hasOne(Proxy::className(), ['id' => 'proxy_id']);
+        return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
     }
 
     /**
@@ -107,7 +107,7 @@ class Media extends \yii\db\ActiveRecord
      */
     public function getMediaStats()
     {
-        return $this->hasMany(MediaStats::className(), ['media_id' => 'id']);
+        return $this->hasMany(MediaStats::class, ['media_id' => 'id']);
     }
 
     /**
@@ -115,7 +115,7 @@ class Media extends \yii\db\ActiveRecord
      */
     public function getMediaAccounts()
     {
-        return $this->hasMany(MediaAccount::className(), ['media_id' => 'id']);
+        return $this->hasMany(MediaAccount::class, ['media_id' => 'id']);
     }
 
     /**
@@ -123,7 +123,7 @@ class Media extends \yii\db\ActiveRecord
      */
     public function getAccounts()
     {
-        return $this->hasMany(Account::className(), ['id' => 'account_id'])->viaTable('media_account', ['media_id' => 'id']);
+        return $this->hasMany(Account::class, ['id' => 'account_id'])->viaTable('media_account', ['media_id' => 'id']);
     }
 
     /**
@@ -131,7 +131,7 @@ class Media extends \yii\db\ActiveRecord
      */
     public function getLastMediaStats()
     {
-        return $this->hasOne(MediaStats::className(), ['media_id' => 'id'])
+        return $this->hasOne(MediaStats::class, ['media_id' => 'id'])
             ->orderBy('media_stats.id DESC')
             ->limit(1);
     }
@@ -141,7 +141,7 @@ class Media extends \yii\db\ActiveRecord
      */
     public function getMediaTags()
     {
-        return $this->hasMany(MediaTag::className(), ['media_id' => 'id']);
+        return $this->hasMany(MediaTag::class, ['media_id' => 'id']);
     }
 
     /**
@@ -149,7 +149,7 @@ class Media extends \yii\db\ActiveRecord
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])->viaTable('media_tag', ['media_id' => 'id']);
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->viaTable('media_tag', ['media_id' => 'id']);
     }
 
     /**

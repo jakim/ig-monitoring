@@ -47,8 +47,8 @@ class MediaTag extends \yii\db\ActiveRecord
             [['media_id', 'tag_id'], 'integer'],
             [['created_at'], 'safe'],
             [['media_id', 'tag_id'], 'unique', 'targetAttribute' => ['media_id', 'tag_id']],
-            [['media_id'], 'exist', 'skipOnError' => true, 'targetClass' => Media::className(), 'targetAttribute' => ['media_id' => 'id']],
-            [['tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::className(), 'targetAttribute' => ['tag_id' => 'id']],
+            [['media_id'], 'exist', 'skipOnError' => true, 'targetClass' => Media::class, 'targetAttribute' => ['media_id' => 'id']],
+            [['tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['tag_id' => 'id']],
         ];
     }
 
@@ -69,7 +69,7 @@ class MediaTag extends \yii\db\ActiveRecord
      */
     public function getMedia()
     {
-        return $this->hasOne(Media::className(), ['id' => 'media_id']);
+        return $this->hasOne(Media::class, ['id' => 'media_id']);
     }
 
     /**
@@ -77,7 +77,7 @@ class MediaTag extends \yii\db\ActiveRecord
      */
     public function getTag()
     {
-        return $this->hasOne(Tag::className(), ['id' => 'tag_id']);
+        return $this->hasOne(Tag::class, ['id' => 'tag_id']);
     }
 
     /**

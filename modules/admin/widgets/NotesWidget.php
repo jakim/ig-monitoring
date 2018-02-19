@@ -61,7 +61,7 @@ class NotesWidget extends Widget
         echo $form
             ->field($this->model, 'notes')
             ->label(false)
-            ->textarea(['maxlength' => true, 'rows' => 5]);
+            ->textarea(['maxlength' => true, 'rows' => 5, 'placeholder' => true]);
 
         echo Html::submitButton('Update', ['class' => 'btn btn-small btn-primary']);
 

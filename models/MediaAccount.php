@@ -34,8 +34,8 @@ class MediaAccount extends \yii\db\ActiveRecord
             [['media_id', 'account_id'], 'integer'],
             [['created_at'], 'safe'],
             [['media_id', 'account_id'], 'unique', 'targetAttribute' => ['media_id', 'account_id']],
-            [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::className(), 'targetAttribute' => ['account_id' => 'id']],
-            [['media_id'], 'exist', 'skipOnError' => true, 'targetClass' => Media::className(), 'targetAttribute' => ['media_id' => 'id']],
+            [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::class, 'targetAttribute' => ['account_id' => 'id']],
+            [['media_id'], 'exist', 'skipOnError' => true, 'targetClass' => Media::class, 'targetAttribute' => ['media_id' => 'id']],
         ];
     }
 
@@ -56,7 +56,7 @@ class MediaAccount extends \yii\db\ActiveRecord
      */
     public function getAccount()
     {
-        return $this->hasOne(Account::className(), ['id' => 'account_id']);
+        return $this->hasOne(Account::class, ['id' => 'account_id']);
     }
 
     /**
@@ -64,7 +64,7 @@ class MediaAccount extends \yii\db\ActiveRecord
      */
     public function getMedia()
     {
-        return $this->hasOne(Media::className(), ['id' => 'media_id']);
+        return $this->hasOne(Media::class, ['id' => 'media_id']);
     }
 
     /**

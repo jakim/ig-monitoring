@@ -37,6 +37,7 @@ $config = [
         ],
         'errorHandler' => [
             'errorAction' => '/admin/default/error',
+            'traceLine' => '<a href="phpstorm://open?url={file}&line={line}">{file}:{line}</a>',
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',

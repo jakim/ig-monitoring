@@ -13,6 +13,7 @@ use app\models\Proxy;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\console\widgets\Table;
+use yii\helpers\Console;
 
 class ProxyController extends Controller
 {
@@ -33,7 +34,7 @@ class ProxyController extends Controller
         }
 
         echo Table::widget([
-            'headers' => ['ID','IP', 'Port', 'Username', 'Type'],
+            'headers' => ['ID', 'IP', 'Port', 'Username', 'Type'],
             'rows' => $rows,
         ]);
     }
@@ -49,9 +50,9 @@ class ProxyController extends Controller
         $model->password = $password;
         $model->active = 1;
         if (!$model->save()) {
-            print_r($model->errors);
+            echo Console::errorSummary($model);
 
-            return ExitCode::UNSPECIFIED_ERROR;
+            return ExitCode::DATAERR;
         }
         $this->stdout("OK!: ID = {$model->id}\n");
 

@@ -46,8 +46,8 @@ class AccountTag extends \yii\db\ActiveRecord
             [['account_id', 'tag_id'], 'integer'],
             [['created_at'], 'safe'],
             [['account_id', 'tag_id'], 'unique', 'targetAttribute' => ['account_id', 'tag_id']],
-            [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::className(), 'targetAttribute' => ['account_id' => 'id']],
-            [['tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::className(), 'targetAttribute' => ['tag_id' => 'id']],
+            [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::class, 'targetAttribute' => ['account_id' => 'id']],
+            [['tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['tag_id' => 'id']],
         ];
     }
 
@@ -68,7 +68,7 @@ class AccountTag extends \yii\db\ActiveRecord
      */
     public function getAccount()
     {
-        return $this->hasOne(Account::className(), ['id' => 'account_id']);
+        return $this->hasOne(Account::class, ['id' => 'account_id']);
     }
 
     /**
@@ -76,7 +76,7 @@ class AccountTag extends \yii\db\ActiveRecord
      */
     public function getTag()
     {
-        return $this->hasOne(Tag::className(), ['id' => 'tag_id']);
+        return $this->hasOne(Tag::class, ['id' => 'tag_id']);
     }
 
     /**

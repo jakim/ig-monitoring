@@ -74,8 +74,8 @@ class Tag extends \yii\db\ActiveRecord
             [['updated_at', 'created_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['name'], 'unique'],
-            [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::className(), 'targetAttribute' => ['proxy_id' => 'id']],
-            [['main_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::className(), 'targetAttribute' => ['main_tag_id' => 'id']],
+            [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
+            [['main_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['main_tag_id' => 'id']],
         ];
     }
 
@@ -101,7 +101,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getAccountTags()
     {
-        return $this->hasMany(AccountTag::className(), ['tag_id' => 'id']);
+        return $this->hasMany(AccountTag::class, ['tag_id' => 'id']);
     }
 
     /**
@@ -109,7 +109,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getAccounts()
     {
-        return $this->hasMany(Account::className(), ['id' => 'account_id'])->viaTable('account_tag', ['tag_id' => 'id']);
+        return $this->hasMany(Account::class, ['id' => 'account_id'])->viaTable('account_tag', ['tag_id' => 'id']);
     }
 
     /**
@@ -117,7 +117,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getMediaTags()
     {
-        return $this->hasMany(MediaTag::className(), ['tag_id' => 'id']);
+        return $this->hasMany(MediaTag::class, ['tag_id' => 'id']);
     }
 
     /**
@@ -125,7 +125,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getMedia()
     {
-        return $this->hasMany(Media::className(), ['id' => 'media_id'])->viaTable('media_tag', ['tag_id' => 'id']);
+        return $this->hasMany(Media::class, ['id' => 'media_id'])->viaTable('media_tag', ['tag_id' => 'id']);
     }
 
     /**
@@ -134,7 +134,7 @@ class Tag extends \yii\db\ActiveRecord
     public function getProxy()
     {
         if ($this->proxy_id) {
-            return $this->hasOne(Proxy::className(), ['id' => 'proxy_id']);
+            return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
         }
 
         return Proxy::find()
@@ -147,7 +147,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getMainTag()
     {
-        return $this->hasOne(Tag::className(), ['id' => 'main_tag_id']);
+        return $this->hasOne(Tag::class, ['id' => 'main_tag_id']);
     }
 
     /**
@@ -155,7 +155,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::className(), ['main_tag_id' => 'id']);
+        return $this->hasMany(Tag::class, ['main_tag_id' => 'id']);
     }
 
     /**
@@ -163,7 +163,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getTagStats()
     {
-        return $this->hasMany(TagStats::className(), ['tag_id' => 'id']);
+        return $this->hasMany(TagStats::class, ['tag_id' => 'id']);
     }
 
     /**
@@ -171,7 +171,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getLastTagStats()
     {
-        return $this->hasOne(TagStats::className(), ['tag_id' => 'id'])
+        return $this->hasOne(TagStats::class, ['tag_id' => 'id'])
             ->orderBy('tag_stats.id DESC');
     }
 

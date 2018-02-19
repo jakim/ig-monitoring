@@ -47,7 +47,7 @@ class MediaStats extends \yii\db\ActiveRecord
         return [
             [['media_id', 'likes', 'comments', 'account_followed_by', 'account_follows'], 'integer'],
             [['created_at'], 'safe'],
-            [['media_id'], 'exist', 'skipOnError' => true, 'targetClass' => Media::className(), 'targetAttribute' => ['media_id' => 'id']],
+            [['media_id'], 'exist', 'skipOnError' => true, 'targetClass' => Media::class, 'targetAttribute' => ['media_id' => 'id']],
         ];
     }
 
@@ -72,7 +72,7 @@ class MediaStats extends \yii\db\ActiveRecord
      */
     public function getMedia()
     {
-        return $this->hasOne(Media::className(), ['id' => 'media_id']);
+        return $this->hasOne(Media::class, ['id' => 'media_id']);
     }
 
     /**

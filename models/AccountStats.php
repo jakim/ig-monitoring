@@ -50,7 +50,7 @@ class AccountStats extends \yii\db\ActiveRecord
             [['account_id', 'followed_by', 'follows', 'media'], 'integer'],
             [['er'], 'number'],
             [['created_at'], 'safe'],
-            [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::className(), 'targetAttribute' => ['account_id' => 'id']],
+            [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::class, 'targetAttribute' => ['account_id' => 'id']],
         ];
     }
 
@@ -75,7 +75,7 @@ class AccountStats extends \yii\db\ActiveRecord
      */
     public function getAccount()
     {
-        return $this->hasOne(Account::className(), ['id' => 'account_id']);
+        return $this->hasOne(Account::class, ['id' => 'account_id']);
     }
 
     /**

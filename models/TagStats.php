@@ -51,7 +51,7 @@ class TagStats extends \yii\db\ActiveRecord
         return [
             [['tag_id', 'media', 'likes', 'comments', 'min_likes', 'max_likes', 'min_comments', 'max_comments'], 'integer'],
             [['created_at'], 'safe'],
-            [['tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::className(), 'targetAttribute' => ['tag_id' => 'id']],
+            [['tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['tag_id' => 'id']],
         ];
     }
 
@@ -79,7 +79,7 @@ class TagStats extends \yii\db\ActiveRecord
      */
     public function getTag()
     {
-        return $this->hasOne(Tag::className(), ['id' => 'tag_id']);
+        return $this->hasOne(Tag::class, ['id' => 'tag_id']);
     }
 
     /**

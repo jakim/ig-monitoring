@@ -83,7 +83,7 @@ class Proxy extends \yii\db\ActiveRecord
      */
     public function getAccounts()
     {
-        return $this->hasMany(Account::className(), ['proxy_id' => 'id']);
+        return $this->hasMany(Account::class, ['proxy_id' => 'id']);
     }
 
     /**
@@ -91,7 +91,7 @@ class Proxy extends \yii\db\ActiveRecord
      */
     public function getMedia()
     {
-        return $this->hasMany(Media::className(), ['proxy_id' => 'id']);
+        return $this->hasMany(Media::class, ['proxy_id' => 'id']);
     }
 
     /**
@@ -99,7 +99,7 @@ class Proxy extends \yii\db\ActiveRecord
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::className(), ['proxy_id' => 'id']);
+        return $this->hasMany(Tag::class, ['proxy_id' => 'id']);
     }
 
     /**

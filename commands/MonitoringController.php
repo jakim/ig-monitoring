@@ -39,9 +39,9 @@ class MonitoringController extends Controller
 
         $account->monitoring = 1;
         if (!$account->save()) {
-            print_r($account->errors);
+            echo Console::errorSummary($account);
 
-            return ExitCode::UNSPECIFIED_ERROR;
+            return ExitCode::DATAERR;
         }
         $this->stdout("OK!\n");
 
@@ -85,9 +85,9 @@ class MonitoringController extends Controller
 
         $tag->monitoring = 1;
         if (!$tag->save()) {
-            print_r($tag->errors);
+            echo Console::errorSummary($tag);
 
-            return ExitCode::UNSPECIFIED_ERROR;
+            return ExitCode::DATAERR;
         }
         $this->stdout("OK!\n");
 
