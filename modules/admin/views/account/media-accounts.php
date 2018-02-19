@@ -1,5 +1,6 @@
 <?php
 
+use app\components\jakim\ig\Url;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -29,13 +30,15 @@ $lastAccountStats = $model->lastAccountStats;
                             ['class' => \yii\grid\SerialColumn::class],
                             [
                                 'attribute' => 'username',
-                                'format' => 'html',
+                                'format' => 'raw',
                                 'value' => function (\app\models\Account $model, $key, $index, $column) {
                                     if ($model->monitoring) {
-                                        return Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]);
+                                        $value = Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]);
+                                    } else {
+                                        $value = $model->{$column->attribute};
                                     }
 
-                                    return $model->{$column->attribute};
+                                    return $value . ' ' . Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
                                 },
                             ],
                             'occurs',

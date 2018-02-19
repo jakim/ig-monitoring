@@ -1,5 +1,6 @@
 <?php
 
+use app\components\jakim\ig\Url;
 use app\modules\admin\components\grid\AccountStatsColumn;
 use app\modules\admin\models\Account;
 use yii\helpers\Html;
@@ -30,7 +31,8 @@ $formatter = Yii::$app->formatter;
                 [
                     'attribute' => 'username',
                     'content' => function (\app\models\Account $model) {
-                        return Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]);
+                        return Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]) . ' '
+                            . Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
                     },
                 ],
                 [

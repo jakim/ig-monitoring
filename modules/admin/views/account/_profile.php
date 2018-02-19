@@ -1,5 +1,6 @@
 <?php
 
+use app\components\jakim\ig\Url;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -18,6 +19,7 @@ $lastAccountStats = $model->lastAccountStats;
         <?php endif; ?>
         <h3 class="profile-username text-center">
             <?= Html::encode($model->usernamePrefixed) ?>
+            <?= Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']) ?>
         </h3>
         <p class="text-muted text-center">
             <?= Html::encode($model->full_name) ?>

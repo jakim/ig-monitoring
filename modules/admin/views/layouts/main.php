@@ -19,7 +19,7 @@ $user = Yii::$app->user->identity;
 <head>
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="referrer" content="never">
+<!--    <meta name="referrer" content="never">-->
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?> :: <?= Html::encode(Yii::$app->name) ?></title>
     <?php $this->head() ?>
