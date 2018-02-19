@@ -32,7 +32,7 @@ class CreateMonitoringWidget extends Widget
 
         echo "<div class=\"form-group\">";
         echo Html::input('text', 'username', null, [
-            'placeholder' => 'username',
+            'placeholder' => 'Username',
             'class' => 'form-control',
         ]);
         echo "</div>";
