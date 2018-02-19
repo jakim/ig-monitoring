@@ -32,7 +32,7 @@ $lastAccountStats = $model->lastAccountStats;
                                 'format' => 'html',
                                 'value' => function (\app\models\Account $model, $key, $index, $column) {
                                     if ($model->monitoring) {
-                                        return Html::a($model->usernamePrefixed, ['account/stats', 'id' => $model->id]);
+                                        return Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]);
                                     }
 
                                     return $model->{$column->attribute};
