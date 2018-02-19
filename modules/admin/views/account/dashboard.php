@@ -25,6 +25,13 @@ $lastAccountStats = $model->lastAccountStats;
             <div class="nav-tabs-custom">
                 <?= $this->render('_tabs', ['model' => $model]) ?>
                 <div class="tab-content">
+                    <?php if (!$model->beforeLastAccountStats): ?>
+                        <div class="callout callout-info">
+                            <p class="lead"><span class="fa fa-cog fa-spin"></span> Collecting data...</p>
+                            <p>Please come back tomorrow.</p>
+                        </div>
+                    <?php endif; ?>
+
                     <?php if ($model->beforeLastAccountStats): ?>
                         <h2 class="page-header">
                             Daily change
@@ -34,7 +41,7 @@ $lastAccountStats = $model->lastAccountStats;
                         <div class="row">
                             <div class="col-lg-3">
                                 <?= ChangeBox::widget([
-                                    'header' => $model->beforeLastAccountStats->getAttributeLabel('er'),
+                                    'header' => $model->lastAccountStats->getAttributeLabel('er'),
                                     'number' => $model->lastChange('er'),
                                     'format' => ['percent', 2],
                                 ]) ?>
