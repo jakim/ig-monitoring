@@ -30,6 +30,7 @@ See `./yii` for more commands.
 
 # Limitations
 - You need at least one, **WORKING proxy** for accounts and one for tags.
+- Works only for public accounts.
 - php >= 7.1
 - mysql >= 5.5
 
