@@ -62,6 +62,14 @@ class Account extends \yii\db\ActiveRecord
      */
     private $statsCache;
 
+    public function resetStatsCache()
+    {
+        $this->statsCache = null;
+        $this->lastAccountStats = null;
+        $this->beforeLastAccountStats = null;
+        $this->beforeMonthAccountStats = null;
+    }
+
     public function monthlyChange($attribute)
     {
         $last = $this->getLastAccountStats();

@@ -147,7 +147,7 @@ class AccountManager extends Component
 
         if ($this->statsNeedUpdate($account, $accountStats)) {
             $account->link('accountStats', $accountStats);
-            $account->refresh();
+            $account->resetStatsCache();
         }
         $this->updateMedia($account, $content);
         $this->updateEr($account);
