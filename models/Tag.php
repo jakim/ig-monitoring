@@ -128,9 +128,6 @@ class Tag extends \yii\db\ActiveRecord
         return $this->hasMany(Media::class, ['id' => 'media_id'])->viaTable('media_tag', ['tag_id' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getProxy()
     {
         if ($this->proxy_id) {
@@ -139,7 +136,8 @@ class Tag extends \yii\db\ActiveRecord
 
         return Proxy::find()
             ->andWhere(['type' => ProxyType::TAG])
-            ->orderBy(new Expression('RAND()'));
+            ->orderBy(new Expression('RAND()'))
+            ->one();
     }
 
     /**

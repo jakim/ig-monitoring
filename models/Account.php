@@ -201,9 +201,6 @@ class Account extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getProxy()
     {
         if ($this->proxy_id) {
@@ -212,7 +209,8 @@ class Account extends \yii\db\ActiveRecord
 
         return Proxy::find()
             ->andWhere(['type' => ProxyType::ACCOUNT])
-            ->orderBy(new Expression('RAND()'));
+            ->orderBy(new Expression('RAND()'))
+            ->one();
     }
 
     /**

@@ -80,7 +80,7 @@ class AccountManager extends Component
             return $this->fetchContent($url, $account);
         }
 
-        return $this->cache->getOrSet([$url], function () use ($url, $account) {
+        return $this->cache->getOrSet([$url], function ($cache) use ($url, $account) {
             return $this->fetchContent($url, $account);
         }, 3600);
     }
@@ -142,56 +142,17 @@ class AccountManager extends Component
             'media' => 'user.media.count',
         ]);
 
-        // if first run or something change
-        if (
-            !$account->lastAccountStats ||
-            (
-                $account->lastAccountStats &&
-                (
-                    $account->lastAccountStats->followed_by != $statsData['followed_by'] ||
-                    $account->lastAccountStats->follows != $statsData['follows'] ||
-                    $account->lastAccountStats->media != $statsData['media']
-                )
-            )
-        ) {
-            $accountStats = new AccountStats();
-            $accountStats->attributes = $statsData;
+        $accountStats = new AccountStats($statsData);
+
+
+        if ($this->statsNeedUpdate($account, $accountStats)) {
             $account->link('accountStats', $accountStats);
             $account->refresh();
         }
-
         $this->updateMedia($account, $content);
+        $this->updateEr($account);
 
-        if (isset($accountStats)) {
-            $accountStats->er = $this->calculateEr($account);
-            $accountStats->save();
-        }
-
-        return $accountStats ?? null;
-    }
-
-    /**
-     * @param \app\models\Account $account
-     * @param int $mediaLimit
-     * @return float|int
-     */
-    public function calculateEr(Account $account, int $mediaLimit = 10)
-    {
-        $media = Media::find()
-            ->innerJoinWith('mediaStats')
-            ->andWhere(['account_id' => $account->id])
-            ->limit($mediaLimit)
-            ->groupBy('media.id')
-            ->all();
-
-        $er = [];
-        foreach ($media as $m) {
-            $er[] = ($m->lastMediaStats->likes + $m->lastMediaStats->comments) / $m->lastMediaStats->account_followed_by;
-        }
-
-        $er = $er ? array_sum($er) / count($er) : 0;
-
-        return round($er, 4);
+        return !$accountStats->isNewRecord ? $accountStats : null;
     }
 
     public function saveUsernames(array $usernames)
@@ -210,6 +171,30 @@ class AccountManager extends Component
         $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
         \Yii::$app->db->createCommand($sql)
             ->execute();
+    }
+
+    protected function updateEr(Account $account, int $mediaLimit = 10): bool
+    {
+        if (!$account->lastAccountStats) {
+            return false;
+        }
+
+        $media = Media::find()
+            ->innerJoinWith('mediaStats')
+            ->andWhere(['account_id' => $account->id])
+            ->limit($mediaLimit)
+            ->groupBy('media.id')
+            ->all();
+
+        $er = [];
+        foreach ($media as $m) {
+            $er[] = ($m->lastMediaStats->likes + $m->lastMediaStats->comments) / $m->lastMediaStats->account_followed_by;
+        }
+
+        $er = $er ? array_sum($er) / count($er) : 0;
+        $account->lastAccountStats->er = round($er, 4);
+
+        return $account->lastAccountStats->update();
     }
 
     /**
@@ -278,6 +263,7 @@ class AccountManager extends Component
     protected function fetchContent($url, Account $account): array
     {
         $proxy = $this->getProxy($account);
+
         $client = Client::factory($proxy);
         $res = $client->get($url);
 
@@ -309,5 +295,16 @@ class AccountManager extends Component
                 $account->profile_pic_url = "/uploads/{$filename}";
             }
         }
+    }
+
+    protected function statsNeedUpdate(Account $account, AccountStats $freshAccountStats): bool
+    {
+        if (!$account->lastAccountStats) {
+            return true;
+        }
+
+        return $account->lastAccountStats->followed_by != $freshAccountStats->followed_by ||
+            $account->lastAccountStats->follows != $freshAccountStats->follows ||
+            $account->lastAccountStats->media != $freshAccountStats->media;
     }
 }
