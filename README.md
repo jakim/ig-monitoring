@@ -39,6 +39,7 @@ This code is in no way affiliated with, authorized, maintained, sponsored or end
 This is an independent tool. **Use at your own risk.**
 
 # Screenshots
+![crossfitgames-dashboard-ig-monitoring](https://user-images.githubusercontent.com/839118/36559260-bf7f1b0a-180d-11e8-9f6a-00f550a2a2a6.png)
 ![zrzut ekranu 2018-02-10 o 17 19 33](https://user-images.githubusercontent.com/839118/36064169-1e37d942-0e87-11e8-8c05-b7ac197af709.png)
 ![zrzut ekranu 2018-02-10 o 17 20 50](https://user-images.githubusercontent.com/839118/36064168-1e1cd700-0e87-11e8-853c-b7a86311b6bf.png)
 ![zrzut ekranu 2018-02-10 o 17 21 54](https://user-images.githubusercontent.com/839118/36064167-1e013950-0e87-11e8-8da7-48943127c58c.png)
