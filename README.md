@@ -5,6 +5,8 @@
 # Version
 Early dev stage.  **Use at your own risk.**
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
+
 # Install
 - git clone
 - composer install
