@@ -113,3 +113,11 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.favorites li .pull-right-container{
+    display: none;
+}
+
+.favorites li:hover .pull-right-container{
+    display: block;
+}

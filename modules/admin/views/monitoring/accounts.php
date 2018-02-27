@@ -74,6 +74,6 @@ $formatter = Yii::$app->formatter;
         ]); ?>
 
         <?= \app\modules\admin\widgets\CreateMonitoringWidget::widget() ?>
-
+        <?= \app\modules\admin\widgets\FavoriteModalWidget::widget() ?>
     </div>
 </div>

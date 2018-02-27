@@ -9,6 +9,7 @@ namespace app\modules\admin\controllers;
 
 
 use app\dictionaries\ProxyType;
+use app\models\Favorite;
 use app\models\Proxy;
 use app\modules\admin\models\Account;
 use app\modules\admin\models\AccountSearch;
@@ -67,6 +68,16 @@ class MonitoringController extends Controller
 
     public function actionAccounts()
     {
+
+        $label = \Yii::$app->request->post('label');
+        $url = \Yii::$app->request->post('url');
+        if ($label && $url) {
+            (new Favorite([
+                'url' => $url,
+                'label' => "<span class='fa fa-search'></span> $label",
+            ]))->insert(false);
+        }
+
         $searchModel = new AccountSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['account.monitoring' => 1]);
