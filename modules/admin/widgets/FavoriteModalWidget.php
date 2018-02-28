@@ -19,6 +19,12 @@ use yii\helpers\Html;
 
 class FavoriteModalWidget extends Widget
 {
+    public function init()
+    {
+        $this->view->registerJs('$(document).on(\'shown.bs.modal\', function (e) {$(\'[autofocus]\', e.target).focus();});');
+        parent::init();
+    }
+
     public function run()
     {
         Modal::begin([
@@ -36,6 +42,7 @@ class FavoriteModalWidget extends Widget
             'placeholder' => 'Name',
             'class' => 'form-control',
             'required' => true,
+            'autofocus' => true,
         ]);
         echo Html::hiddenInput('url', \yii\helpers\Url::current([], true));
 
