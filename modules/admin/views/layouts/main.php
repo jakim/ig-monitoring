@@ -76,7 +76,7 @@ $user = Yii::$app->user->identity;
                 ],
             ]) ?>
 
-            <?= \app\modules\admin\widgets\FavoritesMenu::widget() ?>
+            <?= \app\modules\admin\widgets\favorites\SideMenu::widget() ?>
 
         </section>
 

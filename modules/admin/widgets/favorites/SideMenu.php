@@ -5,7 +5,7 @@
  * Date: 01.02.2018
  */
 
-namespace app\modules\admin\widgets;
+namespace app\modules\admin\widgets\favorites;
 
 
 use app\components\ArrayHelper;
@@ -13,7 +13,7 @@ use app\models\Favorite;
 use dmstr\widgets\Menu;
 use yii\helpers\Url;
 
-class FavoritesMenu extends Menu
+class SideMenu extends Menu
 {
     public $encodeLabels = false;
     public $linkTemplate = '<a href="{url}">{icon} {label}<span class="pull-right-container"><i class="fa fa-trash-o pull-right delete" data-id="{id}"></i></span></a>';

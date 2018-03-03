@@ -11,7 +11,7 @@ namespace app\modules\admin\widgets;
 use yii\base\Widget;
 use yii\helpers\Html;
 
-class MonitoringButton extends Widget
+class OnOffMonitoringButton extends Widget
 {
     public $model;
     public $linkCssClass = 'btn btn-block';

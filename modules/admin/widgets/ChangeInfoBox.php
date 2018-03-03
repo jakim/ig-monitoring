@@ -10,7 +10,7 @@ namespace app\modules\admin\widgets;
 
 use yii\base\Widget;
 
-class ChangeBox extends Widget
+class ChangeInfoBox extends Widget
 {
     public $header = 'Bookmarks';
     public $number = '41,410';

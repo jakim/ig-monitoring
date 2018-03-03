@@ -10,16 +10,20 @@ namespace app\modules\admin\widgets;
 
 use app\components\ArrayHelper;
 use app\modules\admin\models\Tag;
+use app\modules\admin\widgets\base\ProfileSideWidget;
 use kartik\select2\Select2;
-use yii\base\Widget;
-use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
 
-class TagsWidget extends Widget
+class TagsSideWidget extends ProfileSideWidget
 {
     public $header = 'Tags';
     public $headerIcon = 'tags';
+    public $modalToggleButton = [
+        'label' => 'Update',
+        'class' => 'btn btn-xs btn-link',
+    ];
+
     /**
      * @var array
      */
@@ -47,31 +51,39 @@ class TagsWidget extends Widget
         $this->formAction = $this->formAction ?: ['tags', 'id' => $this->model->id];
     }
 
-    public function run()
+    private function getAvailableTags()
     {
-        echo "<strong>";
-        $this->renderHeader();
-        echo "</strong>";
-        $this->renderPopup();
+        $query = Tag::find()
+            ->orderBy('name ASC');
 
-        $this->renderList();
+        if ($this->model instanceof \app\models\Account) {
+            return $query
+                ->innerJoinWith('accountTags')
+                ->all();
+
+        } elseif ($this->model instanceof \app\models\Tag) {
+            return $query
+                ->innerJoinWith('accountTags')
+                ->all();
+        }
+
+        return [];
     }
 
-    protected function renderHeader()
+    protected function renderBoxContent()
     {
-        echo "<i class=\"fa fa-{$this->headerIcon} margin-r-5\"></i> {$this->header}";
+        echo "<p>";
+        foreach ($this->modelTags as $tag) {
+            echo sprintf('<span class="label label-default">%s</span> ', Html::encode($tag->name));
+        }
+        if (!$this->modelTags) {
+            echo \Yii::$app->formatter->nullDisplay;
+        }
+        echo "</p>";
     }
 
-    protected function renderPopup(): void
+    protected function renderModalContent()
     {
-        Modal::begin([
-            'header' => 'Add tags',
-            'toggleButton' => [
-                'tag' => 'a',
-                'label' => 'Update',
-                'class' => 'btn btn-xs btn-link',
-            ],
-        ]);
         echo Html::beginForm($this->formAction);
         echo "<div class=\"form-group\">";
         echo Select2::widget([
@@ -92,37 +104,5 @@ class TagsWidget extends Widget
         echo Html::submitButton('Update', ['class' => 'btn btn-small btn-primary']);
 
         echo Html::endForm();
-        Modal::end();
-    }
-
-    private function getAvailableTags()
-    {
-        $query = Tag::find()
-            ->orderBy('name ASC');
-
-        if ($this->model instanceof \app\models\Account) {
-            return $query
-                ->innerJoinWith('accountTags')
-                ->all();
-
-        } elseif ($this->model instanceof \app\models\Tag) {
-            return $query
-                ->innerJoinWith('accountTags')
-                ->all();
-        }
-
-        return [];
-    }
-
-    protected function renderList()
-    {
-        echo "<p>";
-        foreach ($this->modelTags as $tag) {
-            echo sprintf('<span class="label label-default">%s</span> ', Html::encode($tag->name));
-        }
-        if (!$this->modelTags){
-            echo \Yii::$app->formatter->nullDisplay;
-        }
-        echo "</p>";
     }
 }

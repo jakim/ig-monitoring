@@ -8,15 +8,19 @@
 namespace app\modules\admin\widgets;
 
 
-use yii\base\Widget;
-use yii\bootstrap\Modal;
+use app\modules\admin\widgets\base\ProfileSideWidget;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-class NotesWidget extends Widget
+class NotesSideWidget extends ProfileSideWidget
 {
     public $header = 'Notes';
     public $headerIcon = 'comment';
+    public $modalToggleButton = [
+        'label' => 'Update',
+        'class' => 'btn btn-xs btn-link',
+    ];
+
     /**
      * @var array
      */
@@ -32,45 +36,25 @@ class NotesWidget extends Widget
         $this->formAction = $this->formAction ?: ['update', 'id' => $this->model->id];
     }
 
-    public function run()
+    protected function renderModalContent()
     {
-        echo "<strong>";
-        $this->renderHeader();
-        echo "</strong>";
-        $this->renderPopup();
-
-        $this->renderNotes();
-    }
-
-    protected function renderHeader()
-    {
-        echo "<span class=\"fa fa-{$this->headerIcon} margin-r-5\"></span> {$this->header}";
-    }
-
-    protected function renderPopup(): void
-    {
-        Modal::begin([
-            'header' => 'Notes',
-            'toggleButton' => [
-                'tag' => 'a',
-                'label' => 'Update',
-                'class' => 'btn btn-xs btn-link',
-            ],
-        ]);
         $form = ActiveForm::begin(['action' => $this->formAction ?: ['update', 'id' => $this->model->id]]);
         echo $form
             ->field($this->model, 'notes')
             ->label(false)
-            ->textarea(['maxlength' => true, 'rows' => 5, 'placeholder' => true]);
+            ->textarea([
+                'maxlength' => true,
+                'rows' => 5,
+                'placeholder' => true,
+                'autofocus' => true,
+            ]);
 
         echo Html::submitButton('Update', ['class' => 'btn btn-small btn-primary']);
 
         ActiveForm::end();
-
-        Modal::end();
     }
 
-    private function renderNotes()
+    protected function renderBoxContent()
     {
         echo "<p class=\"text-muted\">\n";
         echo \Yii::$app->formatter->asNtext($this->model->notes ?: null);

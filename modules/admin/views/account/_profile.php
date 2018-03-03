@@ -58,10 +58,10 @@ $lastAccountStats = $model->lastAccountStats;
                 </li>
             </ul>
         <?php endif; ?>
-        <?= \app\modules\admin\widgets\MonitoringButton::widget([
+        <?= \app\modules\admin\widgets\OnOffMonitoringButton::widget([
             'model' => $model,
         ]) ?>
-        <?= \app\modules\admin\widgets\FavoriteButton::widget([
+        <?= \app\modules\admin\widgets\favorites\ProfileButton::widget([
             'model' => $model,
         ]) ?>
     </div>
@@ -92,11 +92,11 @@ $lastAccountStats = $model->lastAccountStats;
             <hr>
         <?php endif; ?>
 
-        <?= \app\modules\admin\widgets\TagsWidget::widget([
+        <?= \app\modules\admin\widgets\TagsSideWidget::widget([
             'model' => $model,
         ]); ?>
         <hr>
-        <?= \app\modules\admin\widgets\NotesWidget::widget([
+        <?= \app\modules\admin\widgets\NotesSideWidget::widget([
             'model' => $model,
         ]); ?>
     </div>

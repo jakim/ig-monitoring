@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\admin\widgets\ChangeBox;
+use app\modules\admin\widgets\ChangeInfoBox;
 use yii\helpers\ArrayHelper;
 use yii\web\JsExpression;
 
@@ -40,26 +40,26 @@ $lastAccountStats = $model->lastAccountStats;
                         </h2>
                         <div class="row">
                             <div class="col-lg-3">
-                                <?= ChangeBox::widget([
+                                <?= ChangeInfoBox::widget([
                                     'header' => $model->lastAccountStats->getAttributeLabel('er'),
                                     'number' => $model->lastChange('er'),
                                     'format' => ['percent', 2],
                                 ]) ?>
                             </div>
                             <div class="col-lg-3">
-                                <?= ChangeBox::widget([
+                                <?= ChangeInfoBox::widget([
                                     'header' => $model->lastAccountStats->getAttributeLabel('followed_by'),
                                     'number' => $model->lastChange('followed_by'),
                                 ]) ?>
                             </div>
                             <div class="col-lg-3">
-                                <?= ChangeBox::widget([
+                                <?= ChangeInfoBox::widget([
                                     'header' => $model->lastAccountStats->getAttributeLabel('follows'),
                                     'number' => $model->lastChange('follows'),
                                 ]) ?>
                             </div>
                             <div class="col-lg-3">
-                                <?= ChangeBox::widget([
+                                <?= ChangeInfoBox::widget([
                                     'header' => $model->lastAccountStats->getAttributeLabel('media'),
                                     'number' => $model->lastChange('media'),
                                 ]) ?>
@@ -74,26 +74,26 @@ $lastAccountStats = $model->lastAccountStats;
                         </h2>
                         <div class="row">
                             <div class="col-lg-3">
-                                <?= ChangeBox::widget([
+                                <?= ChangeInfoBox::widget([
                                     'header' => $model->lastAccountStats->getAttributeLabel('er'),
                                     'number' => $model->monthlyChange('er'),
                                     'format' => ['percent', 2],
                                 ]) ?>
                             </div>
                             <div class="col-lg-3">
-                                <?= ChangeBox::widget([
+                                <?= ChangeInfoBox::widget([
                                     'header' => $model->lastAccountStats->getAttributeLabel('followed_by'),
                                     'number' => $model->monthlyChange('followed_by'),
                                 ]) ?>
                             </div>
                             <div class="col-lg-3">
-                                <?= ChangeBox::widget([
+                                <?= ChangeInfoBox::widget([
                                     'header' => $model->lastAccountStats->getAttributeLabel('follows'),
                                     'number' => $model->monthlyChange('follows'),
                                 ]) ?>
                             </div>
                             <div class="col-lg-3">
-                                <?= ChangeBox::widget([
+                                <?= ChangeInfoBox::widget([
                                     'header' => $model->lastAccountStats->getAttributeLabel('media'),
                                     'number' => $model->monthlyChange('media'),
                                 ]) ?>

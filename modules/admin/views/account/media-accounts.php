@@ -45,7 +45,7 @@ $lastAccountStats = $model->lastAccountStats;
                             [
                                 'format' => 'raw',
                                 'value' => function (\app\models\Account $model) {
-                                    return \app\modules\admin\widgets\MonitoringButton::widget([
+                                    return \app\modules\admin\widgets\OnOffMonitoringButton::widget([
                                         'model' => $model,
                                         'linkCssClass' => 'btn btn-xs',
                                     ]);

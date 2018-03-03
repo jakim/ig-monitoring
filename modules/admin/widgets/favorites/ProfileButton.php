@@ -5,7 +5,7 @@
  * Date: 02.02.2018
  */
 
-namespace app\modules\admin\widgets;
+namespace app\modules\admin\widgets\favorites;
 
 
 use app\models\Account;
@@ -14,7 +14,7 @@ use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-class FavoriteButton extends Widget
+class ProfileButton extends Widget
 {
     public $model;
 

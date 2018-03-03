@@ -11,29 +11,27 @@ namespace app\modules\admin\widgets;
 use app\components\ArrayHelper;
 use app\dictionaries\ProxyType;
 use app\models\Proxy;
+use app\modules\admin\widgets\base\ModalWidget;
 use kartik\select2\Select2;
-use yii\base\Widget;
-use yii\bootstrap\Modal;
 use yii\helpers\Html;
 
-class CreateMonitoringWidget extends Widget
+class CreateMonitoringModal extends ModalWidget
 {
-    public function run()
+    public $modalHeader = 'Create account monitoring';
+    public $modalToggleButton = [
+        'label' => 'Create',
+    ];
+
+    protected function renderModalContent()
     {
-        Modal::begin([
-            'header' => 'Create account monitoring',
-            'toggleButton' => [
-                'tag' => 'a',
-                'label' => 'Create',
-                'class' => 'btn btn-sm btn-success',
-            ],
-        ]);
         echo Html::beginForm('create-account');
 
         echo "<div class=\"form-group\">";
         echo Html::input('text', 'username', null, [
             'placeholder' => 'Username',
             'class' => 'form-control',
+            'required' => true,
+            'autofocus' => true,
         ]);
         echo "</div>";
 
@@ -53,6 +51,5 @@ class CreateMonitoringWidget extends Widget
         echo Html::submitButton('Create', ['class' => 'btn btn-primary']);
 
         echo Html::endForm();
-        Modal::end();
     }
 }
