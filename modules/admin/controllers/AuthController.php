@@ -80,17 +80,8 @@ class AuthController extends Controller
                 'username' => $username,
             ]);
             if ($user->save()) {
-                $image = ArrayHelper::getValue($attributes, 'image.url');
-                $content = @file_get_contents($image);
-                if ($content) {
-                    $uid = sprintf("%s_%s", $username, md5($image));
-                    $ext = explode('?', pathinfo($image, PATHINFO_EXTENSION))['0'];
-                    $path = \Yii::getAlias("@webroot/uploads/{$uid}.{$ext}");
-                    if (file_put_contents($path, $content)) {
-                        $user->image = "/uploads/{$uid}.{$ext}";
-                        $user->update(false);
-                    }
-                }
+                $imageUrl = ArrayHelper::getValue($attributes, 'image.url');
+                $this->updateImage($imageUrl, $username, $user);
             }
         }
 
@@ -100,5 +91,19 @@ class AuthController extends Controller
         }
 
         \Yii::$app->user->login($user);
+    }
+
+    private function updateImage(string $image, string $username, User $user): void
+    {
+        $content = @file_get_contents($image);
+        if ($content) {
+            $uid = sprintf("%s_%s", $username, md5($image));
+            $ext = explode('?', pathinfo($image, PATHINFO_EXTENSION))['0'];
+            $path = \Yii::getAlias("@webroot/uploads/{$uid}.{$ext}");
+            if (file_put_contents($path, $content)) {
+                $user->image = "/uploads/{$uid}.{$ext}";
+                $user->update(false);
+            }
+        }
     }
 }
