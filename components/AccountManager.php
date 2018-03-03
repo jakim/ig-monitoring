@@ -8,14 +8,11 @@
 namespace app\components;
 
 
-use app\components\ArrayHelper;
 use app\components\http\Client;
-use app\components\MediaManager;
 use app\models\Account;
 use app\models\AccountStats;
 use app\models\AccountTag;
 use app\models\Media;
-use app\models\MediaStats;
 use app\models\Proxy;
 use app\models\Tag;
 use jakim\ig\Endpoint;
@@ -24,7 +21,6 @@ use yii\base\InvalidConfigException;
 use yii\caching\Cache;
 use yii\di\Instance;
 use yii\helpers\Json;
-use yii\helpers\StringHelper;
 
 class AccountManager extends Component
 {
@@ -70,11 +66,10 @@ class AccountManager extends Component
     /**
      * @param \app\models\Account $account
      * @return array
-     * @throws \yii\base\InvalidConfigException
      */
     public function fetchDetails(Account $account): array
     {
-        $url = (new Endpoint())->accountDetails($account->username);
+        $url = Endpoint::accountDetails($account->username);
 
         if ($this->cache === false) {
             return $this->fetchContent($url, $account);
@@ -224,7 +219,7 @@ class AccountManager extends Component
 
     public function updateMediaHistory(Account $account)
     {
-        $url = (new Endpoint())->accountMedia($account->instagram_id, 200);
+        $url = Endpoint::accountMedia($account->instagram_id, 200);
         $content = $this->fetchContent($url, $account);
 
         $items = ArrayHelper::getValue($content, 'data.user.edge_owner_to_timeline_media.edges', []);

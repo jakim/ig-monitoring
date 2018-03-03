@@ -9,7 +9,7 @@ namespace app\modules\admin\widgets;
 
 
 use app\components\ArrayHelper;
-use app\components\jakim\ig\Url;
+use jakim\ig\Url;
 use app\dictionaries\ProxyType;
 use app\models\Proxy;
 use kartik\select2\Select2;

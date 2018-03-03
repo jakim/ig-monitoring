@@ -1,6 +1,6 @@
 <?php
 
-use app\components\jakim\ig\Url;
+use jakim\ig\Url;
 use app\modules\admin\components\grid\AccountStatsColumn;
 use app\modules\admin\models\Account;
 use yii\helpers\Html;

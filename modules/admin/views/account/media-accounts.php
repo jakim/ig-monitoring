@@ -1,6 +1,6 @@
 <?php
 
-use app\components\jakim\ig\Url;
+use jakim\ig\Url;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 

@@ -47,7 +47,7 @@ class TagManager extends Component
      */
     public function fetchDetails(Tag $tag): array
     {
-        $url = (new Endpoint())->exploreTags($tag->name);
+        $url = Endpoint::exploreTags($tag->name);
 
         if ($this->cache === false) {
             return $this->fetchContent($url, $tag);

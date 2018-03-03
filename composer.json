@@ -23,15 +23,15 @@
     "yiisoft/yii2": "^2.0.14",
     "yiisoft/yii2-bootstrap": "~2.0.0",
     "yiisoft/yii2-swiftmailer": "~2.0.0",
-    "fxp/composer-asset-plugin": "^1.4",
     "yiisoft/yii2-queue": "^2.0",
-    "guzzlehttp/guzzle": "^6.3",
-    "jakim-pj/ua": "@dev",
-    "dmstr/yii2-adminlte-asset": "^2.6",
     "yiisoft/yii2-authclient": "^2.1",
+    "guzzlehttp/guzzle": "^6.3",
+    "dmstr/yii2-adminlte-asset": "^2.6",
     "kartik-v/yii2-widget-select2": "^2.1",
     "pahanini/yii2-consolelog": "^3.0",
-    "2amigos/yii2-chartjs-widget": "^2.1"
+    "2amigos/yii2-chartjs-widget": "^2.1",
+    "jakim-pj/ua": "@dev",
+    "jakim-pj/ig": "@dev"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.0.0",
@@ -74,10 +74,5 @@
       "type": "composer",
       "url": "https://asset-packagist.org"
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "jakim\\ig\\": "components/jakim/ig"
-    }
-  }
+  ]
 }

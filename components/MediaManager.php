@@ -59,10 +59,10 @@ class MediaManager extends Component
         }
 
         if ($media->caption) {
-            $tags = Text::getTags($media->caption);
+            $tags = (array)Text::getTags($media->caption);
             $this->addTags($media, $tags);
 
-            $usernames = Text::getAccounts($media->caption);
+            $usernames = (array)Text::getUsernames($media->caption);
             ArrayHelper::removeValue($usernames, $this->account->username);
             $this->addAccounts($media, $usernames);
         }
