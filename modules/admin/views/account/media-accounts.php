@@ -31,7 +31,7 @@ $lastAccountStats = $model->lastAccountStats;
                             [
                                 'attribute' => 'username',
                                 'format' => 'raw',
-                                'value' => function (\app\models\Account $model, $key, $index, $column) {
+                                'value' => function(\app\models\Account $model, $key, $index, $column) {
                                     if ($model->monitoring) {
                                         $value = Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]);
                                     } else {
@@ -44,7 +44,7 @@ $lastAccountStats = $model->lastAccountStats;
                             'occurs',
                             [
                                 'format' => 'raw',
-                                'value' => function (\app\models\Account $model) {
+                                'value' => function(\app\models\Account $model) {
                                     return \app\modules\admin\widgets\OnOffMonitoringButton::widget([
                                         'model' => $model,
                                         'linkCssClass' => 'btn btn-xs',
