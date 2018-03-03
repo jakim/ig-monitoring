@@ -117,7 +117,7 @@ class MonitoringController extends Controller
     /**
      * @param Account|Tag $model
      * @param $proxy_id
-     * @return int
+     * @return bool
      */
     private function checkProxy($model, $proxy_id)
     {
