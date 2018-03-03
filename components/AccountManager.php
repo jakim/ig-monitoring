@@ -42,11 +42,6 @@ class AccountManager extends Component
         }
     }
 
-    /**
-     * @param \app\models\Account $account
-     * @param string[] $tags
-     * @throws \Throwable
-     */
     public function updateTags(Account $account, array $tags)
     {
         // clearing
@@ -63,10 +58,6 @@ class AccountManager extends Component
         }
     }
 
-    /**
-     * @param \app\models\Account $account
-     * @return array
-     */
     public function fetchDetails(Account $account): array
     {
         $url = Endpoint::accountDetails($account->username);
@@ -84,8 +75,6 @@ class AccountManager extends Component
      * Fetch data from API, update details and stats.
      *
      * @param \app\models\Account $account
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
      */
     public function update(Account $account)
     {
@@ -94,12 +83,6 @@ class AccountManager extends Component
         $this->updateStats($account, $content);
     }
 
-    /**
-     * @param \app\models\Account $account
-     * @param array $content
-     * @return \app\models\Account
-     * @throws \yii\base\InvalidConfigException
-     */
     public function updateDetails(Account $account, array $content = []): Account
     {
         $content = $content ?: $this->fetchDetails($account);
@@ -120,13 +103,6 @@ class AccountManager extends Component
         return $account;
     }
 
-    /**
-     * @param \app\models\Account $account
-     * @param array $content
-     * @return \app\models\AccountStats|null
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     */
     public function updateStats(Account $account, array $content = []): ?AccountStats
     {
         $content = $content ?: $this->fetchDetails($account);
@@ -168,7 +144,7 @@ class AccountManager extends Component
             ->execute();
     }
 
-    protected function updateEr(Account $account, int $mediaLimit = 10): bool
+    protected function updateEr(Account $account, int $mediaLimit = 10)
     {
         if (!$account->lastAccountStats) {
             return false;
@@ -192,12 +168,6 @@ class AccountManager extends Component
         return $account->lastAccountStats->update();
     }
 
-    /**
-     * @param \app\models\Account $account
-     * @param array $content
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     */
     protected function updateMedia(Account $account, array $content)
     {
         $manager = \Yii::createObject([
@@ -228,11 +198,6 @@ class AccountManager extends Component
         $this->internalUpdateMedia($account, $items, $manager);
     }
 
-    /**
-     * @param \app\models\Account $account
-     * @return \app\models\Proxy
-     * @throws \yii\base\InvalidConfigException
-     */
     protected function getProxy(Account $account): Proxy
     {
         $proxy = $this->proxy ?: $account->proxy;
@@ -243,7 +208,7 @@ class AccountManager extends Component
         return $proxy;
     }
 
-    protected function fetchContent($url, Account $account): array
+    protected function fetchContent($url, Account $account): ?array
     {
         $proxy = $this->getProxy($account);
 
@@ -253,10 +218,6 @@ class AccountManager extends Component
         return Json::decode($res->getBody()->getContents());
     }
 
-    /**
-     * @param \app\models\Account $account
-     * @throws \yii\base\InvalidConfigException
-     */
     protected function updateProfilePic(Account $account): void
     {
         if ($account->profile_pic_url) {
@@ -291,12 +252,6 @@ class AccountManager extends Component
             $account->lastAccountStats->media != $freshAccountStats->media;
     }
 
-    /**
-     * @param \app\models\Account $account
-     * @param array $items Indexed by InstagramId [instagramId => ItemData]
-     * @param \app\components\MediaManager $manager
-     * @throws \yii\base\Exception
-     */
     private function internalUpdateMedia(Account $account, array $items, MediaManager $manager): void
     {
         foreach ($items as $instagramId => $item) {
