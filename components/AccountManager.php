@@ -206,15 +206,9 @@ class AccountManager extends Component
         ]);
 
         $items = ArrayHelper::getValue($content, 'user.media.nodes', []);
+        $items = ArrayHelper::index($items, 'id');
 
-        foreach ($items as $item) {
-            $id = ArrayHelper::getValue($item, 'id');
-            $media = Media::findOne(['instagram_id' => $id]);
-            if ($media === null) {
-                $media = new Media(['account_id' => $account->id]);
-            }
-            $manager->update($media, $item);
-        }
+        $this->internalUpdateMedia($account, $items, $manager);
     }
 
     public function updateMediaHistory(Account $account)
@@ -223,6 +217,7 @@ class AccountManager extends Component
         $content = $this->fetchContent($url, $account);
 
         $items = ArrayHelper::getValue($content, 'data.user.edge_owner_to_timeline_media.edges', []);
+        $items = ArrayHelper::index($items, 'node.id');
 
         $manager = \Yii::createObject([
             'class' => MediaManager::class,
@@ -230,14 +225,7 @@ class AccountManager extends Component
             'propertyMap' => MediaManager::PROPERTY_MAP_ACCOUNT_MEDIA,
         ]);
 
-        foreach ($items as $item) {
-            $id = ArrayHelper::getValue($item, 'node.id');
-            $media = Media::findOne(['instagram_id' => $id]);
-            if ($media === null) {
-                $media = new Media(['account_id' => $account->id]);
-            }
-            $manager->update($media, $item);
-        }
+        $this->internalUpdateMedia($account, $items, $manager);
     }
 
     /**
@@ -301,5 +289,22 @@ class AccountManager extends Component
         return $account->lastAccountStats->followed_by != $freshAccountStats->followed_by ||
             $account->lastAccountStats->follows != $freshAccountStats->follows ||
             $account->lastAccountStats->media != $freshAccountStats->media;
+    }
+
+    /**
+     * @param \app\models\Account $account
+     * @param array $items Indexed by InstagramId [instagramId => ItemData]
+     * @param \app\components\MediaManager $manager
+     * @throws \yii\base\Exception
+     */
+    private function internalUpdateMedia(Account $account, array $items, MediaManager $manager): void
+    {
+        foreach ($items as $instagramId => $item) {
+            $media = Media::findOne(['instagram_id' => $instagramId]);
+            if ($media === null) {
+                $media = new Media(['account_id' => $account->id]);
+            }
+            $manager->update($media, $item);
+        }
     }
 }
