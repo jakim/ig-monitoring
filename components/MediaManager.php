@@ -59,10 +59,10 @@ class MediaManager extends Component
         }
 
         if ($media->caption) {
-            $tags = (array)Text::getTags($media->caption);
+            $tags = (array) Text::getTags($media->caption);
             $this->addTags($media, $tags);
 
-            $usernames = (array)Text::getUsernames($media->caption);
+            $usernames = (array) Text::getUsernames($media->caption);
             ArrayHelper::removeValue($usernames, $this->account->username);
             $this->addAccounts($media, $usernames);
         }
@@ -109,10 +109,10 @@ class MediaManager extends Component
         $statsData = ArrayHelper::arrayMap($content, [
             'likes' => 'likes.count',
             'comments' => 'comments.count',
-            'account_followed_by' => function () {
+            'account_followed_by' => function() {
                 return $this->account->lastAccountStats->followed_by;
             },
-            'account_follows' => function () {
+            'account_follows' => function() {
                 return $this->account->lastAccountStats->follows;
             },
         ]);
@@ -138,7 +138,7 @@ class MediaManager extends Component
         $manager->saveUsernames($usernames);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function ($id) use ($media, $createdAt) {
+        $rows = array_map(function($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
@@ -167,7 +167,7 @@ class MediaManager extends Component
         $manager->saveTags($tags);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function ($id) use ($media, $createdAt) {
+        $rows = array_map(function($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
