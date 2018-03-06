@@ -44,8 +44,9 @@ This code is in no way affiliated with, authorized, maintained, sponsored or end
 This is an independent tool. **Use at your own risk.**
 
 # Screenshots
-![crossfitgames-dashboard-ig-monitoring](https://user-images.githubusercontent.com/839118/36559260-bf7f1b0a-180d-11e8-9f6a-00f550a2a2a6.png)
-![zrzut ekranu 2018-02-10 o 17 19 33](https://user-images.githubusercontent.com/839118/36064169-1e37d942-0e87-11e8-8c05-b7ac197af709.png)
-![zrzut ekranu 2018-02-10 o 17 20 50](https://user-images.githubusercontent.com/839118/36064168-1e1cd700-0e87-11e8-853c-b7a86311b6bf.png)
-![zrzut ekranu 2018-02-10 o 17 21 54](https://user-images.githubusercontent.com/839118/36064167-1e013950-0e87-11e8-8da7-48943127c58c.png)
+![image](https://user-images.githubusercontent.com/839118/37047660-ee744630-216b-11e8-943a-822a432da725.png)
+![image](https://user-images.githubusercontent.com/839118/37047713-18034474-216c-11e8-9123-d17f1543d65f.png)
+![image](https://user-images.githubusercontent.com/839118/37047852-83b1919e-216c-11e8-9d60-84f66e12e8e7.png)
+![image](https://user-images.githubusercontent.com/839118/37048055-0b5362f8-216d-11e8-9dab-a82304dd4353.png)
+![image](https://user-images.githubusercontent.com/839118/37048109-3372280a-216d-11e8-988d-c825dfe2432c.png)
 
