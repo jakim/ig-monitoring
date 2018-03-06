@@ -14,11 +14,13 @@ Early dev stage.  **Use at your own risk.**
 - git clone
 - composer install
 
-# Config
 - create database: mysql, utf8mb4
 - copy config/db.dist => config/db.php
+- `./yii migrate`
+
 - register google project for Google Sign-In
 - copy config/authClientCollection.php.dist => config/authClientCollection.php
+
 - [configure worker](https://github.com/yiisoft/yii2-queue/blob/master/docs/guide/worker.md)
 - create cron hourly for: `./yii stats/update-accounts` and `./yii stats/update-tags`
 
