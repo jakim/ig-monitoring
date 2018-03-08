@@ -2,6 +2,8 @@
 
 [Screenshots](#screenshots)
 
+[FAQ](#faq)
+
 # Version
 Early dev stage.  **Use at your own risk.**
 
@@ -52,3 +54,19 @@ This is an independent tool. **Use at your own risk.**
 ![image](https://user-images.githubusercontent.com/839118/37048055-0b5362f8-216d-11e8-9dab-a82304dd4353.png)
 ![image](https://user-images.githubusercontent.com/839118/37048109-3372280a-216d-11e8-988d-c825dfe2432c.png)
 
+# FAQ
+Why did I build it?
+
+Because I need something that I can quickly change for my needs.
+
+Why is it free?
+
+Because I realized that I like building tools more than using them :)
+
+Is it safe for usage?
+
+You never known, but I’m using this for few months now without any issue.
+
+What do I expect from this share?
+
+New ideas would be great, feel free to create issue and PR. :)
