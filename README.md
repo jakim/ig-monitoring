@@ -25,8 +25,8 @@ Early dev stage.  **Use at your own risk.**
 # Manual
 Everything should be added from the command line.
 
-- `./yii proxy/create`
-- `./yii monitoring/account`
+- `./yii proxy/create` (moved)
+- `./yii monitoring/account` (moved)
 - `./yii monitoring/tag`
 - `./yii help monitoring/account` - displays help for the command
 

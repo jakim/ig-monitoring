@@ -8,12 +8,10 @@
 namespace app\commands;
 
 
-use app\dictionaries\ProxyType;
 use app\models\Proxy;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\console\widgets\Table;
-use yii\helpers\Console;
 
 class ProxyController extends Controller
 {
@@ -29,32 +27,25 @@ class ProxyController extends Controller
                 $proxy->ip,
                 $proxy->port,
                 $proxy->username,
-                $proxy->type,
+                $proxy->default_for_accounts,
+                $proxy->default_for_tags,
             ];
         }
 
         echo Table::widget([
-            'headers' => ['ID', 'IP', 'Port', 'Username', 'Type'],
+            'headers' => ['ID', 'IP', 'Port', 'Username', 'Defaults for accounts', 'Default for tags'],
             'rows' => $rows,
         ]);
     }
 
-    public function actionCreate($ip, $port, $username = null, $password = null, $type = ProxyType::ACCOUNT)
+    /**
+     * NOTE: Moved to admin panel.
+     *
+     * @deprecated
+     */
+    public function actionCreate()
     {
-        $model = Proxy::findOne(['ip' => $ip, 'port' => $port]);
-        if ($model === null) {
-            $model = new Proxy(['ip' => $ip, 'port' => $port]);
-        }
-        $model->type = in_array($type, [ProxyType::ACCOUNT, ProxyType::MEDIA, ProxyType::TAG]) ? $type : ProxyType::ACCOUNT;
-        $model->username = $username;
-        $model->password = $password;
-        $model->active = 1;
-        if (!$model->save()) {
-            echo Console::errorSummary($model);
-
-            return ExitCode::DATAERR;
-        }
-        $this->stdout("OK!: ID = {$model->id}\n");
+        $this->stdout("moved to admin panel\n");
 
         return ExitCode::OK;
     }

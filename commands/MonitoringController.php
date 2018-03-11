@@ -8,7 +8,6 @@
 namespace app\commands;
 
 
-use app\dictionaries\ProxyType;
 use app\models\Account;
 use app\models\Proxy;
 use app\models\Tag;
@@ -26,24 +25,14 @@ class MonitoringController extends Controller
         $this->actionTags();
     }
 
-    public function actionAccount($username, $proxy_id = null)
+    /**
+     * NOTE: Moved to admin panel.
+     *
+     * @deprecated
+     */
+    public function actionAccount()
     {
-        $account = Account::findOne(['username' => $username]);
-        if ($account === null) {
-            $account = new Account(['username' => $username]);
-        }
-
-        if (!$this->checkProxy($account, $proxy_id)) {
-            return ExitCode::UNSPECIFIED_ERROR;
-        }
-
-        $account->monitoring = 1;
-        if (!$account->save()) {
-            echo Console::errorSummary($account);
-
-            return ExitCode::DATAERR;
-        }
-        $this->stdout("OK!\n");
+        $this->stdout("moved to admin panel\n");
 
         return ExitCode::OK;
     }
@@ -121,20 +110,22 @@ class MonitoringController extends Controller
      */
     private function checkProxy($model, $proxy_id)
     {
-        $proxy = Proxy::findOne(['id' => $proxy_id, 'type' => $model->proxyType()]);
+        $proxy = Proxy::findOne(['id' => $proxy_id]);
 
-        if ($proxy === null && $proxy_id) {
+        if ($proxy_id && $proxy === null) {
             $this->stdout("ERR: Proxy '$proxy_id' not found.\n", Console::FG_RED);
 
             return false;
 
-        } elseif (!$proxy_id && !Proxy::find()->andWhere(['type' => $model->proxyType()])->exists()) {
+        }
+
+        if (!$proxy && !$model->getProxy()) {
             $this->stdout("ERR: There MUST be at least one valid proxy.\n", Console::FG_RED);
 
             return false;
-        } elseif ($proxy) {
-            $model->proxy_id = $proxy->id;
         }
+
+        $model->proxy_id = $proxy ? $proxy->id : null;
 
         return true;
     }

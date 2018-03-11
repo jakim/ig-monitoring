@@ -100,7 +100,7 @@ class AccountSearch extends Account
                 ->innerJoinWith('tag')
                 ->andFilterWhere(['like', 'tag.name', $this->s_tags])
                 ->column();
-            $query->andFilterWhere(['account.id' => $accountIds]);
+            $query->andWhere(['account.id' => $accountIds]);
         }
 
         return $dataProvider;

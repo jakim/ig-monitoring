@@ -66,7 +66,7 @@ class AccountManager extends Component
             return $this->fetchContent($url, $account);
         }
 
-        return $this->cache->getOrSet([$url], function ($cache) use ($url, $account) {
+        return $this->cache->getOrSet([$url], function () use ($url, $account) {
             return $this->fetchContent($url, $account);
         }, 3600);
     }
@@ -214,6 +214,11 @@ class AccountManager extends Component
 
         $client = Client::factory($proxy);
         $res = $client->get($url);
+
+        \Yii::info(sprintf(
+            'Account \'%s\' data was downloaded via the \'%s\' proxy, data url: %s',
+            $account->usernamePrefixed, "{$proxy->ip}:{$proxy->port}", $url
+        ), __METHOD__);
 
         return Json::decode($res->getBody()->getContents());
     }

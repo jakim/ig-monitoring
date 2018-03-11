@@ -9,26 +9,18 @@ namespace app\models;
  */
 class ProxyQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    public function active()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
-
-    /**
-     * @inheritdoc
-     * @return Proxy[]|array
-     */
-    public function all($db = null)
-    {
-        return parent::all($db);
+        return $this->andWhere(['active' => 1]);
     }
 
-    /**
-     * @inheritdoc
-     * @return Proxy|array|null
-     */
-    public function one($db = null)
+    public function defaultForAccounts()
     {
-        return parent::one($db);
+        return $this->andWhere(['default_for_accounts' => 1]);
+    }
+
+    public function defaultForTags()
+    {
+        return $this->andWhere(['default_for_tags' => 1]);
     }
 }

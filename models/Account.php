@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use app\dictionaries\ProxyType;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
@@ -22,6 +21,7 @@ use yii\helpers\ArrayHelper;
  * @property string $created_at
  * @property int $monitoring
  * @property int $proxy_id
+ * @property int $proxy_tag_id
  * @property string $notes
  *
  * @property string $usernamePrefixed
@@ -32,6 +32,7 @@ use yii\helpers\ArrayHelper;
  * @property AccountStats[] $monthAccountStats
  *
  * @property Proxy $proxy
+ * @property Tag $proxyTag
  * @property AccountStats[] $accountStats
  * @property AccountTag[] $accountTags
  * @property Tag[] $tags
@@ -148,9 +149,11 @@ class Account extends \yii\db\ActiveRecord
             ->all();
     }
 
+    /**
+     * @deprecated
+     */
     public function proxyType()
     {
-        return ProxyType::ACCOUNT;
     }
 
     public function behaviors()
@@ -181,10 +184,11 @@ class Account extends \yii\db\ActiveRecord
         return [
             [['username'], 'required'],
             [['updated_at', 'created_at'], 'safe'],
-            [['monitoring', 'proxy_id', 'occurs'], 'integer'],
+            [['monitoring', 'proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
             [['username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes'], 'string', 'max' => 255],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
+            [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
         ];
     }
 
@@ -205,6 +209,7 @@ class Account extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'monitoring' => 'Monitoring',
             'proxy_id' => 'Proxy ID',
+            'proxy_tag_id' => 'Proxy Tag ID',
             'notes' => 'Notes',
         ];
     }
@@ -215,10 +220,26 @@ class Account extends \yii\db\ActiveRecord
             return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
         }
 
+        if ($this->proxy_tag_id) {
+            return Proxy::find()
+                ->innerJoinWith('proxyTags')
+                ->andWhere(['proxy_tag.tag_id' => $this->proxy_tag_id])
+                ->orderBy(new Expression('RAND()'))
+                ->one();
+        }
+
         return Proxy::find()
-            ->andWhere(['type' => ProxyType::ACCOUNT])
+            ->defaultForAccounts()
             ->orderBy(new Expression('RAND()'))
             ->one();
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProxyTag()
+    {
+        return $this->hasOne(Tag::class, ['id' => 'proxy_tag_id']);
     }
 
     /**

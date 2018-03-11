@@ -72,7 +72,8 @@ $user = Yii::$app->user->identity;
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
                 'items' => [
                     ['label' => 'Menu', 'options' => ['class' => 'header']],
-                        ['label' => 'Monitoring', 'icon' => 'line-chart', 'url' => ['/admin/monitoring/accounts'], 'active' => $this->context->id == 'monitoring'],
+                    ['label' => 'Monitoring', 'icon' => 'line-chart', 'url' => ['/admin/monitoring/accounts'], 'active' => $this->context->id == 'monitoring'],
+                    ['label' => 'Proxy', 'icon' => 'shield', 'url' => ['/admin/proxy/index'], 'active' => $this->context->id == 'proxy'],
                 ],
             ]) ?>
 

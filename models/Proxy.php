@@ -2,9 +2,9 @@
 
 namespace app\models;
 
+use app\components\ArrayHelper;
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "proxy".
@@ -15,14 +15,14 @@ use yii\helpers\ArrayHelper;
  * @property string $username
  * @property string $password
  * @property int $active
- * @property string $type
  * @property string $updated_at
  * @property string $created_at
+ * @property bool $default_for_accounts
+ * @property bool $default_for_tags
  *
  * @property string $curlString
  *
- * @property Account[] $accounts
- * @property Media[] $media
+ * @property ProxyTag[] $proxyTags
  * @property Tag[] $tags
  */
 class Proxy extends \yii\db\ActiveRecord
@@ -30,7 +30,12 @@ class Proxy extends \yii\db\ActiveRecord
 
     public function getCurlString()
     {
-        return "{$this->username}:{$this->password}@{$this->ip}:{$this->port}";
+        $url = "{$this->ip}:{$this->port}";
+        if ($this->username && $this->password) {
+            return "{$this->username}:{$this->password}@{$url}";
+        }
+
+        return $url;
     }
 
     public function behaviors()
@@ -54,9 +59,12 @@ class Proxy extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['port', 'active'], 'integer'],
+            [['ip', 'port'], 'required'],
+            [['ip'], 'ip'],
+            [['port'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['ip', 'username', 'password', 'type'], 'string', 'max' => 255],
+            [['ip', 'username', 'password'], 'string', 'max' => 255],
+            [['active', 'default_for_accounts', 'default_for_tags'], 'boolean'],
         ];
     }
 
@@ -72,26 +80,18 @@ class Proxy extends \yii\db\ActiveRecord
             'username' => 'Username',
             'password' => 'Password',
             'active' => 'Active',
-            'type' => 'Type',
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
+            'default_for_accounts' => 'Default For Accounts',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAccounts()
+    public function getProxyTags()
     {
-        return $this->hasMany(Account::class, ['proxy_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMedia()
-    {
-        return $this->hasMany(Media::class, ['proxy_id' => 'id']);
+        return $this->hasMany(ProxyTag::class, ['proxy_id' => 'id']);
     }
 
     /**
@@ -99,7 +99,7 @@ class Proxy extends \yii\db\ActiveRecord
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::class, ['proxy_id' => 'id']);
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->viaTable('proxy_tag', ['proxy_id' => 'id']);
     }
 
     /**

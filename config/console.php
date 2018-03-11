@@ -31,10 +31,23 @@ $config = [
                     'logFile' => '@runtime/logs/profile.log',
                     'logVars' => [],
                 ],
-//                [
-//                    'class' => \pahanini\log\ConsoleTarget::class,
-//                    'levels' => ['error', 'warning', 'info'],
-//                ],
+                [
+                    'class' => yii\log\FileTarget::class,
+                    'levels' => ['error', 'warning', 'info'],
+                    'categories' => [
+                        'app\components\AccountManager*',
+                    ],
+                    'logFile' => '@runtime/logs/ig_requests.log',
+                    'logVars' => [],
+                ],
+                [
+                    'class' => \pahanini\log\ConsoleTarget::class,
+                    'levels' => ['error', 'warning', 'info'],
+                    'categories' => [
+                        'app\components\AccountManager*',
+                    ],
+                    'logVars' => [],
+                ],
             ],
         ],
         'db' => $db,

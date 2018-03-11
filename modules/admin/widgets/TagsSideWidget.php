@@ -87,7 +87,6 @@ class TagsSideWidget extends ProfileSideWidget
         echo Html::beginForm($this->formAction);
         echo "<div class=\"form-group\">";
         echo Select2::widget([
-            'theme' => Select2::THEME_BOOTSTRAP,
             'name' => strtolower(StringHelper::basename(get_class($this->model)) . '_tags'),
             'options' => [
                 'multiple' => true,

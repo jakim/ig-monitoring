@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use app\dictionaries\ProxyType;
 use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -20,6 +19,7 @@ use yii\helpers\ArrayHelper;
  * @property string $created_at
  * @property int $monitoring
  * @property int $proxy_id
+ * @property int $proxy_tag_id
  *
  * @property string $namePrefixed
  *
@@ -36,11 +36,6 @@ use yii\helpers\ArrayHelper;
  */
 class Tag extends \yii\db\ActiveRecord
 {
-    public function proxyType()
-    {
-        return ProxyType::TAG;
-    }
-
     public $occurs;
 
     public function getNamePrefixed()
@@ -75,6 +70,7 @@ class Tag extends \yii\db\ActiveRecord
             [['name', 'slug'], 'string', 'max' => 255],
             [['name'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
+            [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
             [['main_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['main_tag_id' => 'id']],
         ];
     }
@@ -93,6 +89,7 @@ class Tag extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'monitoring' => 'Monitoring',
             'proxy_id' => 'Proxy ID',
+            'proxy_tag_id' => 'Proxy Tag ID',
         ];
     }
 
@@ -134,10 +131,26 @@ class Tag extends \yii\db\ActiveRecord
             return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
         }
 
+        if ($this->proxy_tag_id) {
+            return Proxy::find()
+                ->innerJoinWith(['proxyTag'])
+                ->andWhere(['proxy_tag.tag_id' => $this->proxy_tag_id])
+                ->orderBy(new Expression('RAND()'))
+                ->one();
+        }
+
         return Proxy::find()
-            ->andWhere(['type' => ProxyType::TAG])
+            ->defaultForTags()
             ->orderBy(new Expression('RAND()'))
             ->one();
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProxyTag()
+    {
+        return $this->hasOne(Tag::class, ['id' => 'proxy_tag_id']);
     }
 
     /**

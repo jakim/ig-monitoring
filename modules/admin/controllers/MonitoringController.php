@@ -8,11 +8,12 @@
 namespace app\modules\admin\controllers;
 
 
-use app\dictionaries\ProxyType;
 use app\models\Favorite;
 use app\models\Proxy;
+use app\models\ProxyTag;
 use app\modules\admin\models\Account;
 use app\modules\admin\models\AccountSearch;
+use app\modules\admin\models\Tag;
 use app\modules\admin\models\TagSearch;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -42,8 +43,11 @@ class MonitoringController extends Controller
         }
         $account->monitoring = 1;
 
-        $proxy = Proxy::findOne(['id' => $request->post('proxy_id'), 'type' => $account->proxyType()]);
+        $proxy = Proxy::findOne(['id' => $request->post('proxy_id')]);
         $account->proxy_id = $proxy ? $proxy->id : null;
+
+        $proxyTag = ProxyTag::findOne(['tag_id' => $request->post('proxy_tag_id')]);
+        $account->proxy_tag_id = $proxyTag ? $proxyTag->tag_id : null;
 
         if ($account->save()) {
             \Yii::$app->session->setFlash('success', 'OK!');
