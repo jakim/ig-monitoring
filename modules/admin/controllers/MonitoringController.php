@@ -8,14 +8,18 @@
 namespace app\modules\admin\controllers;
 
 
+use app\components\AccountManager;
 use app\models\Favorite;
 use app\models\Proxy;
 use app\models\ProxyTag;
 use app\modules\admin\models\Account;
+use app\modules\admin\models\AccountMonitoringForm;
 use app\modules\admin\models\AccountSearch;
 use app\modules\admin\models\Tag;
 use app\modules\admin\models\TagSearch;
 use yii\filters\VerbFilter;
+use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 use yii\web\Controller;
 
 class MonitoringController extends Controller
@@ -34,29 +38,31 @@ class MonitoringController extends Controller
 
     public function actionCreateAccount()
     {
-        $request = \Yii::$app->request;
-        $username = $request->post('username');
+        $form = new AccountMonitoringForm();
 
-        $account = Account::findOne(['username' => $username]);
-        if ($account === null) {
-            $account = new Account(['username' => $username]);
+        if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
+            $usernames = StringHelper::explode($form->usernames, ',', true, true);
+            foreach ($usernames as $username) {
+                $account = Account::findOne(['username' => $username]);
+                if ($account === null) {
+                    $account = new Account(['username' => $username]);
+                }
+                $account->proxy_id = $form->proxy_id ?: null;
+                $account->proxy_tag_id = $form->proxy_tag_id ?: null;
+                $account->monitoring = 1;
+                if ($account->save()) {
+                    \Yii::$app->session->setFlash('success', 'OK!');
+                    $accountManager = \Yii::createObject(AccountManager::class);
+                    $accountManager->updateTags($account, (array)$form->tags);
+                } else {
+                    \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
+                    \Yii::$app->session->setFlash('error', 'ERR!');
+                }
+
+            }
         }
-        $account->monitoring = 1;
 
-        $proxy = Proxy::findOne(['id' => $request->post('proxy_id')]);
-        $account->proxy_id = $proxy ? $proxy->id : null;
-
-        $proxyTag = ProxyTag::findOne(['tag_id' => $request->post('proxy_tag_id')]);
-        $account->proxy_tag_id = $proxyTag ? $proxyTag->tag_id : null;
-
-        if ($account->save()) {
-            \Yii::$app->session->setFlash('success', 'OK!');
-        } else {
-            \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
-            \Yii::$app->session->setFlash('error', 'ERR!');
-        }
-
-        return $this->redirect(['account/dashboard', 'id' => $account->id]);
+        return $this->redirect(['monitoring/accounts', 'sort' => '-created_at']);
     }
 
     public function actionTags()

@@ -28,6 +28,14 @@ use yii\behaviors\TimestampBehavior;
 class Proxy extends \yii\db\ActiveRecord
 {
 
+    public static function usedTags()
+    {
+        return Tag::find()
+            ->innerJoin('proxy_tag', 'tag.id=proxy_tag.tag_id')
+            ->orderBy('name ASC')
+            ->all();
+    }
+
     public function getCurlString()
     {
         $url = "{$this->ip}:{$this->port}";

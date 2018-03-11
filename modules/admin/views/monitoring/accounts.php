@@ -68,7 +68,6 @@ $formatter = Yii::$app->formatter;
                 [
                     'attribute' => 'created_at',
                     'format' => 'date',
-                    'enableSorting' => false,
                 ],
             ],
         ]); ?>

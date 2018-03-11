@@ -1,8 +1,11 @@
 <?php
 
+use app\components\ArrayHelper;
+use app\models\Account;
+use app\modules\admin\models\AccountMonitoringForm;
+use app\modules\admin\widgets\OnOffMonitoringButton;
 use jakim\ig\Url;
 use yii\helpers\Html;
-use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Account */
@@ -31,7 +34,7 @@ $lastAccountStats = $model->lastAccountStats;
                             [
                                 'attribute' => 'username',
                                 'format' => 'raw',
-                                'value' => function(\app\models\Account $model, $key, $index, $column) {
+                                'value' => function (Account $model, $key, $index, $column) {
                                     if ($model->monitoring) {
                                         $value = Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]);
                                     } else {
@@ -44,9 +47,15 @@ $lastAccountStats = $model->lastAccountStats;
                             'occurs',
                             [
                                 'format' => 'raw',
-                                'value' => function(\app\models\Account $model) {
-                                    return \app\modules\admin\widgets\OnOffMonitoringButton::widget([
-                                        'model' => $model,
+                                'value' => function (Account $account) use ($model) {
+                                    return OnOffMonitoringButton::widget([
+                                        'model' => $account,
+                                        'form' => new AccountMonitoringForm([
+                                            'usernames' => $account->username,
+                                            'tags' => ArrayHelper::getColumn($model->tags, 'name'),
+                                            'proxy_id' => $model->proxy_id,
+                                            'proxy_tag_id' => $model->proxy_tag_id,
+                                        ]),
                                         'linkCssClass' => 'btn btn-xs',
                                     ]);
                                 },

@@ -149,11 +149,12 @@ class Account extends \yii\db\ActiveRecord
             ->all();
     }
 
-    /**
-     * @deprecated
-     */
-    public function proxyType()
+    public static function usedTags()
     {
+        return Tag::find()
+            ->innerJoin('account_tag', 'tag.id=account_tag.tag_id')
+            ->orderBy('tag.slug ASC')
+            ->all();
     }
 
     public function behaviors()
