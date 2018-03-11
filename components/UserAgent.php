@@ -25,7 +25,7 @@ class UserAgent extends Component
         /** @var \yii\caching\Cache $cache */
         $cache = Instance::ensure($this->cache);
 
-        $items = $cache->getOrSet(__METHOD__, function (Cache $cache) {
+        $items = $cache->getOrSet(__METHOD__, function(Cache $cache) {
             return (new \jakim\ua\UserAgent())->fetch();
         }, 60 * 60 * 24 * 30);
 

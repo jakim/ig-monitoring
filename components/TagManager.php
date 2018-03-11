@@ -53,7 +53,7 @@ class TagManager extends Component
             return $this->fetchContent($url, $tag);
         }
 
-        return $this->cache->getOrSet([$url], function () use ($url, $tag) {
+        return $this->cache->getOrSet([$url], function() use ($url, $tag) {
             return $this->fetchContent($url, $tag);
         }, 3600);
 
@@ -120,7 +120,7 @@ class TagManager extends Component
     public function saveTags(array $tags)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function ($tag) use ($createdAt) {
+        $rows = array_map(function($tag) use ($createdAt) {
             return [
                 $tag,
                 Inflector::slug($tag),

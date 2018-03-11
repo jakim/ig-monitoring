@@ -25,14 +25,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'ip',
                     'format' => 'html',
-                    'value' => function (Proxy $model) {
+                    'value' => function(Proxy $model) {
                         return Html::a($model->ip, ['proxy/update', 'id' => $model->id]);
                     },
                 ],
                 'port',
                 [
                     'attribute' => 'tagString',
-                    'value' => function (Proxy $model) {
+                    'value' => function(Proxy $model) {
                         return implode(', ', ArrayHelper::getColumn($model->tags, 'name'));
                     },
 
