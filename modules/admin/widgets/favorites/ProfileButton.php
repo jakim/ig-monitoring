@@ -22,8 +22,7 @@ class ProfileButton extends Widget
     {
         echo Html::a(
             $this->isFavorite() ?
-                '<span class="fa fa-star-o text-yellow"></span> Remove from favorites' :
-                '<span class="fa fa-star text-yellow"></span> Add to favorites',
+                '<span class="fa fa-star-o text-yellow"></span> Remove from favorites' : '<span class="fa fa-star text-yellow"></span> Add to favorites',
             ['favorite', 'id' => $this->model->id],
             [
                 'class' => 'btn btn-block btn-default btn-sm',

@@ -66,7 +66,7 @@ class AccountManager extends Component
             return $this->fetchContent($url, $account);
         }
 
-        return $this->cache->getOrSet([$url], function () use ($url, $account) {
+        return $this->cache->getOrSet([$url], function() use ($url, $account) {
             return $this->fetchContent($url, $account);
         }, 3600);
     }
@@ -129,7 +129,7 @@ class AccountManager extends Component
     public function saveUsernames(array $usernames)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function ($username) use ($createdAt) {
+        $rows = array_map(function($username) use ($createdAt) {
             return [
                 $username,
                 $createdAt,
