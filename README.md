@@ -28,6 +28,7 @@ Early dev stage.  **Use at your own risk.**
 
 # Manual
 Everything should be added from the command line.
+> NOTE: Everything will be slowly moved to the admin panel.
 
 - `./yii proxy/create`
 - `./yii monitoring/account`
