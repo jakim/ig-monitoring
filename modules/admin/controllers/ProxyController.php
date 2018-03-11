@@ -62,7 +62,7 @@ class ProxyController extends Controller
         $model->loadDefaultValues();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if ($model->tagNames) {
+            if ($model->tagString) {
                 $this->saveTags($model);
             }
 
