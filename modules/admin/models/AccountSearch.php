@@ -6,6 +6,7 @@ use app\models\AccountStats;
 use app\models\AccountTag;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\helpers\StringHelper;
 
 /**
  * AccountSearch represents the model behind the search form of `app\models\Account`.
@@ -95,14 +96,33 @@ class AccountSearch extends Account
         $query->andFilterWhere(['like', 'username', $this->username]);
 
         if ($this->s_tags) {
-            $accountIds = AccountTag::find()
-                ->select('account_id')
-                ->innerJoinWith('tag')
-                ->andFilterWhere(['like', 'tag.name', $this->s_tags])
-                ->column();
+            $tags = StringHelper::explode($this->s_tags, ',', true, true);
+            $tag = array_shift($tags);
+            $accountIds = $this->getTaggedAccountIds($tag);
+
+            foreach ($tags as $tag) {
+                $accountIds = array_intersect($accountIds, $this->getTaggedAccountIds($tag));
+            }
+
+
             $query->andWhere(['account.id' => $accountIds]);
         }
 
         return $dataProvider;
+    }
+
+    /**
+     * @param $tag
+     * @return array
+     */
+    private function getTaggedAccountIds($tag): array
+    {
+        $accountIds = AccountTag::find()
+            ->select('account_id')
+            ->innerJoinWith('tag')
+            ->andFilterWhere(['like', 'tag.name', $tag])
+            ->column();
+
+        return $accountIds;
     }
 }
