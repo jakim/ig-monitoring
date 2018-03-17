@@ -18,7 +18,7 @@ class ProxyController extends Controller
     public function actionIndex()
     {
         $proxies = Proxy::find()
-            ->orderBy('type, ip')
+            ->orderBy('ip')
             ->all();
         $rows = [];
         foreach ($proxies as $proxy) {
