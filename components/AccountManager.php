@@ -9,18 +9,19 @@ namespace app\components;
 
 
 use app\components\http\Client;
+use app\components\http\CacheStorage;
 use app\models\Account;
 use app\models\AccountStats;
 use app\models\AccountTag;
 use app\models\Media;
 use app\models\Proxy;
 use app\models\Tag;
-use jakim\ig\Endpoint;
+use GuzzleHttp\HandlerStack;
+use Jakim\Query\AccountQuery;
+use Kevinrob\GuzzleCache\CacheMiddleware;
+use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\caching\Cache;
-use yii\di\Instance;
-use yii\helpers\Json;
 
 class AccountManager extends Component
 {
@@ -29,73 +30,38 @@ class AccountManager extends Component
      */
     public $proxy;
 
-    /**
-     * @var \yii\caching\Cache
-     */
-    public $cache = 'cache';
-
-    public function init()
+    public function fetchDetails(Account $account): \Jakim\Model\Account
     {
-        parent::init();
-        if ($this->cache !== false) {
-            $this->cache = Instance::ensure($this->cache, Cache::class);
-        }
-    }
+        $query = $this->queryFactory($account);
 
-    public function updateTags(Account $account, array $tags)
-    {
-        // clearing
-        AccountTag::deleteAll(['account_id' => $account->id]);
-
-        // add
-        foreach (array_filter($tags) as $tag) {
-            $model = Tag::findOne(['name' => $tag]);
-            if ($model === null && $tag) {
-                $model = new Tag(['name' => $tag]);
-                $model->insert();
-            }
-            $account->link('tags', $model);
-        }
-    }
-
-    public function fetchDetails(Account $account): array
-    {
-        $url = Endpoint::accountDetails($account->username);
-
-        if ($this->cache === false) {
-            return $this->fetchContent($url, $account);
-        }
-
-        return $this->cache->getOrSet([$url], function() use ($url, $account) {
-            return $this->fetchContent($url, $account);
-        }, 3600);
+        return $query->findOne($account->username);
     }
 
     /**
      * Fetch data from API, update details and stats.
      *
      * @param \app\models\Account $account
+     * @return \app\models\Account
      */
     public function update(Account $account)
     {
-        $content = $this->fetchDetails($account);
-        $this->updateDetails($account, $content);
-        $this->updateStats($account, $content);
+        $data = $this->fetchDetails($account);
+        $this->updateDetails($account, $data);
+        $this->updateStats($account, $data);
+
+        return $account;
     }
 
-    public function updateDetails(Account $account, array $content = []): Account
+    public function updateDetails(Account $account, \Jakim\Model\Account $data = null): Account
     {
-        $content = $content ?: $this->fetchDetails($account);
+        $data = $data ?: $this->fetchDetails($account);
 
-        $accountData = ArrayHelper::arrayMap($content, [
-            'profile_pic_url' => 'user.profile_pic_url',
-            'full_name' => 'user.full_name',
-            'biography' => 'user.biography',
-            'external_url' => 'user.external_url',
-            'instagram_id' => 'user.id',
-        ]);
+        $account->profile_pic_url = $data->profilePicUrl;
+        $account->full_name = $data->fullName;
+        $account->biography = $data->biography;
+        $account->external_url = $data->externalUrl;
+        $account->instagram_id = $data->id;
 
-        $account->attributes = $accountData;
         $this->updateProfilePic($account);
 
         $account->save();
@@ -103,45 +69,23 @@ class AccountManager extends Component
         return $account;
     }
 
-    public function updateStats(Account $account, array $content = []): ?AccountStats
+    public function updateStats(Account $account, \Jakim\Model\Account $data = null): ?AccountStats
     {
-        $content = $content ?: $this->fetchDetails($account);
+        $data = $data ?: $this->fetchDetails($account);
+        $accountStats = null;
 
-        $statsData = ArrayHelper::arrayMap($content, [
-            'followed_by' => 'user.followed_by.count',
-            'follows' => 'user.follows.count',
-            'media' => 'user.media.count',
-        ]);
-
-        $accountStats = new AccountStats($statsData);
-
-
-        if ($this->statsNeedUpdate($account, $accountStats)) {
+        if ($this->statsNeedUpdate($account, $data)) {
+            $accountStats = new AccountStats();
+            $accountStats->followed_by = $data->followedBy;
+            $accountStats->follows = $data->follows;
+            $accountStats->media = $data->media;
             $account->link('accountStats', $accountStats);
             $account->resetStatsCache();
         }
-        $this->updateMedia($account, $content);
+        $this->updateMedia($account);
         $this->updateEr($account);
 
-        return !$accountStats->isNewRecord ? $accountStats : null;
-    }
-
-    public function saveUsernames(array $usernames)
-    {
-        $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($username) use ($createdAt) {
-            return [
-                $username,
-                $createdAt,
-                $createdAt,
-            ];
-        }, $usernames);
-
-        $sql = \Yii::$app->db->getQueryBuilder()
-            ->batchInsert(Account::tableName(), ['username', 'updated_at', 'created_at'], $rows);
-        $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
-        \Yii::$app->db->createCommand($sql)
-            ->execute();
+        return $accountStats;
     }
 
     protected function updateEr(Account $account, int $mediaLimit = 10)
@@ -168,59 +112,84 @@ class AccountManager extends Component
         return $account->lastAccountStats->update();
     }
 
-    protected function updateMedia(Account $account, array $content)
+    protected function updateMedia(Account $account)
     {
         $manager = \Yii::createObject([
             'class' => MediaManager::class,
             'account' => $account,
         ]);
 
-        $items = ArrayHelper::getValue($content, 'user.media.nodes', []);
-        $items = ArrayHelper::index($items, 'id');
+        $query = $this->queryFactory($account);
+        $items = $query->findPosts($account->username);
 
-        $this->internalUpdateMedia($account, $items, $manager);
+        foreach ($items as $item) {
+            $media = Media::findOne(['instagram_id' => $item->id]);
+            if ($media === null) {
+                $media = new Media(['account_id' => $account->id]);
+            }
+            $manager->update($media, $item);
+        }
     }
 
-    public function updateMediaHistory(Account $account)
+    public function updateTags(Account $account, array $tags)
     {
-        $url = Endpoint::accountMedia($account->instagram_id, 200);
-        $content = $this->fetchContent($url, $account);
+        // clearing
+        AccountTag::deleteAll(['account_id' => $account->id]);
 
-        $items = ArrayHelper::getValue($content, 'data.user.edge_owner_to_timeline_media.edges', []);
-        $items = ArrayHelper::index($items, 'node.id');
-
-        $manager = \Yii::createObject([
-            'class' => MediaManager::class,
-            'account' => $account,
-            'propertyMap' => MediaManager::PROPERTY_MAP_ACCOUNT_MEDIA,
-        ]);
-
-        $this->internalUpdateMedia($account, $items, $manager);
+        // add
+        foreach (array_filter($tags) as $tag) {
+            $model = Tag::findOne(['name' => $tag]);
+            if ($model === null && $tag) {
+                $model = new Tag(['name' => $tag]);
+                $model->insert();
+            }
+            $account->link('tags', $model);
+        }
     }
+
+    public function saveUsernames(array $usernames)
+    {
+        $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
+        $rows = array_map(function ($username) use ($createdAt) {
+            return [
+                $username,
+                $createdAt,
+                $createdAt,
+            ];
+        }, $usernames);
+
+        $sql = \Yii::$app->db->getQueryBuilder()
+            ->batchInsert(Account::tableName(), ['username', 'updated_at', 'created_at'], $rows);
+        $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
+        \Yii::$app->db->createCommand($sql)
+            ->execute();
+    }
+
+//    public function updateMediaHistory(Account $account)
+//    {
+//        $url = Endpoint::accountMedia($account->instagram_id, 200);
+//        $content = $this->fetchContent($url, $account);
+//
+//        $items = ArrayHelper::getValue($content, 'data.user.edge_owner_to_timeline_media.edges', []);
+//        $items = ArrayHelper::index($items, 'node.id');
+//
+//        $manager = \Yii::createObject([
+//            'class' => MediaManager::class,
+//            'account' => $account,
+//            'propertyMap' => MediaManager::PROPERTY_MAP_ACCOUNT_MEDIA,
+//        ]);
+//
+//        $this->internalUpdateMedia($account, $items, $manager);
+//    }
 
     protected function getProxy(Account $account): Proxy
     {
         $proxy = $this->proxy ?: $account->proxy;
         if (!$proxy || !$proxy->active) {
-            throw new InvalidConfigException('Account proxy must be set and active.');
+            throw new InvalidConfigException('Account proxy must be set and be active.');
         }
 
         return $proxy;
-    }
-
-    protected function fetchContent($url, Account $account): ?array
-    {
-        $proxy = $this->getProxy($account);
-
-        $client = Client::factory($proxy);
-        $res = $client->get($url);
-
-        \Yii::info(sprintf(
-            'Account \'%s\' data was downloaded via the \'%s\' proxy, data url: %s',
-            $account->usernamePrefixed, "{$proxy->ip}:{$proxy->port}", $url
-        ), __METHOD__);
-
-        return Json::decode($res->getBody()->getContents());
     }
 
     protected function updateProfilePic(Account $account): void
@@ -246,25 +215,35 @@ class AccountManager extends Component
         }
     }
 
-    protected function statsNeedUpdate(Account $account, AccountStats $freshAccountStats): bool
+    private function statsNeedUpdate(Account $account, \Jakim\Model\Account $data): bool
     {
         if (!$account->lastAccountStats) {
             return true;
         }
 
-        return $account->lastAccountStats->followed_by != $freshAccountStats->followed_by ||
-            $account->lastAccountStats->follows != $freshAccountStats->follows ||
-            $account->lastAccountStats->media != $freshAccountStats->media;
+        return $account->lastAccountStats->followed_by != $data->followedBy ||
+            $account->lastAccountStats->follows != $data->follows ||
+            $account->lastAccountStats->media != $data->media;
     }
 
-    private function internalUpdateMedia(Account $account, array $items, MediaManager $manager): void
+    /**
+     * @param \app\models\Account $account
+     * @return AccountQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    private function queryFactory(Account $account): AccountQuery
     {
-        foreach ($items as $instagramId => $item) {
-            $media = Media::findOne(['instagram_id' => $instagramId]);
-            if ($media === null) {
-                $media = new Media(['account_id' => $account->id]);
-            }
-            $manager->update($media, $item);
-        }
+        $proxy = $this->getProxy($account);
+
+        $stack = HandlerStack::create();
+        $stack->push(new CacheMiddleware(
+            new GreedyCacheStrategy(
+                new CacheStorage(), 3600)
+        ), 'cache');
+        $client = Client::factory($proxy, ['handler' => $stack]);
+
+        $query = new AccountQuery($client);
+
+        return $query;
     }
 }

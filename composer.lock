@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "fda0ace182a47467aeadc2e5539c90e4",
+    "content-hash": "e60215b9cfb2614e9aa29035cb7e7626",
     "packages": [
         {
             "name": "2amigos/yii2-chartjs-widget",
@@ -792,12 +792,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jakim/ig.git",
-                "reference": "424a77868af6670f38564d19df0f098296031811"
+                "reference": "4e1d725002bdec83d3f109f505359644621f4f5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jakim/ig/zipball/424a77868af6670f38564d19df0f098296031811",
-                "reference": "424a77868af6670f38564d19df0f098296031811",
+                "url": "https://api.github.com/repos/jakim/ig/zipball/4e1d725002bdec83d3f109f505359644621f4f5b",
+                "reference": "4e1d725002bdec83d3f109f505359644621f4f5b",
                 "shasum": ""
             },
             "require": {
@@ -823,7 +823,49 @@
                 }
             ],
             "description": "Public, web api endpoints and content helpers",
-            "time": "2018-03-09T09:55:08+00:00"
+            "time": "2018-03-18T14:10:53+00:00"
+        },
+        {
+            "name": "jakim-pj/ig-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jakim/ig-client.git",
+                "reference": "c8993b3afe8b52361c0a7b14d66a4269b6ad2a1f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jakim/ig-client/zipball/c8993b3afe8b52361c0a7b14d66a4269b6ad2a1f",
+                "reference": "c8993b3afe8b52361c0a7b14d66a4269b6ad2a1f",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.3",
+                "jakim-pj/ig": "@dev",
+                "jakim-pj/ua": "@dev",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jakim\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paweł Jakimowski",
+                    "email": "pawel@jakimowski.info"
+                }
+            ],
+            "description": "Instagram public web api client",
+            "time": "2018-03-18T20:09:58+00:00"
         },
         {
             "name": "jakim-pj/ua",
@@ -964,6 +1006,83 @@
                 "yii2"
             ],
             "time": "2017-11-25T06:02:18+00:00"
+        },
+        {
+            "name": "kevinrob/guzzle-cache-middleware",
+            "version": "v3.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kevinrob/guzzle-cache-middleware.git",
+                "reference": "dda34401a68c54f06c9338a2cc30ae0aecd879a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kevinrob/guzzle-cache-middleware/zipball/dda34401a68c54f06c9338a2cc30ae0aecd879a1",
+                "reference": "dda34401a68c54f06c9338a2cc30ae0aecd879a1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "cache/array-adapter": "^0.4 || ^0.5 || ^1.0",
+                "cache/simple-cache-bridge": "^0.1 || ^1.0",
+                "doctrine/cache": "^1.0",
+                "guzzlehttp/guzzle": "^6.0",
+                "illuminate/cache": "^5.0",
+                "league/flysystem": "^1.0",
+                "phpunit/phpunit": "^4.0 || ^5.0",
+                "psr/cache": "^1.0"
+            },
+            "suggest": {
+                "doctrine/cache": "This library have a lot of ready-to-use cache storage (to be use with Kevinrob\\GuzzleCache\\Storage\\DoctrineCacheStorage)",
+                "guzzlehttp/guzzle": "For using this library. It was created for Guzzle6. (but you can use it with any PSR-7 HTTP Client)",
+                "laravel/framework": "To be use with Kevinrob\\GuzzleCache\\Storage\\LaravelCacheStorage",
+                "league/flysystem": "To be use with Kevinrob\\GuzzleCache\\Storage\\FlysystemStorage",
+                "psr/cache": "To be use with Kevinrob\\GuzzleCache\\Storage\\Psr6CacheStorage",
+                "psr/simple-cache": "To be use with Kevinrob\\GuzzleCache\\Storage\\Psr16CacheStorage"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kevinrob\\GuzzleCache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Robatel",
+                    "email": "kevinrob2@gmail.com",
+                    "homepage": "https://github.com/Kevinrob"
+                }
+            ],
+            "description": "A HTTP/1.1 Cache for Guzzle 6. It's a simple Middleware to be added in the HandlerStack. (RFC 7234)",
+            "homepage": "https://github.com/Kevinrob/guzzle-cache-middleware",
+            "keywords": [
+                "Etag",
+                "Flysystem",
+                "Guzzle",
+                "cache",
+                "cache-control",
+                "doctrine",
+                "expiration",
+                "guzzle6",
+                "handler",
+                "http",
+                "http 1.1",
+                "middleware",
+                "performance",
+                "php",
+                "promise",
+                "psr6",
+                "psr7",
+                "rfc7234",
+                "validation"
+            ],
+            "time": "2018-01-10T13:55:22+00:00"
         },
         {
             "name": "pahanini/yii2-consolelog",
@@ -1211,16 +1330,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.14.1",
+            "version": "2.0.14.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "d99969394c66dc3606134af092b8ec561ea5d7c6"
+                "reference": "ef74f3783e964cea477f06e6d6ce209df1f37881"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/d99969394c66dc3606134af092b8ec561ea5d7c6",
-                "reference": "d99969394c66dc3606134af092b8ec561ea5d7c6",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/ef74f3783e964cea477f06e6d6ce209df1f37881",
+                "reference": "ef74f3783e964cea477f06e6d6ce209df1f37881",
                 "shasum": ""
             },
             "require": {
@@ -1307,7 +1426,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2018-02-24T20:23:06+00:00"
+            "time": "2018-03-13T14:15:01+00:00"
         },
         {
             "name": "yiisoft/yii2-authclient",
@@ -1819,16 +1938,16 @@
         },
         {
             "name": "codeception/phpunit-wrapper",
-            "version": "7.0.2",
+            "version": "7.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/phpunit-wrapper.git",
-                "reference": "19fd05344d2c37f9742daf629f63dd5b387a2e6e"
+                "reference": "42c8fdbf301ee36f6b58cb154972f9148fdcb7d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/19fd05344d2c37f9742daf629f63dd5b387a2e6e",
-                "reference": "19fd05344d2c37f9742daf629f63dd5b387a2e6e",
+                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/42c8fdbf301ee36f6b58cb154972f9148fdcb7d4",
+                "reference": "42c8fdbf301ee36f6b58cb154972f9148fdcb7d4",
                 "shasum": ""
             },
             "require": {
@@ -1836,6 +1955,10 @@
                 "phpunit/phpunit": "^7.0",
                 "sebastian/comparator": "^2.0",
                 "sebastian/diff": "^3.0"
+            },
+            "require-dev": {
+                "codeception/specify": "*",
+                "vlucas/phpdotenv": "^2.4"
             },
             "type": "library",
             "autoload": {
@@ -1854,7 +1977,7 @@
                 }
             ],
             "description": "PHPUnit classes used by Codeception",
-            "time": "2018-02-19T21:33:32+00:00"
+            "time": "2018-03-16T10:18:33+00:00"
         },
         {
             "name": "codeception/specify",
@@ -4122,7 +4245,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "jakim-pj/ua": 20,
-        "jakim-pj/ig": 20
+        "jakim-pj/ig": 20,
+        "jakim-pj/ig-client": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

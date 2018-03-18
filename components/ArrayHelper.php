@@ -13,7 +13,7 @@ use yii\helpers\ReplaceArrayValue;
 
 class ArrayHelper extends BaseArrayHelper
 {
-    public static function arrayMap(array $data, array $map): array
+    public static function arrayMap($data, array $map): array
     {
         $res = [];
         foreach ($map as $to => $from) {

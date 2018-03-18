@@ -31,7 +31,9 @@
     "pahanini/yii2-consolelog": "^3.0",
     "2amigos/yii2-chartjs-widget": "^2.1",
     "jakim-pj/ua": "@dev",
-    "jakim-pj/ig": "@dev"
+    "jakim-pj/ig": "@dev",
+    "jakim-pj/ig-client": "@dev",
+    "kevinrob/guzzle-cache-middleware": "^3.2"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.0.0",

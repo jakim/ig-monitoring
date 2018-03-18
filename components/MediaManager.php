@@ -15,43 +15,27 @@ use app\models\MediaStats;
 use app\models\MediaTag;
 use app\models\Tag;
 use jakim\ig\Text;
+use Jakim\Model\Post;
 use yii\base\Component;
 use yii\base\Exception;
 
 class MediaManager extends Component
 {
-    const PROPERTY_MAP_ACCOUNT_DETAILS = [
-        'shortcode' => 'code',
-        'is_video' => 'is_video',
-        'caption' => 'caption',
-        'instagram_id' => 'id',
-        'taken_at' => 'date',
-    ];
-
-    const PROPERTY_MAP_ACCOUNT_MEDIA = [
-        'shortcode' => 'node.shortcode',
-        'is_video' => 'node.is_video',
-        'caption' => 'node.edge_media_to_caption.edges.0.node.text',
-        'instagram_id' => 'node.id',
-        'taken_at' => 'node.taken_at_timestamp',
-    ];
-
     /**
      * @var \app\models\Account
      */
     public $account;
 
-    public $propertyMap = self::PROPERTY_MAP_ACCOUNT_DETAILS;
-
     /**
      * @param \app\models\Media $media
-     * @param array $content Media node from account json
-     * @return \app\models\MediaStats|null
+     * @param \Jakim\Model\Post $data
      * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
      */
-    public function update(Media $media, array $content): ?MediaStats
+    public function update(Media $media, Post $data)
     {
-        $media = $this->updateDetails($media, $content);
+        $media = $this->updateDetails($media, $data);
 
         if (!$this->account) {
             $this->account = $media->account;
@@ -59,29 +43,31 @@ class MediaManager extends Component
         }
 
         if ($media->caption) {
-            $tags = (array) Text::getTags($media->caption);
-            $this->addTags($media, $tags);
+            $tags = (array)Text::getTags($media->caption);
+            $this->updateTags($media, $tags);
 
-            $usernames = (array) Text::getUsernames($media->caption);
+            $usernames = (array)Text::getUsernames($media->caption);
+            // ignore owner of media
             ArrayHelper::removeValue($usernames, $this->account->username);
-            $this->addAccounts($media, $usernames);
+            $this->updateUsernames($media, $usernames);
         }
 
-        return $this->updateStats($media, $content);
+        $this->updateStats($media, $data);
     }
 
     /**
      * @param \app\models\Media $media
-     * @param array $content Media node from account json
+     * @param \Jakim\Model\Post $data
      * @return \app\models\Media
      * @throws \yii\base\Exception
      */
-    public function updateDetails(Media $media, array $content): Media
+    public function updateDetails(Media $media, Post $data): Media
     {
-        $mediaData = ArrayHelper::arrayMap($content, $this->propertyMap);
-        $mediaData['taken_at'] = (new \DateTime('@' . $mediaData['taken_at']))->format('Y-m-d H:i:s');
-
-        $media->attributes = $mediaData;
+        $media->instagram_id = $data->id;
+        $media->shortcode = $data->shortcode;
+        $media->is_video = $data->isVideo;
+        $media->caption = $data->caption;
+        $media->taken_at = (new \DateTime('@' . $data->takenAt))->format('Y-m-d H:i:s');
 
         if (!$media->account_id && $this->account) {
             $media->account_id = $this->account->id;
@@ -96,49 +82,35 @@ class MediaManager extends Component
 
     /**
      * @param \app\models\Media $media
-     * @param array $content Media node from account json
+     * @param \Jakim\Model\Post $data
      * @return \app\models\MediaStats|null
      */
-    public function updateStats(Media $media, array $content): ?MediaStats
+    public function updateStats(Media $media, Post $data): ?MediaStats
     {
         $account = $media->account ?? $this->account;
         if (empty($account->lastAccountStats)) {
             return null;
         }
-
-        $statsData = ArrayHelper::arrayMap($content, [
-            'likes' => 'likes.count',
-            'comments' => 'comments.count',
-            'account_followed_by' => function() {
-                return $this->account->lastAccountStats->followed_by;
-            },
-            'account_follows' => function() {
-                return $this->account->lastAccountStats->follows;
-            },
-        ]);
-
-        if (
-            $media->lastMediaStats &&
-            $media->lastMediaStats->likes == $statsData['likes'] &&
-            $media->lastMediaStats->comments == $statsData['comments']
-        ) {
-            return null;
+        $mediaStats = null;
+        if ($this->statsNeedUpdate($media, $data)) {
+            $mediaStats = new MediaStats();
+            $mediaStats->likes = $data->likes;
+            $mediaStats->comments = $data->comments;
+            $mediaStats->account_followed_by = $this->account->lastAccountStats->followed_by;
+            $mediaStats->account_follows = $this->account->lastAccountStats->follows;
+            $media->link('mediaStats', $mediaStats);
         }
-
-        $mediaStats = new MediaStats();
-        $mediaStats->attributes = $statsData;
-        $media->link('mediaStats', $mediaStats);
 
         return $mediaStats;
     }
 
-    public function addAccounts(Media $media, array $usernames)
+    public function updateUsernames(Media $media, array $usernames)
     {
         $manager = \Yii::createObject(AccountManager::class);
         $manager->saveUsernames($usernames);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($id) use ($media, $createdAt) {
+        $rows = array_map(function ($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
@@ -161,13 +133,13 @@ class MediaManager extends Component
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function addTags(Media $media, array $tags)
+    public function updateTags(Media $media, array $tags)
     {
         $manager = \Yii::createObject(TagManager::class);
         $manager->saveTags($tags);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($id) use ($media, $createdAt) {
+        $rows = array_map(function ($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
@@ -182,5 +154,20 @@ class MediaManager extends Component
         $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
         \Yii::$app->db->createCommand($sql)
             ->execute();
+    }
+
+    /**
+     * @param \app\models\Media $media
+     * @param \Jakim\Model\Post $data
+     * @return bool
+     */
+    private function statsNeedUpdate(Media $media, Post $data): bool
+    {
+        if (!$media->lastMediaStats) {
+            return true;
+        }
+
+        return $media->lastMediaStats->likes != $data->likes ||
+            $media->lastMediaStats->comments != $data->comments;
     }
 }
