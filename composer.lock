@@ -831,21 +831,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jakim/ig-client.git",
-                "reference": "c8993b3afe8b52361c0a7b14d66a4269b6ad2a1f"
+                "reference": "1433e344d3f220e769d36c1147b4c9b847acd243"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jakim/ig-client/zipball/c8993b3afe8b52361c0a7b14d66a4269b6ad2a1f",
-                "reference": "c8993b3afe8b52361c0a7b14d66a4269b6ad2a1f",
+                "url": "https://api.github.com/repos/jakim/ig-client/zipball/1433e344d3f220e769d36c1147b4c9b847acd243",
+                "reference": "1433e344d3f220e769d36c1147b4c9b847acd243",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^6.3",
                 "jakim-pj/ig": "@dev",
-                "jakim-pj/ua": "@dev",
                 "php": ">=7.1"
             },
             "require-dev": {
+                "guzzlehttp/guzzle": "^6.3",
                 "phpunit/phpunit": "^7.0"
             },
             "type": "library",
@@ -865,7 +864,7 @@
                 }
             ],
             "description": "Instagram public web api client",
-            "time": "2018-03-18T20:09:58+00:00"
+            "time": "2018-03-19T17:06:04+00:00"
         },
         {
             "name": "jakim-pj/ua",
