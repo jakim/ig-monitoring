@@ -112,7 +112,7 @@ class AccountManager extends Component
         return $account->lastAccountStats->update();
     }
 
-    protected function updateMedia(Account $account)
+    public function updateMedia(Account $account, int $limit = 10)
     {
         $manager = \Yii::createObject([
             'class' => MediaManager::class,
@@ -120,7 +120,7 @@ class AccountManager extends Component
         ]);
 
         $query = $this->queryFactory($account);
-        $items = $query->findPosts($account->username);
+        $items = $query->findPosts($account->username, $limit);
 
         foreach ($items as $item) {
             $media = Media::findOne(['instagram_id' => $item->id]);
@@ -164,23 +164,6 @@ class AccountManager extends Component
         \Yii::$app->db->createCommand($sql)
             ->execute();
     }
-
-//    public function updateMediaHistory(Account $account)
-//    {
-//        $url = Endpoint::accountMedia($account->instagram_id, 200);
-//        $content = $this->fetchContent($url, $account);
-//
-//        $items = ArrayHelper::getValue($content, 'data.user.edge_owner_to_timeline_media.edges', []);
-//        $items = ArrayHelper::index($items, 'node.id');
-//
-//        $manager = \Yii::createObject([
-//            'class' => MediaManager::class,
-//            'account' => $account,
-//            'propertyMap' => MediaManager::PROPERTY_MAP_ACCOUNT_MEDIA,
-//        ]);
-//
-//        $this->internalUpdateMedia($account, $items, $manager);
-//    }
 
     protected function getProxy(Account $account): Proxy
     {
@@ -235,12 +218,13 @@ class AccountManager extends Component
     {
         $proxy = $this->getProxy($account);
 
-        $stack = HandlerStack::create();
-        $stack->push(new CacheMiddleware(
-            new GreedyCacheStrategy(
-                new CacheStorage(), 3600)
-        ), 'cache');
-        $client = Client::factory($proxy, ['handler' => $stack]);
+//        $stack = HandlerStack::create();
+//        $stack->push(new CacheMiddleware(
+//            new GreedyCacheStrategy(
+//                new CacheStorage(), 3600)
+//        ), 'cache');
+//        $client = Client::factory($proxy, ['handler' => $stack]);
+        $client = Client::factory($proxy);
 
         $query = new AccountQuery($client);
 
