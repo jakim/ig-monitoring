@@ -63,6 +63,11 @@ class AccountSearch extends Account
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
 
+        $dataProvider->sort->attributes['username'] = [
+            'asc' => ['name' => SORT_ASC, 'username' => SORT_ASC],
+            'desc' => ['name' => SORT_DESC, 'username' => SORT_DESC],
+        ];
+
         $dataProvider->sort->attributes['as_followed_by'] = [
             'asc' => ['as_followed_by' => SORT_ASC],
             'desc' => ['as_followed_by' => SORT_DESC],
@@ -93,7 +98,10 @@ class AccountSearch extends Account
             'monitoring' => $this->monitoring,
         ]);
 
-        $query->andFilterWhere(['like', 'username', $this->username]);
+        $query->andFilterWhere(['or',
+            ['like', 'username', $this->username],
+            ['like', 'name', $this->username],
+        ]);
 
         if ($this->s_tags) {
             $tags = StringHelper::explode($this->s_tags, ',', true, true);
