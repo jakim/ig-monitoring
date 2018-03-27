@@ -11,6 +11,7 @@ use yii\helpers\ArrayHelper;
  * This is the model class for table "account".
  *
  * @property int $id
+ * @property string $name
  * @property string $username
  * @property string $profile_pic_url
  * @property string $full_name
@@ -25,6 +26,7 @@ use yii\helpers\ArrayHelper;
  * @property string $notes
  *
  * @property string $usernamePrefixed
+ * @property string $displayName
  *
  * @property AccountStats $lastAccountStats
  * @property AccountStats $beforeLastAccountStats
@@ -164,6 +166,11 @@ class Account extends \yii\db\ActiveRecord
         ]);
     }
 
+    public function getDisplayName()
+    {
+        return $this->name ?: $this->getUsernamePrefixed();
+    }
+
     public function getUsernamePrefixed()
     {
         return "@{$this->username}";
@@ -186,7 +193,7 @@ class Account extends \yii\db\ActiveRecord
             [['username'], 'required'],
             [['updated_at', 'created_at'], 'safe'],
             [['monitoring', 'proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
-            [['username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes'], 'string', 'max' => 255],
+            [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes'], 'string', 'max' => 255],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
             [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
@@ -200,6 +207,7 @@ class Account extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'name' => 'Name',
             'username' => 'Username',
             'profile_pic_url' => 'Profile Pic Url',
             'full_name' => 'Full Name',

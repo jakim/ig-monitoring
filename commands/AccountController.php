@@ -19,16 +19,24 @@ class AccountController extends Controller
 {
     /**
      * Update account usernames.
-     * format: from1,to1;from2,to2;from3,to3
+     * format: username1_from,username1_to1,name1;username2_from,username2_to,name2;username3_from,username3_to,name3
      */
-    public function actionUpdateUsername($usernames)
+    public function actionUpdateName($names)
     {
-        $rows = StringHelper::explode($usernames, ';', true, true);
+        $rows = StringHelper::explode($names, ';', true, true);
         foreach ($rows as $row) {
-            $username = StringHelper::explode($row, ',', true, true);
+            $username = StringHelper::explode($row);
+            if (count($username) != 3) {
+                $this->stdout("Wrong format!\n", Console::BG_RED);
+            }
             $account = Account::findOne(['username' => $username['0']]);
             if ($account) {
-                $account->username = $username['1'];
+                if ($username['1']) {
+                    $account->username = $username['1'];
+                }
+                if ($username['2']) {
+                    $account->name = $username['2'];
+                }
                 if (!$account->update()) {
                     echo Console::errorSummary($account);
 

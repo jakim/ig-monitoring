@@ -18,10 +18,13 @@ $lastAccountStats = $model->lastAccountStats;
             <?= Html::img($model->profile_pic_url, ['class' => 'profile-user-img img-responsive img-circle']) ?>
         <?php endif; ?>
         <h3 class="profile-username text-center">
-            <?= Html::encode($model->usernamePrefixed) ?>
+            <?= Html::encode($model->displayName) ?>
             <?= Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']) ?>
         </h3>
         <p class="text-muted text-center">
+            <?php if ($model->name): ?>
+                <?= Html::encode($model->usernamePrefixed) ?><br>
+            <?php endif; ?>
             <?= Html::encode($model->full_name) ?>
         </p>
         <?php if ($lastAccountStats): ?>
