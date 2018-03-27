@@ -11,28 +11,31 @@ namespace app\commands;
 use app\models\Account;
 use app\models\Tag;
 use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\helpers\Console;
+use yii\helpers\StringHelper;
 
 class AccountController extends Controller
 {
     /**
-     * Tag accounts.
-     *
-     * @param array $usernames
-     * @param array $tags
+     * Update account usernames.
+     * format: from1,to1;from2,to2;from3,to3
      */
-    public function actionTag(array $usernames, array $tags)
+    public function actionUpdateUsername($usernames)
     {
-        $accounts = Account::findAll(['username' => $usernames]);
-        $tags = Tag::findAll(['name' => $tags]);
+        $rows = StringHelper::explode($usernames, ';', true, true);
+        foreach ($rows as $row) {
+            $username = StringHelper::explode($row, ',', true, true);
+            $account = Account::findOne(['username' => $username['0']]);
+            if ($account) {
+                $account->username = $username['1'];
+                if (!$account->update()) {
+                    echo Console::errorSummary($account);
 
-        $this->stdout(sprintf("Valid accounts: %d, valid tags: %d\n", count($accounts), count($tags)));
+                    return ExitCode::DATAERR;
+                }
 
-        foreach ($accounts as $account) {
-            foreach ($tags as $tag) {
-                $account->link('tags', $tag);
             }
-            $this->stdout("Account '{$account->username}' done!\n", Console::FG_GREEN);
         }
     }
 }
