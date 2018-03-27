@@ -32,7 +32,7 @@ Everything should be added from the command line.
 
 - `./yii proxy/create` (moved)
 - `./yii monitoring/account` (moved)
-- `./yii monitoring/tag`
+- `./yii monitoring/tag` (moved)
 - `./yii help monitoring/account` - displays help for the command
 
 See `./yii` for more commands.
