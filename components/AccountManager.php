@@ -30,6 +30,11 @@ class AccountManager extends Component
      */
     public $proxy;
 
+    /**
+     * @var bool
+     */
+    public $cache = true;
+
     public function fetchDetails(Account $account): \Jakim\Model\Account
     {
         $query = $this->queryFactory($account);
@@ -218,13 +223,16 @@ class AccountManager extends Component
     {
         $proxy = $this->getProxy($account);
 
-//        $stack = HandlerStack::create();
-//        $stack->push(new CacheMiddleware(
-//            new GreedyCacheStrategy(
-//                new CacheStorage(), 3600)
-//        ), 'cache');
-//        $client = Client::factory($proxy, ['handler' => $stack]);
-        $client = Client::factory($proxy);
+        if ($this->cache) {
+            $stack = HandlerStack::create();
+            $stack->push(new CacheMiddleware(
+                new GreedyCacheStrategy(
+                    new CacheStorage(), 3600)
+            ), 'cache');
+            $client = Client::factory($proxy, ['handler' => $stack]);
+        } else {
+            $client = Client::factory($proxy);
+        }
 
         $query = new AccountQuery($client);
 

@@ -11,38 +11,43 @@ use yii\widgets\ActiveForm;
 
 /**
  * @var \yii\web\View $this
- * @var \app\modules\admin\models\AccountMonitoringForm $model
- * @var array $accountTags
+ * @var \app\modules\admin\models\TagMonitoringForm $model
+ * @var array|string $formAction
+ * @var string $title
+ * @var array $tags
  * @var array $proxies
  * @var array $proxyTags
  */
 
 $form = ActiveForm::begin([
-    'action' => ['monitoring/create-account'],
+    'action' => $formAction,
 ]);
 ?>
     <div class="panel panel-primary">
-        <div class="panel-heading">Accounts</div>
+        <div class="panel-heading"><?= Html::encode($title) ?></div>
         <div class="panel-body">
-            <?= $form->field($model, 'usernames')
+            <?= $form->field($model, 'names')
                 ->textInput(['maxlength' => true, 'placeholder' => true])
                 ->label(false);
             ?>
 
-            <?= $form->field($model, 'tags')->widget(Select2::class, [
-                'options' => [
-                    'multiple' => true,
-                    'placeholder' => 'Select tags...',
-                ],
-                'pluginOptions' => [
-                    'tags' => true,
-                ],
-                'data' => $accountTags,
-            ])->label(false);
-
+            <?php
+            if ($model->hasProperty('tags', true, false)) {
+                echo $form->field($model, 'tags')->widget(Select2::class, [
+                    'options' => [
+                        'multiple' => true,
+                        'placeholder' => 'Select tags...',
+                    ],
+                    'pluginOptions' => [
+                        'tags' => true,
+                    ],
+                    'data' => $tags,
+                ])->label(false);
+            }
             ?>
         </div>
     </div>
+
 
     <div class="panel panel-default">
         <div class="panel-heading">Proxy settings</div>

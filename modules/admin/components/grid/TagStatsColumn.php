@@ -14,57 +14,42 @@ use yii\grid\DataColumn;
 class TagStatsColumn extends DataColumn
 {
     public $format = 'html';
-
+    public $numberFormat = 'integer';
     public $statsAttribute;
+    public $headerOptions = ['class' => 'sort-numerical'];
+
+    public function init()
+    {
+        parent::init();
+        if (!$this->statsAttribute) {
+            $this->statsAttribute = $this->attribute;
+        }
+    }
 
     /**
      * @param \app\modules\admin\models\Tag $model
      * @param mixed $key
      * @param int $index
-     * @return string|void
+     * @return null|string
      */
     public function getDataCellValue($model, $key, $index)
     {
-        $attribute = $this->statsAttribute;
-
-        $stats = $model->getTagStats()
-            ->select($attribute)
-            ->andWhere(new Expression('tag_stats.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)'))
-            ->orderBy('tag_stats.id DESC')
-            ->column();
-
-        if (!$stats) {
+        if (!$model->lastTagStats) {
             return null;
         }
 
-        $current = $stats['0'];
+        /** @var \app\components\Formatter $formatter */
+        $formatter = $this->grid->formatter;
 
-        if (count($stats) >= 2) {
-            $dailyChange = $current - $stats['1'];
-        } else {
-            $dailyChange = 0;
-        }
-
-        if (count($stats) >= 2) {
-            $monthlyChange = $current - end($stats);
-        } else {
-            $monthlyChange = 0;
-        }
+        $lastChange = $model->lastChange($this->statsAttribute);
+        $monthlyChange = $model->monthlyChange($this->statsAttribute);
 
         return sprintf(
             "%s (%s/%s)",
-            $this->grid->formatter->asInteger($model->{$this->attribute}),
-            $this->formatChange($dailyChange),
-            $this->formatChange($monthlyChange)
+            $formatter->format($model->lastTagStats->{$this->statsAttribute}, $this->numberFormat),
+            $lastChange ? $formatter->asChange($lastChange, true, $this->numberFormat) : $lastChange,
+            $monthlyChange ? $formatter->asChange($monthlyChange, true, $this->numberFormat) : $monthlyChange
         );
     }
 
-    protected function formatChange($number)
-    {
-        if ($number == 0) {
-            return $this->grid->formatter->asInteger($number);
-        }
-
-        return sprintf(($number > 0 ? '<span class="text-success">+%s</span>' : '<span class="text-danger">%s</span>'), $this->grid->formatter->asInteger($number));
-    }
 }

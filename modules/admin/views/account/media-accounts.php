@@ -51,7 +51,7 @@ $lastAccountStats = $model->lastAccountStats;
                                     return OnOffMonitoringButton::widget([
                                         'model' => $account,
                                         'form' => new AccountMonitoringForm([
-                                            'usernames' => $account->username,
+                                            'names' => $account->username,
                                             'tags' => ArrayHelper::getColumn($model->tags, 'name'),
                                             'proxy_id' => $model->proxy_id,
                                             'proxy_tag_id' => $model->proxy_tag_id,

@@ -8,15 +8,17 @@
 namespace app\components;
 
 
+use app\components\http\CacheStorage;
 use app\components\http\Client;
 use app\models\Proxy;
 use app\models\Tag;
 use app\models\TagStats;
-use jakim\ig\Endpoint;
+use GuzzleHttp\HandlerStack;
+use Jakim\Query\TagQuery;
+use Kevinrob\GuzzleCache\CacheMiddleware;
+use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\caching\Cache;
-use yii\di\Instance;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
 
@@ -28,89 +30,59 @@ class TagManager extends Component
     public $proxy;
 
     /**
-     * @var Cache
+     * @var bool
      */
-    public $cache = 'cache';
+    public $cache = true;
 
-    public function init()
+    public function fetchDetails(Tag $tag): \Jakim\Model\Tag
     {
-        parent::init();
-        if ($this->cache !== false) {
-            $this->cache = Instance::ensure($this->cache, Cache::class);
-        }
+        $query = $this->queryFactory($tag);
+
+        return $query->findOne($tag->name);
     }
 
-    /**
-     * @param \app\models\Tag $tag
-     * @return array
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function fetchDetails(Tag $tag): array
-    {
-        $url = Endpoint::exploreTags($tag->name);
-
-        if ($this->cache === false) {
-            return $this->fetchContent($url, $tag);
-        }
-
-        return $this->cache->getOrSet([$url], function() use ($url, $tag) {
-            return $this->fetchContent($url, $tag);
-        }, 3600);
-
-    }
-
-    /**
-     * @param \app\models\Tag $tag
-     * @throws \yii\base\InvalidConfigException
-     */
     public function update(Tag $tag)
     {
-        $content = $this->fetchDetails($tag);
-        $this->updateStats($tag, $content);
+        $data = $this->fetchDetails($tag);
+        $this->updateStats($tag, $data);
+
+        return $tag;
     }
 
-    /**
-     * @param \app\models\Tag $tag
-     * @param array $content
-     * @return \app\models\TagStats|null
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function updateStats(Tag $tag, array $content = []): ?TagStats
+    public function updateStats(Tag $tag, \Jakim\Model\Tag $data = null): ?TagStats
     {
-        $content = $content ?: $this->fetchDetails($tag);
+        $data = $data ?: $this->fetchDetails($tag);
+        $tagStats = null;
 
-        $likes = ArrayHelper::getColumn(ArrayHelper::getValue($content, 'graphql.hashtag.edge_hashtag_to_top_posts.edges'), 'node.edge_liked_by.count');
-        sort($likes, SORT_ASC);
-        $comments = ArrayHelper::getColumn(ArrayHelper::getValue($content, 'graphql.hashtag.edge_hashtag_to_top_posts.edges'), 'node.edge_media_to_comment.count');
-        sort($comments, SORT_ASC);
-        $statsData = [
-            'media' => ArrayHelper::getValue($content, 'graphql.hashtag.edge_hashtag_to_media.count'),
-            'likes' => array_sum($likes),
-            'comments' => array_sum($comments),
-            'min_likes' => $likes['0'],
-            'max_likes' => end($likes),
-            'min_comments' => $comments['0'],
-            'max_comments' => end($comments),
-        ];
-
-        if (
-            $tag->lastTagStats &&
-            $tag->lastTagStats->media == $statsData['media'] &&
-            $tag->lastTagStats->likes == $statsData['likes'] &&
-            $tag->lastTagStats->comments == $statsData['comments'] &&
-            $tag->lastTagStats->min_likes == $statsData['min_likes'] &&
-            $tag->lastTagStats->max_likes == $statsData['max_likes'] &&
-            $tag->lastTagStats->min_comments == $statsData['min_comments'] &&
-            $tag->lastTagStats->max_comments == $statsData['max_comments']
-        ) {
-            return null;
+        if ($this->statsNeedUpdate($tag, $data)) {
+            $tagStats = new TagStats();
+            $tagStats->media = $data->media;
+            $tagStats->likes = $data->likes;
+            $tagStats->min_likes = $data->minLikes;
+            $tagStats->max_likes = $data->maxLikes;
+            $tagStats->comments = $data->comments;
+            $tagStats->min_comments = $data->minComments;
+            $tagStats->max_comments = $data->maxComments;
+            $tag->link('tagStats', $tagStats);
         }
 
-        $tagStats = new TagStats();
-        $tagStats->attributes = $statsData;
-        $tag->link('tagStats', $tagStats);
-
         return $tagStats;
+    }
+
+    private function statsNeedUpdate(Tag $tag, \Jakim\Model\Tag $data): bool
+    {
+        if (!$tag->lastTagStats) {
+            return true;
+        }
+
+        return $tag->lastTagStats->media != $data->media ||
+            $tag->lastTagStats->likes != $data->likes ||
+            $tag->lastTagStats->comments != $data->comments ||
+            $tag->lastTagStats->min_likes != $data->minLikes ||
+            $tag->lastTagStats->max_likes != $data->maxLikes ||
+            $tag->lastTagStats->min_comments != $data->minComments ||
+            $tag->lastTagStats->max_comments != $data->maxComments;
+
     }
 
     /**
@@ -120,7 +92,7 @@ class TagManager extends Component
     public function saveTags(array $tags)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($tag) use ($createdAt) {
+        $rows = array_map(function ($tag) use ($createdAt) {
             return [
                 $tag,
                 Inflector::slug($tag),
@@ -151,12 +123,28 @@ class TagManager extends Component
         return $proxy;
     }
 
-    protected function fetchContent($url, Tag $tag): array
+    /**
+     * @param \app\models\Tag $tag
+     * @return \Jakim\Query\TagQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    private function queryFactory(Tag $tag): TagQuery
     {
         $proxy = $this->getProxy($tag);
-        $client = Client::factory($proxy);
-        $res = $client->get($url);
 
-        return Json::decode($res->getBody()->getContents());
+        if ($this->cache) {
+            $stack = HandlerStack::create();
+            $stack->push(new CacheMiddleware(
+                new GreedyCacheStrategy(
+                    new CacheStorage(), 3600)
+            ), 'cache');
+            $client = Client::factory($proxy, ['handler' => $stack]);
+        } else {
+            $client = Client::factory($proxy);
+        }
+
+        $query = new TagQuery($client);
+
+        return $query;
     }
 }

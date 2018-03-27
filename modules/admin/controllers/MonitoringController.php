@@ -16,6 +16,7 @@ use app\modules\admin\models\Account;
 use app\modules\admin\models\AccountMonitoringForm;
 use app\modules\admin\models\AccountSearch;
 use app\modules\admin\models\Tag;
+use app\modules\admin\models\TagMonitoringForm;
 use app\modules\admin\models\TagSearch;
 use yii\filters\VerbFilter;
 use yii\helpers\Inflector;
@@ -36,12 +37,39 @@ class MonitoringController extends Controller
         ];
     }
 
+    public function actionCreateTag()
+    {
+        $form = new TagMonitoringForm();
+
+        if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
+            $names = StringHelper::explode($form->names, ',', true, true);
+            foreach ($names as $name) {
+                $tag = Tag::findOne(['slug' => Inflector::slug($name)]);
+                if ($tag === null) {
+                    $tag = new Tag(['name' => $name]);
+                }
+                $tag->proxy_id = $form->proxy_id ?: null;
+                $tag->proxy_tag_id = $form->proxy_tag_id ?: null;
+                $tag->monitoring = 1;
+                if ($tag->save()) {
+                    \Yii::$app->session->setFlash('success', 'OK!');
+                } else {
+                    \Yii::error('Validation error: ' . json_encode($tag->errors), __METHOD__);
+                    \Yii::$app->session->setFlash('error', 'ERR!');
+                }
+
+            }
+        }
+
+        return $this->redirect(['monitoring/tags', 'sort' => '-created_at']);
+    }
+
     public function actionCreateAccount()
     {
         $form = new AccountMonitoringForm();
 
         if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
-            $usernames = StringHelper::explode($form->usernames, ',', true, true);
+            $usernames = StringHelper::explode($form->names, ',', true, true);
             foreach ($usernames as $username) {
                 $account = Account::findOne(['username' => $username]);
                 if ($account === null) {
@@ -53,7 +81,7 @@ class MonitoringController extends Controller
                 if ($account->save()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
                     $accountManager = \Yii::createObject(AccountManager::class);
-                    $accountManager->updateTags($account, (array) $form->tags);
+                    $accountManager->updateTags($account, (array)$form->tags);
                 } else {
                     \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
                     \Yii::$app->session->setFlash('error', 'ERR!');

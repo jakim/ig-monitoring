@@ -33,7 +33,7 @@ class OnOffMonitoringButton extends Widget
             ]);
         } else {
             $form = $this->form ?: new AccountMonitoringForm([
-                'usernames' => $this->model->username,
+                'names' => $this->model->username,
                 'tags' => ArrayHelper::getColumn($this->model->tags, 'name'),
                 'proxy_id' => $this->model->proxy_id,
                 'proxy_tag_id' => $this->model->proxy_tag_id,

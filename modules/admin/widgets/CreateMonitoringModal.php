@@ -19,20 +19,28 @@ use yii\helpers\Html;
 
 class CreateMonitoringModal extends ModalWidget
 {
-    /**
-     * @var AccountMonitoringForm
-     */
+    public $title = 'Accounts';
     public $form;
+    public $formAction;
     public $modalHeader = 'Create monitoring';
     public $modalToggleButton = [
         'label' => 'Create',
     ];
 
+    public function run()
+    {
+        $this->form = $this->form ?: new AccountMonitoringForm();
+        $this->formAction = $this->formAction ?: ['monitoring/create-account'];
+        parent::run();
+    }
+
     protected function renderModalContent()
     {
-        echo $this->render('create-account-monitoring', [
-            'model' => $this->form ?: new AccountMonitoringForm(),
-            'accountTags' => $this->getAccountTagPairs(),
+        echo $this->render('create-monitoring', [
+            'formAction' => $this->formAction,
+            'title' => $this->title,
+            'model' => $this->form,
+            'tags' => $this->getTagPairs(),
             'proxies' => $this->getProxyPairs(),
             'proxyTags' => $this->getProxyTagPairs(),
         ]);
@@ -43,7 +51,7 @@ class CreateMonitoringModal extends ModalWidget
      */
     protected function getProxyPairs(): array
     {
-        return ArrayHelper::map(Proxy::find()->active()->all(), 'id', function(Proxy $model) {
+        return ArrayHelper::map(Proxy::find()->active()->all(), 'id', function (Proxy $model) {
             $tags = ArrayHelper::getColumn($model->tags, 'name');
 
             return $model->ip . ($tags ? ' # ' . implode(',', $tags) : '');
@@ -58,8 +66,12 @@ class CreateMonitoringModal extends ModalWidget
         return ArrayHelper::map(Proxy::usedTags(), 'id', 'name');
     }
 
-    protected function getAccountTagPairs()
+    protected function getTagPairs()
     {
-        return ArrayHelper::map(Account::usedTags(), 'name', 'name');
+        if ($this->form instanceof AccountMonitoringForm) {
+            return ArrayHelper::map(Account::usedTags(), 'name', 'name');
+        }
+
+        return [];
     }
 }

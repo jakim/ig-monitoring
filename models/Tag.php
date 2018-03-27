@@ -24,6 +24,9 @@ use yii\helpers\ArrayHelper;
  * @property string $namePrefixed
  *
  * @property TagStats $lastTagStats
+ * @property TagStats $beforeLastTagStats
+ * @property TagStats $beforeMonthTagStats
+ * @property TagStats[] $monthTagStats
  *
  * @property AccountTag[] $accountTags
  * @property Account[] $accounts
@@ -37,6 +40,112 @@ use yii\helpers\ArrayHelper;
 class Tag extends \yii\db\ActiveRecord
 {
     public $occurs;
+
+    /**
+     * @var \app\models\TagStats
+     */
+    protected $lastTagStats;
+
+    /**
+     * @var \app\models\TagStats
+     */
+    protected $beforeLastTagStats;
+
+    /**
+     * @var \app\models\TagStats
+     */
+    protected $beforeMonthTagStats;
+
+    /**
+     * @var \app\models\TagStats[]
+     */
+    private $statsCache;
+
+    public function resetStatsCache()
+    {
+        $this->statsCache = null;
+        $this->lastTagStats = null;
+        $this->beforeLastTagStats = null;
+        $this->beforeMonthTagStats = null;
+    }
+
+    public function monthlyChange($attribute)
+    {
+        $last = $this->getLastTagStats();
+        $beforeMonth = $this->getBeforeMonthTagStats();
+        if (!$beforeMonth) {
+            return 0;
+        }
+
+        return $last->$attribute - $beforeMonth->$attribute;
+    }
+
+    public function lastChange($attribute)
+    {
+        $last = $this->getLastTagStats();
+        $beforeLast = $this->getBeforeLastTagStats();
+        if (!$beforeLast) {
+            return 0;
+        }
+
+        return $last->$attribute - $beforeLast->$attribute;
+    }
+
+    public function getBeforeMonthTagStats()
+    {
+        if ($this->beforeMonthTagStats) {
+            return $this->beforeMonthTagStats;
+        }
+        if (!$this->statsCache) {
+            $this->statsCache = $this->getMonthTagStats();
+        }
+        if (count($this->statsCache) >= 2) {
+            return $this->beforeMonthTagStats = end($this->statsCache);
+        }
+
+        return null;
+    }
+
+    public function getBeforeLastTagStats()
+    {
+        if ($this->beforeLastTagStats) {
+            return $this->beforeLastTagStats;
+        }
+        if (!$this->statsCache) {
+            $this->statsCache = $this->getMonthTagStats();
+        }
+        if (count($this->statsCache) >= 2) {
+            return $this->beforeLastTagStats = $this->statsCache['1'];
+        }
+
+        return null;
+    }
+
+    public function getLastTagStats()
+    {
+        if ($this->lastTagStats) {
+            return $this->lastTagStats;
+        }
+        if (!$this->statsCache) {
+            $this->statsCache = $this->getMonthTagStats();
+        }
+        if (count($this->statsCache) >= 1) {
+            return $this->lastTagStats = $this->statsCache['0'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return \app\models\TagStats[]
+     */
+    public function getMonthTagStats()
+    {
+        return $this->getTagStats()
+            ->andWhere(new Expression('tag_stats.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)'))
+            ->orderBy('tag_stats.id DESC')
+            ->all();
+    }
 
     public function getNamePrefixed()
     {
@@ -175,15 +284,6 @@ class Tag extends \yii\db\ActiveRecord
     public function getTagStats()
     {
         return $this->hasMany(TagStats::class, ['tag_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLastTagStats()
-    {
-        return $this->hasOne(TagStats::class, ['tag_id' => 'id'])
-            ->orderBy('tag_stats.id DESC');
     }
 
     /**
