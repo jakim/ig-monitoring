@@ -92,7 +92,7 @@ class TagManager extends Component
     public function saveTags(array $tags)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function ($tag) use ($createdAt) {
+        $rows = array_map(function($tag) use ($createdAt) {
             return [
                 $tag,
                 Inflector::slug($tag),

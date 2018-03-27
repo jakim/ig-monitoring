@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = 'Tags';
 
                 [
                     'attribute' => 'name',
-                    'content' => function (\app\models\Tag $model) {
+                    'content' => function(\app\models\Tag $model) {
                         return Html::a($model->namePrefixed, ['tag/stats', 'id' => $model->id]);
                     },
                 ],
