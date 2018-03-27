@@ -155,7 +155,7 @@ class AccountManager extends Component
     public function saveUsernames(array $usernames)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function ($username) use ($createdAt) {
+        $rows = array_map(function($username) use ($createdAt) {
             return [
                 $username,
                 $createdAt,
