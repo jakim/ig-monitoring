@@ -2,16 +2,15 @@
 /**
  * Created for IG Monitoring.
  * User: jakim <pawel@jakimowski.info>
- * Date: 23.01.2018
+ * Date: 19.01.2018
  */
 
 namespace app\modules\admin\components\grid;
 
 
-use yii\db\Expression;
 use yii\grid\DataColumn;
 
-class TagStatsColumn extends DataColumn
+class StatsColumn extends DataColumn
 {
     public $format = 'html';
     public $numberFormat = 'integer';
@@ -27,14 +26,14 @@ class TagStatsColumn extends DataColumn
     }
 
     /**
-     * @param \app\modules\admin\models\Tag $model
+     * @param \app\modules\admin\models\Account|\app\modules\admin\models\Tag $model
      * @param mixed $key
      * @param int $index
      * @return null|string
      */
     public function getDataCellValue($model, $key, $index)
     {
-        if (!$model->lastTagStats) {
+        if (!$model->lastStats) {
             return null;
         }
 
@@ -46,10 +45,9 @@ class TagStatsColumn extends DataColumn
 
         return sprintf(
             "%s (%s/%s)",
-            $formatter->format($model->lastTagStats->{$this->statsAttribute}, $this->numberFormat),
+            $formatter->format($model->lastStats->{$this->statsAttribute}, $this->numberFormat),
             $lastChange ? $formatter->asChange($lastChange, true, $this->numberFormat) : $lastChange,
             $monthlyChange ? $formatter->asChange($monthlyChange, true, $this->numberFormat) : $monthlyChange
         );
     }
-
 }

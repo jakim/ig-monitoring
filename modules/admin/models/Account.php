@@ -10,6 +10,11 @@ namespace app\modules\admin\models;
 
 use app\components\ArrayHelper;
 
+/**
+ * @inheritdoc
+ *
+ * @property \app\models\AccountStats $lastStats
+ */
 class Account extends \app\models\Account
 {
     public $as_followed_by;
@@ -18,6 +23,11 @@ class Account extends \app\models\Account
     public $as_er;
 
     public $s_tags;
+
+    public function getLastStats()
+    {
+        return $this->getLastAccountStats();
+    }
 
     public function attributeLabels()
     {

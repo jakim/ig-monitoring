@@ -1,7 +1,7 @@
 <?php
 
 use jakim\ig\Url;
-use app\modules\admin\components\grid\AccountStatsColumn;
+use app\modules\admin\components\grid\StatsColumn;
 use app\modules\admin\models\Account;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -36,22 +36,22 @@ $formatter = Yii::$app->formatter;
                     },
                 ],
                 [
-                    'class' => AccountStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'attribute' => 'as_followed_by',
                     'statsAttribute' => 'followed_by',
                 ],
                 [
-                    'class' => AccountStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'attribute' => 'as_follows',
                     'statsAttribute' => 'follows',
                 ],
                 [
-                    'class' => AccountStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'attribute' => 'as_media',
                     'statsAttribute' => 'media',
                 ],
                 [
-                    'class' => AccountStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'attribute' => 'as_er',
                     'statsAttribute' => 'er',
                     'numberFormat' => ['percent', 2, ['sign' => false]],

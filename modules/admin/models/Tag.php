@@ -10,6 +10,11 @@ namespace app\modules\admin\models;
 
 use app\components\ArrayHelper;
 
+/**
+ * @inheritdoc
+ *
+ * @property \app\models\TagStats $lastStats
+ */
 class Tag extends \app\models\Tag
 {
     public $ts_media;
@@ -19,6 +24,11 @@ class Tag extends \app\models\Tag
     public $ts_max_likes;
     public $ts_min_comments;
     public $ts_max_comments;
+
+    public function getLastStats()
+    {
+        return $this->getLastTagStats();
+    }
 
     public function attributeLabels()
     {

@@ -1,6 +1,6 @@
 <?php
 
-use app\modules\admin\components\grid\TagStatsColumn;
+use app\modules\admin\components\grid\StatsColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -31,37 +31,37 @@ $this->params['breadcrumbs'][] = 'Tags';
                     },
                 ],
                 [
-                    'class' => TagStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'statsAttribute' => 'media',
                     'attribute' => 'ts_media',
                 ],
                 [
-                    'class' => TagStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'statsAttribute' => 'likes',
                     'attribute' => 'ts_likes',
                 ],
                 [
-                    'class' => TagStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'statsAttribute' => 'comments',
                     'attribute' => 'ts_comments',
                 ],
                 [
-                    'class' => TagStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'statsAttribute' => 'min_likes',
                     'attribute' => 'ts_min_likes',
                 ],
                 [
-                    'class' => TagStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'statsAttribute' => 'max_likes',
                     'attribute' => 'ts_max_likes',
                 ],
                 [
-                    'class' => TagStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'statsAttribute' => 'min_comments',
                     'attribute' => 'ts_min_comments',
                 ],
                 [
-                    'class' => TagStatsColumn::class,
+                    'class' => StatsColumn::class,
                     'statsAttribute' => 'max_comments',
                     'attribute' => 'ts_max_comments',
                 ],
