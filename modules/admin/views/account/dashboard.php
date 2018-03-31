@@ -1,6 +1,7 @@
 <?php
 
 use app\modules\admin\widgets\ChangeInfoBox;
+use dosamigos\chartjs\ChartJs;
 use yii\helpers\ArrayHelper;
 use yii\web\JsExpression;
 
@@ -106,13 +107,12 @@ $lastAccountStats = $model->lastAccountStats;
                                 $formatter->asDate($model->lastAccountStats->created_at)
                             ); ?>
                         </h2>
-
                         <?php
 
                         $ticksStocks = new JsExpression('function(value, index, values) {if (Math.floor(value) === value) {return value;}}');
                         $monthAccountStats = array_reverse($model->monthAccountStats);
 
-                        echo \dosamigos\chartjs\ChartJs::widget([
+                        echo ChartJs::widget([
                             'type' => 'line',
                             'options' => [
                                 'height' => 200,
@@ -166,7 +166,7 @@ $lastAccountStats = $model->lastAccountStats;
                                     [
                                         'label' => $model->lastAccountStats->getAttributeLabel('er'),
                                         'yAxisID' => 'er',
-                                        'data' => array_map(function($item) {
+                                        'data' => array_map(function ($item) {
                                             return number_format($item * 100, 2);
                                         }, ArrayHelper::getColumn($monthAccountStats, 'er')),
                                         'fill' => false,
@@ -200,7 +200,70 @@ $lastAccountStats = $model->lastAccountStats;
                                 ],
                             ],
                         ]);
+
                         ?>
+
+                        <br>
+                        <h2 class="page-header">
+                            Followed by, change from last 30 days
+                            <small class="pull-right">
+                                since: <?= $formatter->asDate($model->beforeMonthAccountStats->created_at) ?></small>
+                        </h2>
+                        <?php
+
+                        $data = ArrayHelper::getColumn($monthAccountStats, 'followed_by');
+                        $prevValue = array_shift($data);
+                        $colors = [];
+
+                        foreach ($data as $key => $value) {
+                            $data[$key] = $value - $prevValue;
+                            $colors[] = $data[$key] <= 0 ? '#ff6384' : '#3c8dbc';
+                            $prevValue = $value;
+                        }
+
+                        echo ChartJs::widget([
+                            'type' => 'bar',
+                            'options' => [
+                                'height' => 100,
+                            ],
+                            'clientOptions' => [
+                                'responsive' => true,
+                                'tooltips' => [
+                                    'mode' => 'index',
+                                    'position' => 'nearest',
+                                ],
+                                'legend' => [
+                                    'display' => false,
+                                ],
+                                'scales' => [
+                                    'yAxes' => [
+                                        [
+                                            'id' => 'followed_by',
+                                            'type' => 'linear',
+                                            'position' => 'right',
+                                            'ticks' => [
+                                                'callback' => $ticksStocks,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            'data' => [
+                                'labels' => array_map([$formatter, 'asDate'], ArrayHelper::getColumn($monthAccountStats, 'created_at')),
+                                'datasets' => [
+                                    [
+                                        'label' => $model->lastAccountStats->getAttributeLabel('followed_by'),
+                                        'yAxisID' => 'followed_by',
+                                        'data' => $data,
+                                        'fill' => false,
+                                        'backgroundColor' => $colors,
+                                        'borderColor' => $colors,
+                                    ],
+                                ],
+                            ],
+                        ]);
+                        ?>
+
                     <?php endif; ?>
                 </div>
             </div>
