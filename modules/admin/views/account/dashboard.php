@@ -213,6 +213,8 @@ $lastAccountStats = $model->lastAccountStats;
 
                         $data = ArrayHelper::getColumn($monthAccountStats, 'followed_by');
                         $prevValue = array_shift($data);
+                        $labels = array_map([$formatter, 'asDate'], ArrayHelper::getColumn($monthAccountStats, 'created_at'));
+                        array_shift($labels);
                         $colors = [];
 
                         foreach ($data as $key => $value) {
@@ -249,7 +251,7 @@ $lastAccountStats = $model->lastAccountStats;
                                 ],
                             ],
                             'data' => [
-                                'labels' => array_map([$formatter, 'asDate'], ArrayHelper::getColumn($monthAccountStats, 'created_at')),
+                                'labels' => $labels,
                                 'datasets' => [
                                     [
                                         'label' => $model->lastAccountStats->getAttributeLabel('followed_by'),
