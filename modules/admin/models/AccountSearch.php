@@ -50,6 +50,7 @@ class AccountSearch extends Account
                 'account_stats.follows as as_follows',
                 'account_stats.media as as_media',
                 'account_stats.er as as_er',
+                'account_stats.created_at as as_created_at',
             ])
             ->leftJoin(
                 AccountStats::tableName(),
@@ -83,6 +84,10 @@ class AccountSearch extends Account
         $dataProvider->sort->attributes['as_er'] = [
             'asc' => ['as_er' => SORT_ASC],
             'desc' => ['as_er' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['as_created_at'] = [
+            'asc' => ['as_created_at' => SORT_ASC],
+            'desc' => ['as_created_at' => SORT_DESC],
         ];
 
         $this->load($params);

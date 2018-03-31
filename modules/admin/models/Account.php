@@ -21,6 +21,7 @@ class Account extends \app\models\Account
     public $as_follows;
     public $as_media;
     public $as_er;
+    public $as_created_at;
 
     public $s_tags;
 
@@ -37,6 +38,7 @@ class Account extends \app\models\Account
             'as_media' => 'Media',
             'as_er' => 'Er',
             's_tags' => 'Tags',
+            'as_created_at' => 'Created At'
         ]);
     }
 }
