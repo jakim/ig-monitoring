@@ -5,7 +5,7 @@
 [FAQ](#faq)
 
 # Version
-Early dev stage.  **Use at your own risk.**
+DEV stage.  **Use at your own risk.**
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/9bbae6907e6cbf039950/maintainability)](https://codeclimate.com/github/jakim/ig-monitoring/maintainability)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jakim/ig-monitoring/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jakim/ig-monitoring/?branch=master)
