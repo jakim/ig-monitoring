@@ -8,6 +8,9 @@
 namespace app\modules\admin\components\grid;
 
 
+use app\models\Account;
+use app\modules\admin\components\AccountStatsManager;
+use yii\di\Instance;
 use yii\grid\DataColumn;
 
 class StatsColumn extends DataColumn
@@ -16,6 +19,8 @@ class StatsColumn extends DataColumn
     public $numberFormat = 'integer';
     public $statsAttribute;
     public $headerOptions = ['class' => 'sort-numerical'];
+
+    public $statsManager = AccountStatsManager::class;
 
     public function init()
     {
@@ -30,6 +35,7 @@ class StatsColumn extends DataColumn
      * @param mixed $key
      * @param int $index
      * @return null|string
+     * @throws \yii\base\InvalidConfigException
      */
     public function getDataCellValue($model, $key, $index)
     {
@@ -40,8 +46,18 @@ class StatsColumn extends DataColumn
         /** @var \app\components\Formatter $formatter */
         $formatter = $this->grid->formatter;
 
-        $lastChange = $model->lastChange($this->statsAttribute);
-        $monthlyChange = $model->monthlyChange($this->statsAttribute);
+        if ($model instanceof Account) {
+            /** @var \app\modules\admin\components\AccountStatsManager $manager */
+            $manager = \Yii::createObject([
+                'class' => $this->statsManager,
+                'account' => $model,
+            ]);
+            $lastChange = $manager->lastChange($this->statsAttribute);
+            $monthlyChange = $manager->lastMonthChange($this->statsAttribute);
+        } else {
+            $lastChange = $model->lastChange($this->statsAttribute);
+            $monthlyChange = $model->monthlyChange($this->statsAttribute);
+        }
 
         return sprintf(
             "%s (%s/%s)",

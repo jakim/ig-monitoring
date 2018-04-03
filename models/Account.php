@@ -29,9 +29,6 @@ use yii\helpers\ArrayHelper;
  * @property string $displayName
  *
  * @property AccountStats $lastAccountStats
- * @property AccountStats $beforeLastAccountStats
- * @property AccountStats $beforeMonthAccountStats
- * @property AccountStats[] $monthAccountStats
  *
  * @property Proxy $proxy
  * @property Tag $proxyTag
@@ -44,112 +41,6 @@ use yii\helpers\ArrayHelper;
 class Account extends \yii\db\ActiveRecord
 {
     public $occurs;
-
-    /**
-     * @var \app\models\AccountStats
-     */
-    protected $lastAccountStats;
-
-    /**
-     * @var \app\models\AccountStats
-     */
-    protected $beforeLastAccountStats;
-
-    /**
-     * @var \app\models\AccountStats
-     */
-    protected $beforeMonthAccountStats;
-
-    /**
-     * @var \app\models\AccountStats[]
-     */
-    private $statsCache;
-
-    public function resetStatsCache()
-    {
-        $this->statsCache = null;
-        $this->lastAccountStats = null;
-        $this->beforeLastAccountStats = null;
-        $this->beforeMonthAccountStats = null;
-    }
-
-    public function monthlyChange($attribute)
-    {
-        $last = $this->getLastAccountStats();
-        $beforeMonth = $this->getBeforeMonthAccountStats();
-        if (!$beforeMonth) {
-            return 0;
-        }
-
-        return $last->$attribute - $beforeMonth->$attribute;
-    }
-
-    public function lastChange($attribute)
-    {
-        $last = $this->getLastAccountStats();
-        $beforeLast = $this->getBeforeLastAccountStats();
-        if (!$beforeLast) {
-            return 0;
-        }
-
-        return $last->$attribute - $beforeLast->$attribute;
-    }
-
-    public function getBeforeMonthAccountStats()
-    {
-        if ($this->beforeMonthAccountStats) {
-            return $this->beforeMonthAccountStats;
-        }
-        if (!$this->statsCache) {
-            $this->statsCache = $this->getMonthAccountStats();
-        }
-        if (count($this->statsCache) >= 2) {
-            return $this->beforeMonthAccountStats = end($this->statsCache);
-        }
-
-        return null;
-    }
-
-    public function getBeforeLastAccountStats()
-    {
-        if ($this->beforeLastAccountStats) {
-            return $this->beforeLastAccountStats;
-        }
-        if (!$this->statsCache) {
-            $this->statsCache = $this->getMonthAccountStats();
-        }
-        if (count($this->statsCache) >= 2) {
-            return $this->beforeLastAccountStats = $this->statsCache['1'];
-        }
-
-        return null;
-    }
-
-    public function getLastAccountStats()
-    {
-        if ($this->lastAccountStats) {
-            return $this->lastAccountStats;
-        }
-        if (!$this->statsCache) {
-            $this->statsCache = $this->getMonthAccountStats();
-        }
-        if (count($this->statsCache) >= 1) {
-            return $this->lastAccountStats = $this->statsCache['0'];
-        }
-
-        return null;
-    }
-
-    /**
-     * @return \app\models\AccountStats[]
-     */
-    public function getMonthAccountStats()
-    {
-        return $this->getAccountStats()
-            ->andWhere(new Expression('account_stats.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)'))
-            ->orderBy('account_stats.id DESC')
-            ->all();
-    }
 
     public static function usedTags()
     {
@@ -257,6 +148,16 @@ class Account extends \yii\db\ActiveRecord
     public function getAccountStats()
     {
         return $this->hasMany(AccountStats::class, ['account_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastAccountStats()
+    {
+        return $this->hasOne(AccountStats::class, ['account_id' => 'id'])
+            ->orderBy('account_stats.id DESC')
+            ->limit(1);
     }
 
     /**

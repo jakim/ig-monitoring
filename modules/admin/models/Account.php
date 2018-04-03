@@ -38,7 +38,12 @@ class Account extends \app\models\Account
             'as_media' => 'Media',
             'as_er' => 'Er',
             's_tags' => 'Tags',
-            'as_created_at' => 'Created At'
+            'as_created_at' => 'Created At',
         ]);
+    }
+
+    public function getAccountStats()
+    {
+        return $this->hasMany(AccountStats::class, ['account_id' => 'id']);
     }
 }

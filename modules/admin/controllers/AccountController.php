@@ -3,12 +3,12 @@
 namespace app\modules\admin\controllers;
 
 use app\components\AccountManager;
-use app\models\Favorite;
 use app\models\Tag;
+use app\modules\admin\components\AccountStatsManager;
 use app\modules\admin\controllers\actions\FavoriteAction;
 use app\modules\admin\controllers\actions\MonitoringAction;
+use app\modules\admin\models\Account;
 use Yii;
-use app\models\Account;
 use app\modules\admin\models\AccountSearch;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
@@ -90,8 +90,16 @@ class AccountController extends Controller
 
     public function actionDashboard($id)
     {
+        $model = $this->findModel($id);
+
+        $manager = Yii::createObject([
+            'class' => AccountStatsManager::class,
+            'account' => $model,
+        ]);
+
         return $this->render('dashboard', [
-            'model' => $this->findModel($id),
+            'manager' => $manager,
+            'model' => $model,
         ]);
     }
 
@@ -122,7 +130,7 @@ class AccountController extends Controller
                     'tag.*',
                     'count(tag.id) as occurs',
                 ])
-                ->innerJoinWith(['media' => function(Query $q) use ($model) {
+                ->innerJoinWith(['media' => function (Query $q) use ($model) {
                     $q->andWhere(['media.account_id' => $model->id]);
                 }])
                 ->groupBy('tag.id'),
@@ -154,7 +162,7 @@ class AccountController extends Controller
                     'account.*',
                     'count(account.id) as occurs',
                 ])
-                ->innerJoinWith(['mediaAccounts.media' => function(Query $q) use ($model) {
+                ->innerJoinWith(['mediaAccounts.media' => function (Query $q) use ($model) {
                     $q->andWhere(['media.account_id' => $model->id]);
                 }])
                 ->groupBy('account.id'),

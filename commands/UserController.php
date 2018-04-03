@@ -9,6 +9,8 @@ namespace app\commands;
 
 
 use app\models\User;
+use app\modules\admin\components\AccountStatsManager;
+use app\modules\admin\models\Account;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\console\widgets\Table;
@@ -16,6 +18,16 @@ use yii\helpers\Console;
 
 class UserController extends Controller
 {
+
+    public function actionTest()
+    {
+        $manager = \Yii::createObject([
+            'class' => AccountStatsManager::class,
+            'account' => Account::findOne(755),
+        ]);
+
+        print_r($manager->lastMonthChange('followed_by'));
+    }
 
     /**
      *

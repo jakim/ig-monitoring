@@ -85,7 +85,7 @@ class AccountManager extends Component
             $accountStats->follows = $data->follows;
             $accountStats->media = $data->media;
             $account->link('accountStats', $accountStats);
-            $account->resetStatsCache();
+            $account->refresh();
         }
         $this->updateMedia($account);
         $this->updateEr($account);
