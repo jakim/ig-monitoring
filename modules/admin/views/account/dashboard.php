@@ -73,7 +73,7 @@ $lastAccountStats = $model->lastAccountStats;
                         <h2 class="page-header">
                             Monthly change
                             <small class="pull-right">
-                                since: <?= $formatter->asDate($model->lastAccountStats->created_at) ?></small>
+                                since: <?= $formatter->asDate($manager->dailyStatsFrom()) ?></small>
                         </h2>
                         <div class="row">
                             <div class="col-lg-3">
