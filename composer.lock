@@ -831,12 +831,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jakim/ig-client.git",
-                "reference": "f8bee3e6fddd509c7e1db8e76bd6c9067e446878"
+                "reference": "25dc98fa167bec6aa2595eb4b959e5f77c1c3988"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jakim/ig-client/zipball/f8bee3e6fddd509c7e1db8e76bd6c9067e446878",
-                "reference": "f8bee3e6fddd509c7e1db8e76bd6c9067e446878",
+                "url": "https://api.github.com/repos/jakim/ig-client/zipball/25dc98fa167bec6aa2595eb4b959e5f77c1c3988",
+                "reference": "25dc98fa167bec6aa2595eb4b959e5f77c1c3988",
                 "shasum": ""
             },
             "require": {
@@ -864,7 +864,7 @@
                 }
             ],
             "description": "Instagram public web api client",
-            "time": "2018-03-23T12:33:34+00:00"
+            "time": "2018-03-27T10:40:44+00:00"
         },
         {
             "name": "jakim-pj/ua",
@@ -1852,21 +1852,21 @@
         },
         {
             "name": "codeception/base",
-            "version": "2.4.0",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/base.git",
-                "reference": "b8f173dfb3eecbfe46becb392b14e793853336e6"
+                "reference": "fb07b713f2a97cdf0c5c81c93fa26a0785eb44a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/base/zipball/b8f173dfb3eecbfe46becb392b14e793853336e6",
-                "reference": "b8f173dfb3eecbfe46becb392b14e793853336e6",
+                "url": "https://api.github.com/repos/Codeception/base/zipball/fb07b713f2a97cdf0c5c81c93fa26a0785eb44a6",
+                "reference": "fb07b713f2a97cdf0c5c81c93fa26a0785eb44a6",
                 "shasum": ""
             },
             "require": {
                 "behat/gherkin": "^4.4.0",
-                "codeception/phpunit-wrapper": "^6.0|^7.0",
+                "codeception/phpunit-wrapper": "^6.0.9|^7.0.6",
                 "codeception/stub": "^1.0",
                 "ext-json": "*",
                 "ext-mbstring": "*",
@@ -1937,20 +1937,20 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2018-02-27T00:17:07+00:00"
+            "time": "2018-03-31T22:36:34+00:00"
         },
         {
             "name": "codeception/phpunit-wrapper",
-            "version": "7.0.5",
+            "version": "7.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/phpunit-wrapper.git",
-                "reference": "42c8fdbf301ee36f6b58cb154972f9148fdcb7d4"
+                "reference": "e8528cb777cf5a5ccea1cf57a3522b142625d1b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/42c8fdbf301ee36f6b58cb154972f9148fdcb7d4",
-                "reference": "42c8fdbf301ee36f6b58cb154972f9148fdcb7d4",
+                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/e8528cb777cf5a5ccea1cf57a3522b142625d1b5",
+                "reference": "e8528cb777cf5a5ccea1cf57a3522b142625d1b5",
                 "shasum": ""
             },
             "require": {
@@ -1980,7 +1980,7 @@
                 }
             ],
             "description": "PHPUnit classes used by Codeception",
-            "time": "2018-03-16T10:18:33+00:00"
+            "time": "2018-03-31T18:49:51+00:00"
         },
         {
             "name": "codeception/specify",
