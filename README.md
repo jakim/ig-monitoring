@@ -20,7 +20,7 @@ DEV stage.  **Use at your own risk.**
 - copy config/db.dist => config/db.php
 - `./yii migrate`
 
-- register google project for Google Sign-In
+- [register google project for Google+ Sign-In](https://developers.google.com/+/web/signin/)
 - copy config/authClientCollection.php.dist => config/authClientCollection.php
 
 - [configure worker](https://github.com/yiisoft/yii2-queue/blob/master/docs/guide/worker.md)
