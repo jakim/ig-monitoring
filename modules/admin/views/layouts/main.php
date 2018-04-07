@@ -79,6 +79,14 @@ $user = Yii::$app->user->identity;
 
             <?= \app\modules\admin\widgets\favorites\SideMenu::widget() ?>
 
+            <?= dmstr\widgets\Menu::widget([
+                'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
+                'items' => [
+                    ['label' => 'Resources', 'options' => ['class' => 'header']],
+                    ['label' => 'Premium Proxies', 'icon' => 'star-o', 'url' => ['/admin/resource/proxy']],
+                ],
+            ]) ?>
+
         </section>
 
     </aside>
