@@ -168,7 +168,7 @@ $lastAccountStats = $model->lastAccountStats;
                                     [
                                         'label' => $model->lastAccountStats->getAttributeLabel('er'),
                                         'yAxisID' => 'er',
-                                        'data' => array_map(function ($item) {
+                                        'data' => array_map(function($item) {
                                             return number_format($item * 100, 2);
                                         }, ArrayHelper::getColumn($dailyStatsData, 'er')),
                                         'fill' => false,

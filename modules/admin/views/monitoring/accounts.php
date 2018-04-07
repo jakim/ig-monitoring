@@ -30,7 +30,7 @@ $formatter = Yii::$app->formatter;
                 ['class' => \yii\grid\SerialColumn::class],
                 [
                     'attribute' => 'username',
-                    'content' => function (\app\models\Account $model) {
+                    'content' => function(\app\models\Account $model) {
                         return Html::a($model->displayName, ['account/dashboard', 'id' => $model->id]) . ' '
                             . Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
                     },
@@ -58,7 +58,7 @@ $formatter = Yii::$app->formatter;
                 ],
                 [
                     'attribute' => 's_tags',
-                    'value' => function (Account $model) {
+                    'value' => function(Account $model) {
                         $tags = $model->getTags()->select('tag.name')->column();
                         if ($tags) {
                             return implode(', ', $tags);
