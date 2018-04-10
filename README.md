@@ -38,9 +38,11 @@ Everything should be added from the command line.
 See `./yii` for more commands.
 
 
-# Limitations
+# Requirements
 - You need at least one, **WORKING proxy** for accounts and one for tags.
 - Works only for public accounts.
+- Unix system with root access (not tested on windows)
+- Web server (nginx, apache, etc.)
 - php >= 7.1
 - mysql >= 5.5
 
