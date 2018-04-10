@@ -27,14 +27,14 @@ $lastAccountStats = $model->lastAccountStats;
             <div class="nav-tabs-custom">
                 <?= $this->render('_tabs', ['model' => $model]) ?>
                 <div class="tab-content">
-                    <?php if (!$manager->lastChange('followed_by') === null): ?>
+                    <?php if (!$manager->lastChange('followed_by')): ?>
                         <div class="callout callout-info">
                             <p class="lead"><span class="fa fa-cog fa-spin"></span> Collecting data...</p>
                             <p>Please come back tomorrow.</p>
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($manager->lastChange('followed_by') !== null): ?>
+                    <?php if ($manager->lastChange('followed_by')): ?>
                         <h2 class="page-header">
                             Daily change
                             <small class="pull-right">
@@ -69,7 +69,7 @@ $lastAccountStats = $model->lastAccountStats;
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($manager->lastMonthChange('followed_by') !== null): ?>
+                    <?php if ($manager->lastMonthChange('followed_by')): ?>
                         <h2 class="page-header">
                             Monthly change
                             <small class="pull-right">

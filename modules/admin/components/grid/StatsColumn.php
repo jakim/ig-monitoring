@@ -62,8 +62,8 @@ class StatsColumn extends DataColumn
         return sprintf(
             "%s (%s/%s)",
             $formatter->format($model->lastStats->{$this->statsAttribute}, $this->numberFormat),
-            $lastChange ? $formatter->asChange($lastChange, true, $this->numberFormat) : $lastChange,
-            $monthlyChange ? $formatter->asChange($monthlyChange, true, $this->numberFormat) : $monthlyChange
+            $lastChange ? $formatter->asChange($lastChange, true, $this->numberFormat) : 0,
+            $monthlyChange ? $formatter->asChange($monthlyChange, true, $this->numberFormat) : 0
         );
     }
 }

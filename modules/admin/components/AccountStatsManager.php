@@ -24,14 +24,14 @@ class AccountStatsManager extends Component
      *
      * @var \app\models\AccountStats[]
      */
-    protected $dailyStats;
+    protected $dailyStats = [];
 
     /**
      * Monthly stats from last year.
      *
      * @var \app\models\AccountStats[]
      */
-    protected $monthlyStats;
+    protected $monthlyStats = [];
 
     public function init()
     {
