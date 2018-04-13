@@ -38,6 +38,6 @@ class Module extends \yii\base\Module
     {
         parent::init();
 
-        \Yii::$app->homeUrl = '/admin';
+        \Yii::$app->homeUrl = '/admin/monitoring/accounts';
     }
 }
