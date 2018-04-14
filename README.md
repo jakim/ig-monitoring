@@ -1,3 +1,9 @@
+**NOTE:**
+
+**Instagram has made changes, all public endpoints have stopped working. I will look for a workaround.**
+
+**At the moment the tool is dead :confused:**
+
 ## IG Monitoring
 
 [Screenshots](#screenshots)
