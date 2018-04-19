@@ -35,6 +35,7 @@ $form = ActiveForm::begin([
             if ($model->hasProperty('tags', true, false)) {
                 echo $form->field($model, 'tags')->widget(Select2::class, [
                     'options' => [
+                        'id' => "tags_{$form->getId()}",
                         'multiple' => true,
                         'placeholder' => 'Select tags...',
                     ],
@@ -55,6 +56,7 @@ $form = ActiveForm::begin([
             <?= $form->field($model, 'proxy_id')->widget(Select2::class, [
                 'data' => $proxies,
                 'options' => [
+                    'id' => "proxy_id_{$form->getId()}",
                     'placeholder' => 'Select dedicated proxy...',
                 ],
                 'pluginOptions' => [
@@ -65,6 +67,7 @@ $form = ActiveForm::begin([
             <?= $form->field($model, 'proxy_tag_id')->widget(Select2::class, [
                 'data' => $proxyTags,
                 'options' => [
+                    'id' => "proxy_tag_id_{$form->getId()}",
                     'placeholder' => 'Select proxy tag...',
                 ],
                 'pluginOptions' => [
