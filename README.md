@@ -1,3 +1,15 @@
+**2018.04.18 NOTE:**
+
+**I have restored the basic functions, just run “composer update”.**
+
+**Have fun** :sunglasses:
+
+12.04.2018 NOTE:
+
+~~Instagram has made changes, all public endpoints have stopped working. I will look for a workaround.**
+
+~~At the moment the tool is dead :confused:~~
+
 ## IG Monitoring
 
 [Screenshots](#screenshots)
