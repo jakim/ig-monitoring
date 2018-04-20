@@ -27,9 +27,9 @@ class CreateMonitoringModal extends ModalWidget
         'label' => 'Create',
     ];
 
-    private static $tags;
-    private static $proxies;
-    private static $proxyTags;
+    protected static $tags;
+    protected static $proxies;
+    protected static $proxyTags;
 
     public function run()
     {
