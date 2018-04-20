@@ -67,7 +67,7 @@ $lastAccountStats = $model->lastAccountStats;
         <?= \app\modules\admin\widgets\favorites\ProfileButton::widget([
             'model' => $model,
         ]) ?>
-        <?= Html::a('<span class="fa fa-external-link"></span> public url', ['/preview/account', 'uid' => $model->uid], ['class' => 'btn btn-default btn-block btn-sm', 'target' => '_blank']) ?>
+        <?= Html::a('<span class="fa fa-external-link"></span> Public url', ['/preview/account', 'uid' => $model->uid], ['class' => 'btn btn-default btn-block btn-sm', 'target' => '_blank']) ?>
     </div>
 </div>
 
