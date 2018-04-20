@@ -26,9 +26,12 @@ dmstr\web\AdminLteAsset::register($this);
         <b>IG</b>Monitoring
     </div>
     <div class="login-box-body">
-
         <?= $content ?>
-
+    </div>
+    <div>
+        <p class="margin text-center">
+            <?= Html::a('IG Monitoring', 'https://github.com/jakim/ig-monitoring') ?> - Free, Instagram Analytics and Stats.
+        </p>
     </div>
 </div>
 

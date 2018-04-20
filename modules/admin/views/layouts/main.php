@@ -113,7 +113,11 @@ $user = Yii::$app->user->identity;
         </section>
     </div>
 
+<footer class="main-footer">
+    <strong><?= Html::a('IG Monitoring', 'https://github.com/jakim/ig-monitoring')?> - Free, self hosted Instagram Analytics and Stats.</strong>
+</footer>
 </div>
+
 
 <?php $this->endBody() ?>
 </body>
