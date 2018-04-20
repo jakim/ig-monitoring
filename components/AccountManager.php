@@ -16,12 +16,14 @@ use app\models\AccountTag;
 use app\models\Media;
 use app\models\Proxy;
 use app\models\Tag;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 use Jakim\Query\AccountQuery;
 use Kevinrob\GuzzleCache\CacheMiddleware;
 use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\web\NotFoundHttpException;
 
 class AccountManager extends Component
 {
@@ -39,7 +41,20 @@ class AccountManager extends Component
     {
         $query = $this->queryFactory($account);
 
-        return $query->findOne($account->username);
+        $ident = $account->username;
+        $attempt = 0;
+
+        while ($attempt < 2) {
+            try {
+                return $query->findOne($ident);
+            } catch (ClientException $exception) {
+                $attempt++;
+                $ident = $account->instagram_id;
+                continue;
+            }
+        };
+
+        throw new NotFoundHttpException('Account not found.');
     }
 
     /**
@@ -47,6 +62,7 @@ class AccountManager extends Component
      *
      * @param \app\models\Account $account
      * @return \app\models\Account
+     * @throws \yii\web\NotFoundHttpException
      */
     public function update(Account $account)
     {
@@ -61,11 +77,12 @@ class AccountManager extends Component
     {
         $data = $data ?: $this->fetchDetails($account);
 
+        $account->username = $data->username;
         $account->profile_pic_url = $data->profilePicUrl;
         $account->full_name = $data->fullName;
         $account->biography = $data->biography;
         $account->external_url = $data->externalUrl;
-        $account->instagram_id = $data->id;
+        $account->instagram_id = (string)$data->id;
 
         $this->updateProfilePic($account);
 
@@ -155,7 +172,7 @@ class AccountManager extends Component
     public function saveUsernames(array $usernames)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($username) use ($createdAt) {
+        $rows = array_map(function ($username) use ($createdAt) {
             return [
                 $username,
                 $createdAt,
