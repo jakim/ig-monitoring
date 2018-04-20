@@ -61,13 +61,6 @@ $lastAccountStats = $model->lastAccountStats;
                 </li>
             </ul>
         <?php endif; ?>
-        <?= \app\modules\admin\widgets\OnOffMonitoringButton::widget([
-            'model' => $model,
-        ]) ?>
-        <?= \app\modules\admin\widgets\favorites\ProfileButton::widget([
-            'model' => $model,
-        ]) ?>
-        <?= Html::a('<span class="fa fa-external-link"></span> public url', ['/preview/account', 'uid' => $model->uid], ['class' => 'btn btn-default btn-block btn-sm', 'target' => '_blank']) ?>
     </div>
 </div>
 
@@ -93,16 +86,7 @@ $lastAccountStats = $model->lastAccountStats;
             <p class="text-muted">
                 <?= $formatter->asNtext($model->biography) ?>
             </p>
-            <hr>
         <?php endif; ?>
-
-        <?= \app\modules\admin\widgets\TagsSideWidget::widget([
-            'model' => $model,
-        ]); ?>
-        <hr>
-        <?= \app\modules\admin\widgets\NotesSideWidget::widget([
-            'model' => $model,
-        ]); ?>
     </div>
     <!-- /.box-body -->
 </div>

@@ -21,6 +21,15 @@ use yii\helpers\ArrayHelper;
  */
 class AccountStats extends \yii\db\ActiveRecord
 {
+    /**
+     * @var string Y-m-d
+     */
+    public $day;
+
+    /**
+     * @var string Y-m
+     */
+    public $month;
 
     public function behaviors()
     {

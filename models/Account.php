@@ -11,6 +11,7 @@ use yii\helpers\ArrayHelper;
  * This is the model class for table "account".
  *
  * @property int $id
+ * @property string $uid
  * @property string $name
  * @property string $username
  * @property string $profile_pic_url
@@ -84,7 +85,7 @@ class Account extends \yii\db\ActiveRecord
             [['username'], 'required'],
             [['updated_at', 'created_at'], 'safe'],
             [['monitoring', 'proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
-            [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes'], 'string', 'max' => 255],
+            [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes', 'uid'], 'string', 'max' => 255],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
             [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
