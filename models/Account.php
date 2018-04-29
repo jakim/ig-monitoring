@@ -3,7 +3,9 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\AttributeBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\BaseActiveRecord;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
@@ -55,6 +57,24 @@ class Account extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::behaviors(), [
             'time' => TimestampBehavior::class,
+            'uid' => [
+                'class' => AttributeBehavior::class,
+                'attributes' => [
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['uid'],
+                    BaseActiveRecord::EVENT_BEFORE_UPDATE => ['uid'],
+                ],
+                'preserveNonEmptyValues' => true,
+                'value' => function () {
+                    do {
+                        $uid = Yii::$app->security->generateRandomString(64);
+                        $uidExist = static::find()
+                            ->andWhere(['account.uid' => $uid])
+                            ->exists();
+                    } while ($uidExist);
+
+                    return $uid;
+                },
+            ],
         ]);
     }
 
