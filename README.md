@@ -6,7 +6,7 @@
 
 12.04.2018 NOTE:
 
-~~Instagram has made changes, all public endpoints have stopped working. I will look for a workaround.**
+~~Instagram has made changes, all public endpoints have stopped working. I will look for a workaround.~~
 
 ~~At the moment the tool is dead :confused:~~
 
