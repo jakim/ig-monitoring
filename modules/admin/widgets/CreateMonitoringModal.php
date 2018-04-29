@@ -66,7 +66,7 @@ class CreateMonitoringModal extends ModalWidget
     {
         static::$proxies = static::$proxies ?? Proxy::find()->joinWith('tags')->active()->all();
 
-        return ArrayHelper::map(static::$proxies, 'id', function (Proxy $model) {
+        return ArrayHelper::map(static::$proxies, 'id', function(Proxy $model) {
             $tags = ArrayHelper::getColumn($model->tags, 'name');
 
             return $model->ip . ($tags ? ' # ' . implode(',', $tags) : '');
