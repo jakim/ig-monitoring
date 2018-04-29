@@ -10,13 +10,8 @@ namespace app\components\instagram;
 
 use app\components\http\Client;
 use app\components\http\CacheStorage;
-use app\components\MediaManager;
 use app\models\Account;
-use app\models\AccountStats;
-use app\models\AccountTag;
-use app\models\Media;
 use app\models\Proxy;
-use app\models\Tag;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 use Jakim\Query\AccountQuery;
