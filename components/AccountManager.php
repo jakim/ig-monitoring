@@ -2,171 +2,60 @@
 /**
  * Created for IG Monitoring.
  * User: jakim <pawel@jakimowski.info>
- * Date: 11.01.2018
+ * Date: 28.04.2018
  */
 
 namespace app\components;
 
 
-use app\components\http\Client;
-use app\components\http\CacheStorage;
+use app\components\instagram\AccountDetails;
+use app\components\instagram\AccountScraper;
+use app\components\instagram\AccountStats;
 use app\models\Account;
-use app\models\AccountStats;
 use app\models\AccountTag;
-use app\models\Media;
-use app\models\Proxy;
 use app\models\Tag;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\HandlerStack;
-use Jakim\Query\AccountQuery;
-use Kevinrob\GuzzleCache\CacheMiddleware;
-use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
-use yii\web\NotFoundHttpException;
 
 class AccountManager extends Component
 {
     /**
-     * @var Proxy
-     */
-    public $proxy;
-
-    /**
-     * @var bool
-     */
-    public $cache = true;
-
-    public function fetchDetails(Account $account): \Jakim\Model\Account
-    {
-        $query = $this->queryFactory($account);
-
-        $ident = $account->username;
-        $attempt = 0;
-
-        while ($attempt < 2) {
-            try {
-                return $query->findOne($ident);
-            } catch (ClientException $exception) {
-                $attempt++;
-                $ident = $account->instagram_id;
-                continue;
-            }
-        };
-
-        throw new NotFoundHttpException('Account not found.');
-    }
-
-    /**
      * Fetch data from API, update details and stats.
      *
      * @param \app\models\Account $account
-     * @return \app\models\Account
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
      * @throws \yii\web\NotFoundHttpException
      */
     public function update(Account $account)
     {
-        $data = $this->fetchDetails($account);
-        $this->updateDetails($account, $data);
-        $this->updateStats($account, $data);
+        /** @var AccountScraper $scraper */
+        $scraper = \Yii::createObject(AccountScraper::class);
+        /** @var AccountDetails $details */
+        $details = \Yii::createObject(AccountDetails::class);
+        /** @var AccountStats $stats */
+        $stats = \Yii::createObject(AccountStats::class);
 
-        return $account;
-    }
+        $data = $scraper->fetchDetails($account);
+        // update account details
+        $details->updateDetails($account, $data);
 
-    public function updateDetails(Account $account, \Jakim\Model\Account $data = null): Account
-    {
-        $data = $data ?: $this->fetchDetails($account);
-
-        $account->username = $data->username;
-        $account->profile_pic_url = $data->profilePicUrl;
-        $account->full_name = $data->fullName;
-        $account->biography = $data->biography;
-        $account->external_url = $data->externalUrl;
-        $account->instagram_id = (string)$data->id;
-
-        $this->updateProfilePic($account);
-
-        $account->save();
-
-        return $account;
-    }
-
-    public function updateStats(Account $account, \Jakim\Model\Account $data = null): ?AccountStats
-    {
-        $data = $data ?: $this->fetchDetails($account);
-        $accountStats = null;
-
-        if ($this->statsNeedUpdate($account, $data)) {
-            $accountStats = new AccountStats();
-            $accountStats->followed_by = $data->followedBy;
-            $accountStats->follows = $data->follows;
-            $accountStats->media = $data->media;
-            $account->link('accountStats', $accountStats);
-            $account->refresh();
-        }
-        $this->updateMedia($account);
-        $this->updateEr($account);
-
-        return $accountStats;
-    }
-
-    protected function updateEr(Account $account, int $mediaLimit = 10)
-    {
-        if (!$account->lastAccountStats) {
-            return false;
+        // update profile pic
+        if ($details->profilePicNeedUpdate($account, $data)) {
+            $content = $scraper->fetchProfilePic($account, $data->profilePicUrl);
+            $details->updateProfilePic($account, $data, $content);
         }
 
-        $media = Media::find()
-            ->innerJoinWith('mediaStats')
-            ->andWhere(['account_id' => $account->id])
-            ->limit($mediaLimit)
-            ->groupBy('media.id')
-            ->all();
-
-        $er = [];
-        foreach ($media as $m) {
-            $er[] = ($m->lastMediaStats->likes + $m->lastMediaStats->comments) / $m->lastMediaStats->account_followed_by;
+        // update account stats
+        if ($stats->statsNeedUpdate($account, $data)) {
+            $stats->updateStats($account, $data);
         }
 
-        $er = $er ? array_sum($er) / count($er) : 0;
-        $account->lastAccountStats->er = round($er, 4);
-
-        return $account->lastAccountStats->update();
-    }
-
-    public function updateMedia(Account $account, int $limit = 10)
-    {
-        $manager = \Yii::createObject([
-            'class' => MediaManager::class,
-            'account' => $account,
-        ]);
-
-        $query = $this->queryFactory($account);
-        $items = $query->findPosts($account->username, $limit);
-
-        foreach ($items as $item) {
-            $media = Media::findOne(['instagram_id' => $item->id]);
-            if ($media === null) {
-                $media = new Media(['account_id' => $account->id]);
-            }
-            $manager->update($media, $item);
-        }
-    }
-
-    public function updateTags(Account $account, array $tags)
-    {
-        // clearing
-        AccountTag::deleteAll(['account_id' => $account->id]);
-
-        // add
-        foreach (array_filter($tags) as $tag) {
-            $model = Tag::findOne(['name' => $tag]);
-            if ($model === null && $tag) {
-                $model = new Tag(['name' => $tag]);
-                $model->insert();
-            }
-            $account->link('tags', $model);
-        }
+        $posts = $scraper->fetchMedia($account);
+        // update account media
+        $details->updateMedia($account, $posts);
+        // update account er
+        $stats->updateEr($account);
     }
 
     public function saveUsernames(array $usernames)
@@ -187,72 +76,19 @@ class AccountManager extends Component
             ->execute();
     }
 
-    protected function getProxy(Account $account): Proxy
+    public function updateTags(Account $account, array $tags)
     {
-        $proxy = $this->proxy ?: $account->proxy;
-        if (!$proxy || !$proxy->active) {
-            throw new InvalidConfigException('Account proxy must be set and be active.');
-        }
+        // clearing
+        AccountTag::deleteAll(['account_id' => $account->id]);
 
-        return $proxy;
-    }
-
-    protected function updateProfilePic(Account $account): void
-    {
-        if ($account->profile_pic_url) {
-            $url = $account->profile_pic_url;
-            $account->profile_pic_url = null;
-
-            $filename = sprintf('%s_%s', $account->username, basename($url));
-            $path = \Yii::getAlias("@app/web/uploads/{$filename}");
-            $fileExists = file_exists($path);
-
-            if (!$fileExists) {
-                $proxy = $this->getProxy($account);
-                $client = Client::factory($proxy);
-                $content = $client->get($url)->getBody()->getContents();
-                if ($content && file_put_contents($path, $content)) {
-                    $account->profile_pic_url = "/uploads/{$filename}";
-                }
-            } elseif ($fileExists) {
-                $account->profile_pic_url = "/uploads/{$filename}";
+        // add
+        foreach (array_filter($tags) as $tag) {
+            $model = Tag::findOne(['name' => $tag]);
+            if ($model === null && $tag) {
+                $model = new Tag(['name' => $tag]);
+                $model->insert();
             }
+            $account->link('tags', $model);
         }
-    }
-
-    private function statsNeedUpdate(Account $account, \Jakim\Model\Account $data): bool
-    {
-        if (!$account->lastAccountStats) {
-            return true;
-        }
-
-        return $account->lastAccountStats->followed_by != $data->followedBy ||
-            $account->lastAccountStats->follows != $data->follows ||
-            $account->lastAccountStats->media != $data->media;
-    }
-
-    /**
-     * @param \app\models\Account $account
-     * @return AccountQuery
-     * @throws \yii\base\InvalidConfigException
-     */
-    private function queryFactory(Account $account): AccountQuery
-    {
-        $proxy = $this->getProxy($account);
-
-        if ($this->cache) {
-            $stack = HandlerStack::create();
-            $stack->push(new CacheMiddleware(
-                new GreedyCacheStrategy(
-                    new CacheStorage(), 3600)
-            ), 'cache');
-            $client = Client::factory($proxy, ['handler' => $stack]);
-        } else {
-            $client = Client::factory($proxy);
-        }
-
-        $query = new AccountQuery($client);
-
-        return $query;
     }
 }

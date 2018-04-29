@@ -9,6 +9,7 @@ namespace app\commands;
 
 
 use app\components\AccountManager;
+use app\components\instagram\AccountScraper;
 use app\components\JobFactory;
 use app\components\TagManager;
 use app\models\Account;
@@ -124,6 +125,7 @@ class StatsController extends Controller
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
+        /** @var AccountManager $manager */
         $manager = \Yii::createObject(AccountManager::class);
         $manager->update($account);
         $this->stdout("OK!\n");

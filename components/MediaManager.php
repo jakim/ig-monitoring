@@ -8,6 +8,7 @@
 namespace app\components;
 
 
+use app\components\instagram\AccountScraper;
 use app\models\Account;
 use app\models\Media;
 use app\models\MediaAccount;

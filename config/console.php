@@ -35,7 +35,7 @@ $config = [
                     'class' => yii\log\FileTarget::class,
                     'levels' => ['error', 'warning', 'info'],
                     'categories' => [
-                        'app\components\AccountManager*',
+                        'app\components\instagram\AccountScraper*',
                     ],
                     'logFile' => '@runtime/logs/ig_requests.log',
                     'logVars' => [],
@@ -45,6 +45,7 @@ $config = [
                     'levels' => ['error', 'warning', 'info'],
                     'categories' => [
                         'app\components\AccountManager*',
+                        'app\components\instagram\*',
                     ],
                     'logVars' => [],
                 ],

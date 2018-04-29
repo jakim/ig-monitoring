@@ -10,8 +10,6 @@ namespace app\modules\admin\controllers;
 
 use app\components\AccountManager;
 use app\models\Favorite;
-use app\models\Proxy;
-use app\models\ProxyTag;
 use app\modules\admin\models\Account;
 use app\modules\admin\models\AccountMonitoringForm;
 use app\modules\admin\models\AccountSearch;
