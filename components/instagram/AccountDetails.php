@@ -21,7 +21,7 @@ class AccountDetails extends Component
         $account->full_name = $data->fullName;
         $account->biography = $data->biography;
         $account->external_url = $data->externalUrl;
-        $account->instagram_id = (string)$data->id;
+        $account->instagram_id = (string) $data->id;
 
         $account->update();
 
