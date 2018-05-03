@@ -70,8 +70,9 @@ class StatsController extends Controller
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
-        $manager = \Yii::createObject(TagManager::class);
-        $manager->update($tag);
+        /** @var \yii\queue\Queue $queue */
+        $queue = \Yii::$app->queue;
+        $queue->push(JobFactory::createTagUpdate($tag->id));
         $this->stdout("OK!\n");
 
         return ExitCode::OK;
@@ -108,14 +109,6 @@ class StatsController extends Controller
         return ExitCode::OK;
     }
 
-    /**
-     * Update on run.
-     *
-     * @param $username
-     * @return int
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     */
     public function actionUpdateAccount($username)
     {
         $account = Account::findOne(['username' => $username]);
@@ -125,9 +118,9 @@ class StatsController extends Controller
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
-        /** @var AccountManager $manager */
-        $manager = \Yii::createObject(AccountManager::class);
-        $manager->update($account);
+        /** @var \yii\queue\Queue $queue */
+        $queue = \Yii::$app->queue;
+        $queue->push(JobFactory::createAccountUpdate($account->id));
         $this->stdout("OK!\n");
 
         return ExitCode::OK;
@@ -140,7 +133,7 @@ class StatsController extends Controller
     private function whereInterval($interval): Expression
     {
         return new Expression('DATE_FORMAT(created_at, \'%Y-%m-%d %H\') > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL :interval HOUR), \'%Y-%m-%d %H\')', [
-            'interval' => (int) $interval,
+            'interval' => (int)$interval,
         ]);
     }
 }
