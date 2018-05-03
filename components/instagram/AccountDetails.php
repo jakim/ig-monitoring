@@ -53,6 +53,7 @@ class AccountDetails extends Component
 
     public function profilePicNeedUpdate(Account $account, \Jakim\Model\Account $data): bool
     {
+        $account->refresh();
         $filename = $this->profilePicFilename($account, $data);
         $path = $this->profilePicPath($filename);
 

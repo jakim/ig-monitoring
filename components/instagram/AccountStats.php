@@ -29,6 +29,7 @@ class AccountStats extends Component
 
     public function statsNeedUpdate(Account $account, \Jakim\Model\Account $data): bool
     {
+        $account->refresh();
         if (!$account->lastAccountStats) {
             return true;
         }
@@ -40,13 +41,14 @@ class AccountStats extends Component
 
     public function updateEr(Account $account)
     {
+        $account->refresh();
         if (!$account->lastAccountStats) {
             return false;
         }
 
         $media = Media::find()
             ->andWhere(['account_id' => $account->id])
-            ->orderBy('id ASC')
+            ->orderBy('taken_at DESC')
             ->limit(10)
             ->all();
 
