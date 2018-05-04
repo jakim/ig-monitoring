@@ -8,34 +8,36 @@
 namespace app\modules\admin\widgets\favorites;
 
 
+use app\components\AjaxButton;
 use app\components\ArrayHelper;
 use app\models\Favorite;
 use dmstr\widgets\Menu;
 use yii\helpers\Url;
+use yii\web\JsExpression;
 
 class SideMenu extends Menu
 {
     public $encodeLabels = false;
-    public $linkTemplate = '<a href="{url}">{icon} {label}<span class="pull-right-container"><i class="fa fa-trash-o pull-right delete" data-id="{id}"></i></span></a>';
+    public $linkTemplate = '<a href="{url}">{icon} {label} {btn-delete}</a>';
 
     public function init()
     {
         $this->options = ['class' => 'sidebar-menu tree favorites', 'data-widget' => 'tree'];
         $this->defaultIconHtml = '<i class="fa fa-star"></i> ';
-        $this->view->registerJs('
-        jQuery(\'.favorites .delete\').click(function(e){
-            e.preventDefault();
-            var $el = jQuery(this);
-            var id = $el.attr(\'data-id\'); 
-            jQuery.ajax({
-                url: \'' . Url::to(['favorite/delete']) . '\',
-                data: {id: id},
-                success: function(){
-                    jQuery(\'.favorites\').find(\'li[data-id=\'+id+\']\').remove();
-                }
-            })
-        });
-        ');
+//        $this->view->registerJs('
+//        jQuery(\'.favorites .delete\').click(function(e){
+//            e.preventDefault();
+//            var $el = jQuery(this);
+//            var id = $el.attr(\'data-id\');
+//            jQuery.ajax({
+//                url: \'' . Url::to(['favorite/delete']) . '\',
+//                data: {id: id},
+//                success: function(){
+//                    jQuery(\'.favorites\').find(\'li[data-id=\'+id+\']\').remove();
+//                }
+//            })
+//        });
+//        ');
         parent::init();
     }
 
@@ -74,9 +76,27 @@ class SideMenu extends Menu
 
     protected function renderItem($item)
     {
-        $id = ArrayHelper::getValue($item, 'options.data.id');
         $tmp = $this->linkTemplate;
-        $this->linkTemplate = str_replace('{id}', $id, $this->linkTemplate);
+
+        $id = ArrayHelper::getValue($item, 'options.data.id');
+        if ($id) {
+            $btnDelete = AjaxButton::widget([
+                'tag' => 'span',
+                'text' => '<i class="fa fa-trash-o pull-right delete"></i>',
+                'confirm' => 'Are you sure?',
+                'url' => ['favorite/delete', 'id' => $id],
+                'data' => [
+                    'id' => $id,
+                ],
+                'options' => [
+                    'class' => 'pull-right-container',
+                ],
+                'successCallback' => new JsExpression(sprintf("function(){jQuery('.favorites').find('li[data-id=%s]').remove();}", $id)),
+            ]);
+
+            $this->linkTemplate = str_replace('{btn-delete}', $btnDelete, $this->linkTemplate);
+        }
+
         $html = parent::renderItem($item);
         $this->linkTemplate = $tmp;
 
