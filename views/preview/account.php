@@ -23,14 +23,14 @@ $lastAccountStats = $model->lastAccountStats;
         <div class="col-lg-9">
             <div class="box box-primary">
                 <div class="box-body">
-                    <?php if (!$manager->lastChange('followed_by')): ?>
+                    <?php if ($manager->lastChange('followed_by') === null): ?>
                         <div class="callout callout-info">
                             <p class="lead"><span class="fa fa-cog fa-spin"></span> Collecting data...</p>
                             <p>Please come back tomorrow.</p>
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($manager->lastChange('followed_by')): ?>
+                    <?php if ($manager->lastChange('followed_by') !== null): ?>
                         <h2 class="page-header">
                             Daily change
                             <small class="pull-right">
@@ -65,7 +65,7 @@ $lastAccountStats = $model->lastAccountStats;
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($manager->lastMonthChange('followed_by')): ?>
+                    <?php if ($manager->lastMonthChange('followed_by') !== null): ?>
                         <h2 class="page-header">
                             Monthly change
                             <small class="pull-right">
@@ -164,7 +164,7 @@ $lastAccountStats = $model->lastAccountStats;
                                     [
                                         'label' => $model->lastAccountStats->getAttributeLabel('er'),
                                         'yAxisID' => 'er',
-                                        'data' => array_map(function($item) {
+                                        'data' => array_map(function ($item) {
                                             return number_format($item * 100, 2);
                                         }, ArrayHelper::getColumn($dailyStatsData, 'er')),
                                         'fill' => false,
@@ -207,7 +207,6 @@ $lastAccountStats = $model->lastAccountStats;
                                 since: <?= $formatter->asDate($manager->dailyStatsFrom()) ?></small>
                         </h2>
                         <?php
-
                         $data = ArrayHelper::getColumn($dailyStatsData, 'followed_by');
                         $prevValue = array_shift($data);
                         $labels = array_map([$formatter, 'asDate'], ArrayHelper::getColumn($dailyStatsData, 'created_at'));
@@ -264,7 +263,7 @@ $lastAccountStats = $model->lastAccountStats;
                         ?>
                     <?php endif; ?>
 
-                    <?php if (($monthlyStatsData = $manager->getMonthlyStatsData(false))): ?>
+                    <?php if (($monthlyStatsData = $manager->getMonthlyStatsData(false)) !== null): ?>
 
                         <br>
                         <h2 class="page-header">
@@ -273,6 +272,7 @@ $lastAccountStats = $model->lastAccountStats;
                                 since: <?= $formatter->asDate($manager->monthlyStatsFrom()) ?></small>
                         </h2>
                         <?php
+                        $ticksStocks = new JsExpression('function(value, index, values) {if (Math.floor(value) === value) {return value;}}');
                         $data = ArrayHelper::getColumn($monthlyStatsData, 'followed_by');
                         $prevValue = array_shift($data);
                         $labels = array_map([$formatter, 'asDate'], ArrayHelper::getColumn($monthlyStatsData, 'created_at'));
