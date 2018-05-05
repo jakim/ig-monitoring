@@ -30,9 +30,15 @@ $formatter = Yii::$app->formatter;
                 ['class' => \yii\grid\SerialColumn::class],
                 [
                     'attribute' => 'username',
-                    'content' => function(\app\models\Account $model) {
-                        return Html::a($model->displayName, ['account/dashboard', 'id' => $model->id]) . ' '
-                            . Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
+                    'content' => function (\app\models\Account $model) {
+                        $html = [];
+                        if ($model->disabled) {
+                            $html[] = '<span class="fa fa-exclamation-triangle text-danger" title="Not found."></span>';
+                        }
+                        $html[] = Html::a($model->displayName, ['account/dashboard', 'id' => $model->id]);
+                        $html[] = Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
+
+                        return implode(" \n", $html);
                     },
                 ],
                 [
@@ -58,7 +64,7 @@ $formatter = Yii::$app->formatter;
                 ],
                 [
                     'attribute' => 's_tags',
-                    'value' => function(Account $model) {
+                    'value' => function (Account $model) {
                         $tags = $model->getTags()->select('tag.name')->column();
                         if ($tags) {
                             return implode(', ', $tags);

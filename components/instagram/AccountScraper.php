@@ -20,6 +20,7 @@ use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
 
 class AccountScraper extends Component
 {
@@ -42,15 +43,25 @@ class AccountScraper extends Component
 
         while ($attempt < 2) {
             try {
-                return $query->findOne($ident);
-            } catch (ClientException $exception) {
                 $attempt++;
+
+                return $query->findOne($ident);
+
+            } catch (ClientException $exception) {
                 $ident = $account->instagram_id;
-                continue;
+                if ($ident) {
+                    continue;
+                }
+                break;
             }
         };
 
-        throw new NotFoundHttpException('Account not found.');
+        $httpCode = isset($exception) ? $exception->getResponse()->getStatusCode() : null;
+        if ($httpCode == 404) {
+            throw new NotFoundHttpException('Account not found.');
+        }
+
+        throw $exception ?? new ServerErrorHttpException('Something is wrong!');
     }
 
     /**

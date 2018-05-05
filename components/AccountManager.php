@@ -15,6 +15,7 @@ use app\models\Account;
 use app\models\AccountTag;
 use app\models\Tag;
 use yii\base\Component;
+use yii\web\NotFoundHttpException;
 
 class AccountManager extends Component
 {
@@ -22,6 +23,7 @@ class AccountManager extends Component
      * Fetch data from API, update details and stats.
      *
      * @param \app\models\Account $account
+     * @throws \Throwable
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
@@ -36,7 +38,19 @@ class AccountManager extends Component
         /** @var AccountStats $stats */
         $stats = \Yii::createObject(AccountStats::class);
 
-        $data = $scraper->fetchDetails($account);
+        try {
+            $data = $scraper->fetchDetails($account);
+
+        } catch (NotFoundHttpException $exception) {
+
+            $account->disabled = 1;
+            $account->update(false);
+
+            throw $exception;
+        } catch (\Throwable $exception) {
+            throw $exception;
+        }
+
         // update account details
         $details->updateDetails($account, $data);
 
@@ -61,7 +75,7 @@ class AccountManager extends Component
     public function saveUsernames(array $usernames)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($username) use ($createdAt) {
+        $rows = array_map(function ($username) use ($createdAt) {
             return [
                 $username,
                 $createdAt,
