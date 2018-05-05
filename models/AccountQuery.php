@@ -11,6 +11,7 @@ class AccountQuery extends \yii\db\ActiveQuery
 {
     public function monitoring()
     {
-        return $this->andWhere(['account.monitoring' => 1]);
+        return $this->andWhere(['account.monitoring' => 1])
+            ->andWhere(['disabled' => 0]);
     }
 }
