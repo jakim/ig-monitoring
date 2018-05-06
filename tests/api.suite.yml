@@ -1,0 +1,10 @@
+actor: ApiTester
+modules:
+    enabled:
+      - \Helper\Api
+      - Asserts
+      - Yii2
+      - REST:
+          url: http://localhost:8080/index-test.php/v1
+          depends: PhpBrowser
+          part: [json]

@@ -1,6 +1,7 @@
 <?php
 
 namespace app\models;
+use app\modules\api\v1\models\Account;
 
 /**
  * This is the ActiveQuery class for [[Account]].
