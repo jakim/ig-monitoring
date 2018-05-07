@@ -30,6 +30,7 @@ class AccountCest
             'username' => 'test1',
             'monitoring' => 1,
             'name' => "TEST-1",
+            'tags' => 'test1, test2',
         ]);
         $I->seeProperResourceResponse(\Helper\Api::responseAccountJsonType(), HttpCode::OK);
     }
