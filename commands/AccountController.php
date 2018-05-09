@@ -17,6 +17,11 @@ use yii\helpers\StringHelper;
 
 class AccountController extends Controller
 {
+    public function resetDisabled()
+    {
+        Account::updateAll(['disabled' => 0]);
+    }
+
     /**
      * Update account usernames.
      * format: username1_from,username1_to1,name1;username2_from,username2_to,name2;username3_from,username3_to,name3
