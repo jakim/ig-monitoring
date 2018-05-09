@@ -29,16 +29,12 @@ class AccountUpdate implements JobInterface
     public function execute($queue)
     {
         $account = Account::findOne($this->id);
-        if ($account) {
+        if ($account && !$account->disabled) {
 
-            $uid = $this->reserveProxy($account);
 
             try {
-                $proxy = Proxy::findOne(['reservation_uid' => $uid]);
 
-                if (($diff = time() - strtotime($proxy->updated_at)) < 2) {
-                    sleep($diff);
-                }
+                $proxy = $this->reserveProxy($account);
 
                 $manager = \Yii::createObject([
                     'class' => AccountManager::class,
@@ -48,40 +44,52 @@ class AccountUpdate implements JobInterface
                     ],
                 ]);
                 $manager->update($account);
+                $this->releaseProxy($proxy);
 
             } catch (\Throwable $exception) {
-                $this->releaseProxy($uid);
+                $this->releaseProxy($proxy);
 
                 throw $exception;
             }
 
-            $this->releaseProxy($uid);
         }
     }
 
-    /**
-     * @param $uid
-     */
-    protected function releaseProxy($uid): void
+    protected function releaseProxy(Proxy $proxy)
     {
-        Proxy::updateAll(['reservation_uid' => null], ['reservation_uid' => $uid]);
+        Proxy::updateAll(['reservation_uid' => null], 'reservation_uid=:reservation_uid', [':reservation_uid' => $proxy->reservation_uid]);
     }
 
-    protected function reserveProxy($account): bool
+    protected function reserveProxy($account)
     {
-        $uid = uniqid(time(), true);
+        $uid = $this->generateUid();
 
-        $sql = 'UPDATE proxy set reservation_uid=:reservation_uid, updated_at=:updated_at WHERE reservation_uid IS NULL ORDER BY updated_at ASC LIMIT 1';
+        $sql = \Yii::$app->db->createCommand()
+            ->update('proxy', [
+                'reservation_uid' => $uid,
+                'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            ], [
+                'and',
+                ['reservation_uid' => null],
+                ['<=', 'updated_at', (new \DateTime('-1 seconds'))->format('Y-m-d H:i:s')],
+            ])->rawSql;
 
-        $n = \Yii::$app->db->createCommand($sql, [
-            'reservation_uid' => $uid,
-            'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
-        ])->execute();
+        $n = \Yii::$app->db->createCommand("{$sql} ORDER BY [[updated_at]] ASC LIMIT 1")
+            ->execute();
 
         if (empty($n)) {
             throw new Exception('No proxy available.');
         }
 
-        return $uid;
+        return Proxy::findOne(['reservation_uid' => $uid]);
+    }
+
+    /**
+     * @return string
+     * @throws \yii\base\Exception
+     */
+    protected function generateUid(): string
+    {
+        return sprintf("%s_%s", \Yii::$app->security->generateRandomString(64), time());
     }
 }

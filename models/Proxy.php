@@ -19,6 +19,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $created_at
  * @property bool $default_for_accounts
  * @property bool $default_for_tags
+ * @property string $reservation_uid
  *
  * @property string $curlString
  *
@@ -71,7 +72,7 @@ class Proxy extends \yii\db\ActiveRecord
             [['ip'], 'ip'],
             [['port'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['ip', 'username', 'password'], 'string', 'max' => 255],
+            [['ip', 'username', 'password', 'reservation_uid'], 'string', 'max' => 255],
             [['active', 'default_for_accounts', 'default_for_tags'], 'boolean'],
         ];
     }
