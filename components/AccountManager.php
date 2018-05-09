@@ -19,6 +19,8 @@ use yii\web\NotFoundHttpException;
 
 class AccountManager extends Component
 {
+    public $scraper = AccountScraper::class;
+
     /**
      * Fetch data from API, update details and stats.
      *
@@ -32,7 +34,7 @@ class AccountManager extends Component
     public function update(Account $account)
     {
         /** @var AccountScraper $scraper */
-        $scraper = \Yii::createObject(AccountScraper::class);
+        $scraper = \Yii::createObject($this->scraper);
         /** @var AccountDetails $details */
         $details = \Yii::createObject(AccountDetails::class);
         /** @var AccountStats $stats */
