@@ -10,6 +10,7 @@ namespace app\jobs;
 
 use app\components\AccountManager;
 use app\components\instagram\AccountScraper;
+use app\components\ProxyManager;
 use app\models\Account;
 use app\models\Proxy;
 use yii\base\Exception;
@@ -31,10 +32,11 @@ class AccountUpdate implements JobInterface
         $account = Account::findOne($this->id);
         if ($account && !$account->disabled) {
 
+            $proxyManager = \Yii::createObject(ProxyManager::class);
 
             try {
 
-                $proxy = $this->reserveProxy($account);
+                $proxy = $proxyManager->reserve($account);
 
                 $manager = \Yii::createObject([
                     'class' => AccountManager::class,
@@ -44,52 +46,17 @@ class AccountUpdate implements JobInterface
                     ],
                 ]);
                 $manager->update($account);
-                $this->releaseProxy($proxy);
+                $proxyManager->release($proxy);
 
             } catch (\Throwable $exception) {
-                $this->releaseProxy($proxy);
+                
+                if (isset($proxy)) {
+                    $proxyManager->release($proxy);
+                }
 
                 throw $exception;
             }
 
         }
-    }
-
-    protected function releaseProxy(Proxy $proxy)
-    {
-        Proxy::updateAll(['reservation_uid' => null], 'reservation_uid=:reservation_uid', [':reservation_uid' => $proxy->reservation_uid]);
-    }
-
-    protected function reserveProxy($account)
-    {
-        $uid = $this->generateUid();
-
-        $sql = \Yii::$app->db->createCommand()
-            ->update('proxy', [
-                'reservation_uid' => $uid,
-                'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
-            ], [
-                'and',
-                ['reservation_uid' => null],
-                ['<=', 'updated_at', (new \DateTime('-1 seconds'))->format('Y-m-d H:i:s')],
-            ])->rawSql;
-
-        $n = \Yii::$app->db->createCommand("{$sql} ORDER BY [[updated_at]] ASC LIMIT 1")
-            ->execute();
-
-        if (empty($n)) {
-            throw new Exception('No proxy available.');
-        }
-
-        return Proxy::findOne(['reservation_uid' => $uid]);
-    }
-
-    /**
-     * @return string
-     * @throws \yii\base\Exception
-     */
-    protected function generateUid(): string
-    {
-        return sprintf("%s_%s", \Yii::$app->security->generateRandomString(64), time());
     }
 }

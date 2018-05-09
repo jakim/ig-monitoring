@@ -137,24 +137,12 @@ class Account extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getProxy()
     {
-        if ($this->proxy_id) {
-            return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
-        }
-
-        if ($this->proxy_tag_id) {
-            return Proxy::find()
-                ->innerJoinWith('proxyTags')
-                ->andWhere(['proxy_tag.tag_id' => $this->proxy_tag_id])
-                ->orderBy(new Expression('RAND()'))
-                ->one();
-        }
-
-        return Proxy::find()
-            ->defaultForAccounts()
-            ->orderBy(new Expression('RAND()'))
-            ->one();
+        return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
     }
 
     /**
