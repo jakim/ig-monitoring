@@ -78,7 +78,7 @@ class AccountDetails extends Component
      * @param \Jakim\Model\Account $data
      * @return string
      */
-    protected function profilePicFilename(Account $account, \Jakim\Model\Account $data): string
+    public function profilePicFilename(Account $account, \Jakim\Model\Account $data): string
     {
         $filename = sprintf('%s_%s', $account->username, basename($data->profilePicUrl));
 
@@ -89,7 +89,7 @@ class AccountDetails extends Component
      * @param $filename
      * @return bool|string
      */
-    protected function profilePicPath($filename)
+    public function profilePicPath($filename)
     {
         $path = \Yii::getAlias("@app/web/uploads/{$filename}");
 
