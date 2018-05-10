@@ -4,7 +4,9 @@ namespace app\models;
 
 use app\components\ArrayHelper;
 use Yii;
+use yii\behaviors\AttributeBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\BaseActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
@@ -18,6 +20,7 @@ use yii\web\IdentityInterface;
  * @property int $active
  * @property string $updated_at
  * @property string $created_at
+ * @property string $access_token
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
@@ -26,6 +29,24 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return ArrayHelper::merge(parent::behaviors(), [
             'time' => TimestampBehavior::class,
+            'access_token' => [
+                'class' => AttributeBehavior::class,
+                'attributes' => [
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['access_token'],
+                    BaseActiveRecord::EVENT_BEFORE_UPDATE => ['access_token'],
+                ],
+                'preserveNonEmptyValues' => true,
+                'value' => function () {
+                    do {
+                        $token = Yii::$app->security->generateRandomString(64);
+                        $tokenExist = static::find()
+                            ->andWhere(['user.access_token' => $token])
+                            ->exists();
+                    } while ($tokenExist);
+
+                    return $token;
+                },
+            ],
         ]);
     }
 
@@ -46,7 +67,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['username', 'email', 'google_user_id'], 'required'],
             [['active'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
-            [['username', 'email', 'image', 'google_user_id'], 'string', 'max' => 255],
+            [['username', 'email', 'image', 'google_user_id', 'access_token'], 'string', 'max' => 255],
+            [['access_token'], 'unique'],
         ];
     }
 
@@ -92,7 +114,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        // TODO: Implement findIdentityByAccessToken() method.
+        return User::findOne(['access_token' => $token]);
     }
 
     /**
