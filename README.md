@@ -56,7 +56,7 @@ See `./yii` for more commands.
 - Unix system with root access (not tested on windows)
 - Web server (nginx, apache, etc.)
 - php >= 7.1
-- mysql >= 5.5
+- mysql >= 5.7
 
 # Legal
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries.
