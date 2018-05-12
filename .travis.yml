@@ -19,6 +19,6 @@ before_script:
   - cp config/authClientCollection.php.dist config/authClientCollection.php
   - mysql -e 'CREATE DATABASE ig_monitoring_tests;'
   - composer install
-  - ./tests/bin/yii migrate
+  - ./tests/bin/yii migrate --interactive=0
 script:
   - ./vendor/bin/codecept run unit
