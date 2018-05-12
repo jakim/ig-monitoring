@@ -6,4 +6,4 @@ php:
 before_script:
  - composer install
 script:
- - ./vendor/bin/codecept run
+ - ./vendor/bin/codecept run unit
