@@ -27,7 +27,7 @@ class AccountDetailsTest extends \Codeception\Test\Unit
         $service = new AccountDetails();
 
         $account = $this->tester->grabFixture('account', 'account1');
-        $data = $this->accountNewData();
+        $data = $this->tester->accountDummyData();
 
         $service->updateDetails($account, $data);
 
@@ -45,7 +45,7 @@ class AccountDetailsTest extends \Codeception\Test\Unit
         $service = new AccountDetails();
 
         $account = $this->tester->grabFixture('account', 'account1');
-        $data = $this->accountNewData();
+        $data = $this->tester->accountDummyData();
 
         $this->assertTrue($service->profilePicNeedUpdate($account, $data));
 
@@ -63,7 +63,7 @@ class AccountDetailsTest extends \Codeception\Test\Unit
         $service = new AccountDetails();
 
         $account = $this->tester->grabFixture('account', 'account1');
-        $data = $this->accountNewData();
+        $data = $this->tester->accountDummyData();
         $imgData = file_get_contents(codecept_data_dir('account_pic.jpg'));
 
         $service->updateProfilePic($account, $data, $imgData);
@@ -86,46 +86,19 @@ class AccountDetailsTest extends \Codeception\Test\Unit
 
         $this->assertEmpty($account->media);
 
-        $post1 = new \Jakim\Model\Post();
-        $post1->id = 'test1';
-        $post1->shortcode = 'test1';
-        $post1->url = 'test1';
-        $post1->isVideo = false;
-        $post1->caption = 'test1';
-        $post1->likes = 1;
-        $post1->comments = 1;
-        $post1->takenAt = time();
-
-        $post2 = new \Jakim\Model\Post();
-        $post2->id = 'test2';
-        $post2->shortcode = 'test2';
-        $post2->url = 'test2';
-        $post2->isVideo = false;
-        $post2->caption = 'test2';
-        $post2->likes = 2;
-        $post2->comments = 2;
-        $post2->takenAt = time();
+        $post1 = $this->tester->postDummyData();
+        $post2 = $this->tester->postDummyData(2);
 
         $service->updateMedia($account, [$post1, $post2]);
+        $account->refresh();
 
         $account = $this->tester->grabRecord(\app\models\Account::class, ['username' => $account->username]);
         $this->assertNotEmpty($account->media);
         $this->assertCount(2, $account->media);
-    }
 
-    /**
-     * @return \Jakim\Model\Account
-     */
-    protected function accountNewData(): \Jakim\Model\Account
-    {
-        $data = new \Jakim\Model\Account();
-        $data->username = 'test_data1';
-        $data->fullName = 'test_data1';
-        $data->biography = 'test_data1';
-        $data->externalUrl = 'test_data1';
-        $data->id = 'test_data1';
-        $data->profilePicUrl = 'test_profile_pic.jpg';
-
-        return $data;
+        $post3 = $this->tester->postDummyData(3);
+        $service->updateMedia($account, [$post1, $post2, $post3]);
+        $account->refresh();
+        $this->assertCount(3, $account->media);
     }
 }
