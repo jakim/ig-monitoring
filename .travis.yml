@@ -3,13 +3,24 @@ php:
   - '7.1'
 services:
   - mysql
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+      - mysql-client
+
+dist: trusty
+sudo: required
+
 before_script:
   - cp config/db.php.dist config/db.php
   - cp config/authClientCollection.php.dist config/authClientCollection.php
-  - |
-     travis_retry mysql -e 'CREATE DATABASE `ig_monitoring_tests` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;';
-     mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
-     mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
+  - mysql -e 'CREATE DATABASE `ig_monitoring_tests`;'
+  - mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
  - composer install
+  - ./tests/bin/yii migrate
 script:
  - ./vendor/bin/codecept run unit
