@@ -15,7 +15,7 @@ dist: trusty
 sudo: required
 
 before_script:
-  - cp config/db.php.dist config/db.php
+  - cp config/travis.db.php.dist config/db.php
   - cp config/authClientCollection.php.dist config/authClientCollection.php
   - mysql -e 'CREATE DATABASE ig_monitoring_tests;'
   - composer install
