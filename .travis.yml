@@ -20,5 +20,6 @@ before_script:
   - mysql -e 'CREATE DATABASE ig_monitoring_tests;'
   - composer install
   - ./tests/bin/yii migrate --interactive=0
+  - ./yii serve
 script:
-  - ./vendor/bin/codecept run unit
+  - ./vendor/bin/codecept run
