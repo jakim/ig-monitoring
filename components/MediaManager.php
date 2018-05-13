@@ -36,73 +36,36 @@ class MediaManager extends Component
      */
     public function update(Media $media, Post $data)
     {
-        $media = $this->updateDetails($media, $data);
+        $this->account = $media->account ?? $this->account;
 
-        if (!$this->account) {
-            $this->account = $media->account;
-            $this->account->refresh();
-        }
-
-        if ($media->caption) {
-            $tags = (array) Text::getTags($media->caption);
-            $this->updateTags($media, $tags);
-
-            $usernames = (array) Text::getUsernames($media->caption);
-            // ignore owner of media
-            ArrayHelper::removeValue($usernames, $this->account->username);
-            $this->updateUsernames($media, $usernames);
-        }
-
-        $this->updateStats($media, $data);
-    }
-
-    /**
-     * @param \app\models\Media $media
-     * @param \Jakim\Model\Post $data
-     * @return \app\models\Media
-     * @throws \yii\base\Exception
-     */
-    public function updateDetails(Media $media, Post $data): Media
-    {
         $media->instagram_id = $data->id;
         $media->shortcode = $data->shortcode;
         $media->is_video = $data->isVideo;
         $media->caption = $data->caption;
         $media->taken_at = (new \DateTime('@' . $data->takenAt))->format('Y-m-d H:i:s');
 
-        if (!$media->account_id && $this->account) {
-            $media->account_id = $this->account->id;
+        $media->likes = $data->likes;
+        $media->comments = $data->comments;
+        if ($this->account->lastAccountStats) {
+            $media->account_followed_by = $this->account->lastAccountStats->followed_by;
+            $media->account_follows = $this->account->lastAccountStats->follows;
         }
+
+        $media->account_id = $this->account->id;
 
         if (!$media->save()) {
             throw new Exception(json_encode($media->errors));
         }
 
-        return $media;
-    }
+        if ($media->caption) {
+            $tags = (array)Text::getTags($media->caption);
+            $this->updateTags($media, $tags);
 
-    /**
-     * @param \app\models\Media $media
-     * @param \Jakim\Model\Post $data
-     * @return \app\models\MediaStats|null
-     */
-    public function updateStats(Media $media, Post $data): ?MediaStats
-    {
-        $account = $media->account ?? $this->account;
-        if (empty($account->lastAccountStats)) {
-            return null;
+            $usernames = (array)Text::getUsernames($media->caption);
+            // ignore owner of media
+            ArrayHelper::removeValue($usernames, $this->account->username);
+            $this->updateUsernames($media, $usernames);
         }
-        $mediaStats = null;
-        if ($this->statsNeedUpdate($media, $data)) {
-            $mediaStats = new MediaStats();
-            $mediaStats->likes = $data->likes;
-            $mediaStats->comments = $data->comments;
-            $mediaStats->account_followed_by = $this->account->lastAccountStats->followed_by;
-            $mediaStats->account_follows = $this->account->lastAccountStats->follows;
-            $media->link('mediaStats', $mediaStats);
-        }
-
-        return $mediaStats;
     }
 
     public function updateUsernames(Media $media, array $usernames)
@@ -111,7 +74,7 @@ class MediaManager extends Component
         $manager->saveUsernames($usernames);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($id) use ($media, $createdAt) {
+        $rows = array_map(function ($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
@@ -140,7 +103,7 @@ class MediaManager extends Component
         $manager->saveTags($tags);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($id) use ($media, $createdAt) {
+        $rows = array_map(function ($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
@@ -157,18 +120,4 @@ class MediaManager extends Component
             ->execute();
     }
 
-    /**
-     * @param \app\models\Media $media
-     * @param \Jakim\Model\Post $data
-     * @return bool
-     */
-    private function statsNeedUpdate(Media $media, Post $data): bool
-    {
-        if (!$media->lastMediaStats) {
-            return true;
-        }
-
-        return $media->lastMediaStats->likes != $data->likes ||
-            $media->lastMediaStats->comments != $data->comments;
-    }
 }

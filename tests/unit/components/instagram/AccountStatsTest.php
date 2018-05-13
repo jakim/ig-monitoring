@@ -22,7 +22,6 @@ class AccountStatsTest extends \Codeception\Test\Unit
             'account' => \app\tests\fixtures\AccountFixture::class,
             'account_stats' => \app\tests\fixtures\AccountStatsFixture::class,
             'media' => \app\tests\fixtures\MediaFixture::class,
-            'media_stats' => \app\tests\fixtures\MediaStatsFixture::class,
         ]);
     }
 
