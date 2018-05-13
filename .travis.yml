@@ -1,0 +1,25 @@
+language: php
+php:
+  - '7.1'
+services:
+  - mysql
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+      - mysql-client
+
+dist: trusty
+sudo: required
+
+before_script:
+  - cp config/travis.db.php.dist config/db.php
+  - cp config/authClientCollection.php.dist config/authClientCollection.php
+  - mysql -e 'CREATE DATABASE ig_monitoring_tests;'
+  - composer install
+  - ./tests/bin/yii migrate --interactive=0
+  - ./yii serve --interactive=0 & sleep 1
+script:
+  - ./vendor/bin/codecept run

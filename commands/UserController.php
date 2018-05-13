@@ -59,6 +59,7 @@ class UserController extends Controller
                 'Username',
                 'Email',
                 'Active',
+                'Access Token',
             ],
             'rows' => User::find()
                 ->select([
@@ -66,6 +67,7 @@ class UserController extends Controller
                     'username',
                     'email',
                     'active',
+                    'access_token',
                 ])
                 ->orderBy('id DESC')
                 ->asArray()

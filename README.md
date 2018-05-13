@@ -21,6 +21,7 @@ DEV stage.  **Use at your own risk.**
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/9bbae6907e6cbf039950/maintainability)](https://codeclimate.com/github/jakim/ig-monitoring/maintainability)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jakim/ig-monitoring/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jakim/ig-monitoring/?branch=master)
+[![Build Status](https://travis-ci.org/jakim/ig-monitoring.svg?branch=master)](https://travis-ci.org/jakim/ig-monitoring)
 
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
 

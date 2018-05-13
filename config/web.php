@@ -20,6 +20,9 @@ $config = [
         'admin' => [
             'class' => \app\modules\admin\Module::class,
         ],
+        'v1' => [
+            'class' => \app\modules\api\v1\Module::class,
+        ],
     ],
     'components' => [
         'formatter' => \app\components\Formatter::class,
@@ -61,6 +64,12 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                // api
+                [
+                    'class' => \yii\rest\UrlRule::class,
+                    'controller' => ['v1/account'],
+//                    'only' => ['create'],
+                ],
             ],
         ],
     ],

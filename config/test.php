@@ -1,11 +1,13 @@
 <?php
-$params = require __DIR__ . '/params.php';
+
+$webConfig = require __DIR__.'/web.php';
+
 $db = require __DIR__ . '/test_db.php';
 
 /**
  * Application configuration shared by all test types
  */
-return [
+$config = [
     'id' => 'basic-tests',
     'basePath' => dirname(__DIR__),  
     'aliases' => [
@@ -24,9 +26,6 @@ return [
         'urlManager' => [
             'showScriptName' => true,
         ],
-        'user' => [
-            'identityClass' => 'app\models\User',
-        ],        
         'request' => [
             'cookieValidationKey' => 'test',
             'enableCsrfValidation' => false,
@@ -40,3 +39,8 @@ return [
     ],
     'params' => $params,
 ];
+
+return \yii\helpers\ArrayHelper::merge(
+    $webConfig,
+    $config
+);

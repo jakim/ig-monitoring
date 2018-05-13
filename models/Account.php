@@ -23,7 +23,7 @@ use yii\helpers\ArrayHelper;
  * @property string $instagram_id
  * @property string $updated_at
  * @property string $created_at
- * @property int $monitoring
+ * @property bool $monitoring
  * @property int $proxy_id
  * @property int $proxy_tag_id
  * @property string $notes
@@ -105,9 +105,9 @@ class Account extends \yii\db\ActiveRecord
         return [
             [['username'], 'required'],
             [['updated_at', 'created_at'], 'safe'],
-            [['monitoring', 'proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
+            [['proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes', 'uid'], 'string', 'max' => 255],
-            [['disabled'], 'boolean'],
+            [['monitoring','disabled'], 'boolean'],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
             [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
@@ -147,14 +147,12 @@ class Account extends \yii\db\ActiveRecord
             return Proxy::find()
                 ->innerJoinWith('proxyTags')
                 ->andWhere(['proxy_tag.tag_id' => $this->proxy_tag_id])
-                ->orderBy(new Expression('RAND()'))
-                ->one();
+                ->orderBy(new Expression('RAND()'));
         }
 
         return Proxy::find()
             ->defaultForAccounts()
-            ->orderBy(new Expression('RAND()'))
-            ->one();
+            ->orderBy(new Expression('RAND()'));
     }
 
     /**
