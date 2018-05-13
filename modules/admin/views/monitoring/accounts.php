@@ -32,11 +32,15 @@ $formatter = Yii::$app->formatter;
                     'attribute' => 'username',
                     'content' => function (\app\models\Account $model) {
                         $html = [];
-                        if ($model->disabled) {
-                            $html[] = '<span class="fa fa-exclamation-triangle text-danger" title="Not found."></span>';
-                        }
                         $html[] = Html::a($model->displayName, ['account/dashboard', 'id' => $model->id]);
                         $html[] = Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
+
+                        if ($model->accounts_monitoring_level){
+                            $html[] = sprintf('<span class="fa fa-magic text-muted pull-right" title="monitoring level: %s"></span>', $model->accounts_monitoring_level);
+                        }
+                        if ($model->disabled) {
+                            $html[] = '<span class="fa fa-exclamation-triangle text-danger pull-right" title="Not found."></span>';
+                        }
 
                         return implode(" \n", $html);
                     },
