@@ -107,7 +107,7 @@ class Account extends \yii\db\ActiveRecord
             [['updated_at', 'created_at'], 'safe'],
             [['proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes', 'uid'], 'string', 'max' => 255],
-            [['monitoring','disabled'], 'boolean'],
+            [['monitoring', 'disabled'], 'boolean'],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
             [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
@@ -134,6 +134,13 @@ class Account extends \yii\db\ActiveRecord
             'proxy_id' => 'Proxy ID',
             'proxy_tag_id' => 'Proxy Tag ID',
             'notes' => 'Notes',
+        ];
+    }
+
+    public function attributeHints()
+    {
+        return [
+            'name' => 'The name displayed in the lists, if empty, the \'username\' will be used.',
         ];
     }
 

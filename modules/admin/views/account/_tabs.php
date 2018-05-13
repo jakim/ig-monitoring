@@ -13,6 +13,10 @@ use yii\bootstrap\Nav;
         ['label' => 'Statistics', 'url' => ['/admin/account/stats', 'id' => $model->id]],
         ['label' => 'Media Tags', 'url' => ['/admin/account/media-tags', 'id' => $model->id]],
         ['label' => 'Media Accounts', 'url' => ['/admin/account/media-accounts', 'id' => $model->id]],
+        ['label' => '<span class="fa fa-gears"></span>', 'url' => ['/admin/account/settings', 'id' => $model->id],
+            'options' => ['class' => 'pull-right'],
+            'linkOptions' => ['class' => 'text-muted'],
+            'encode' => false],
     ],
     'options' => ['class' => 'nav nav-tabs'], // set this to nav-tabs or nav-pills to get tab-styled navigation
 ]); ?>

@@ -17,6 +17,8 @@ use app\components\ArrayHelper;
  */
 class Account extends \app\models\Account
 {
+    const SCENARIO_UPDATE = 'update';
+
     public $as_followed_by;
     public $as_follows;
     public $as_media;
@@ -24,6 +26,16 @@ class Account extends \app\models\Account
     public $as_created_at;
 
     public $s_tags;
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_UPDATE] = [
+            'name',
+        ];
+
+        return $scenarios;
+    }
 
     public function getLastStats()
     {

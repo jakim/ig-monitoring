@@ -61,6 +61,20 @@ class AccountController extends Controller
         return false;
     }
 
+    public function actionSettings($id)
+    {
+        $model = $this->findModel($id);
+        $model->setScenario(Account::SCENARIO_UPDATE);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['account/dashboard', 'id' => $model->id]);
+        }
+
+        return $this->render('settings', [
+            'model' => $model,
+        ]);
+    }
+
     public function actionTags($id)
     {
         $model = $this->findModel($id);
@@ -130,7 +144,7 @@ class AccountController extends Controller
                     'tag.*',
                     'count(tag.id) as occurs',
                 ])
-                ->innerJoinWith(['media' => function(Query $q) use ($model) {
+                ->innerJoinWith(['media' => function (Query $q) use ($model) {
                     $q->andWhere(['media.account_id' => $model->id]);
                 }])
                 ->groupBy('tag.id'),
@@ -162,7 +176,7 @@ class AccountController extends Controller
                     'account.*',
                     'count(account.id) as occurs',
                 ])
-                ->innerJoinWith(['mediaAccounts.media' => function(Query $q) use ($model) {
+                ->innerJoinWith(['mediaAccounts.media' => function (Query $q) use ($model) {
                     $q->andWhere(['media.account_id' => $model->id]);
                 }])
                 ->groupBy('account.id'),
