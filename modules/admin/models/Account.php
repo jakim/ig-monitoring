@@ -32,6 +32,7 @@ class Account extends \app\models\Account
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_UPDATE] = [
             'name',
+            'accounts_monitoring_level'
         ];
 
         return $scenarios;

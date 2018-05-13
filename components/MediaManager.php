@@ -44,10 +44,10 @@ class MediaManager extends Component
         }
 
         if ($media->caption) {
-            $tags = (array) Text::getTags($media->caption);
+            $tags = (array)Text::getTags($media->caption);
             $this->updateTags($media, $tags);
 
-            $usernames = (array) Text::getUsernames($media->caption);
+            $usernames = (array)Text::getUsernames($media->caption);
             // ignore owner of media
             ArrayHelper::removeValue($usernames, $this->account->username);
             $this->updateUsernames($media, $usernames);
@@ -109,9 +109,12 @@ class MediaManager extends Component
     {
         $manager = \Yii::createObject(AccountManager::class);
         $manager->saveUsernames($usernames);
+        if ($this->account) {
+            $manager->monitorMultiple($usernames, $this->account);
+        }
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($id) use ($media, $createdAt) {
+        $rows = array_map(function ($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
@@ -140,7 +143,7 @@ class MediaManager extends Component
         $manager->saveTags($tags);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($id) use ($media, $createdAt) {
+        $rows = array_map(function ($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,

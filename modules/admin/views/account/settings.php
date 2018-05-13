@@ -27,6 +27,7 @@ $lastAccountStats = $model->lastAccountStats;
                     <?php $form = ActiveForm::begin(); ?>
 
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'accounts_monitoring_level')->textInput(['type' => 'number', 'step' => 1, 'min' => 0]) ?>
 
                     <div class="form-group">
                         <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>

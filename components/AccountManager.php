@@ -15,6 +15,7 @@ use app\models\Account;
 use app\models\AccountTag;
 use app\models\Tag;
 use yii\base\Component;
+use yii\db\IntegrityException;
 use yii\web\NotFoundHttpException;
 
 class AccountManager extends Component
@@ -74,6 +75,43 @@ class AccountManager extends Component
         $stats->updateEr($account);
     }
 
+    public function monitorMultiple(array $usernames, Account $parent)
+    {
+        $usernames = array_filter(array_unique($usernames));
+        foreach ($usernames as $username) {
+            $account = $this->monitor($username);
+            $account->proxy_id = $parent->proxy_id;
+            $account->proxy_tag_id = $parent->proxy_tag_id;
+
+            //calculation monitoring level
+            if ($parent->accounts_monitoring_level > 1) {
+                $level = $parent->accounts_monitoring_level - 1;
+                if ($level > $account->accounts_monitoring_level) {
+                    $account->accounts_monitoring_level = $level;
+                }
+            }
+            $account->save();
+
+            $this->updateTags($account, $parent->tags);
+        }
+    }
+
+    public function monitor(string $username, $proxyId = null, $proxyTagId = null): Account
+    {
+        $account = Account::findOne(['username' => $username]);
+        if ($account === null) {
+            $account = new Account(['username' => $username]);
+        }
+
+        $account->proxy_id = $proxyId;
+        $account->proxy_tag_id = $proxyTagId;
+        $account->monitoring = 1;
+
+        $account->save();
+
+        return $account;
+    }
+
     public function saveUsernames(array $usernames)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
@@ -94,17 +132,20 @@ class AccountManager extends Component
 
     public function updateTags(Account $account, array $tags)
     {
-        // clearing
-        AccountTag::deleteAll(['account_id' => $account->id]);
-
-        // add
-        foreach (array_filter($tags) as $tag) {
-            $model = Tag::findOne(['name' => $tag]);
-            if ($model === null && $tag) {
-                $model = new Tag(['name' => $tag]);
-                $model->insert();
+        foreach ($tags as $tag) {
+            if (is_string($tag)) {
+                $name = $tag;
+                $tag = Tag::findOne(['name' => $name]);
+                if ($tag === null) {
+                    $tag = new Tag(['name' => $name]);
+                    $tag->insert();
+                }
             }
-            $account->link('tags', $model);
+            try {
+                $account->link('tags', $tag);
+            } catch (IntegrityException $exception) {
+                continue;
+            }
         }
     }
 }

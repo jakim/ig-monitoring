@@ -68,21 +68,18 @@ class MonitoringController extends Controller
 
         if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
             $usernames = StringHelper::explode($form->names, ',', true, true);
+
+            $accountManager = \Yii::createObject(AccountManager::class);
+
             foreach ($usernames as $username) {
-                $account = Account::findOne(['username' => $username]);
-                if ($account === null) {
-                    $account = new Account(['username' => $username]);
-                }
-                $account->proxy_id = $form->proxy_id ?: null;
-                $account->proxy_tag_id = $form->proxy_tag_id ?: null;
-                $account->monitoring = 1;
-                if ($account->save()) {
+                $account = $accountManager->monitor($username, $form->proxy_id, $form->proxy_tag_id);
+                if (!$account->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
-                    $accountManager = \Yii::createObject(AccountManager::class);
                     $accountManager->updateTags($account, (array)$form->tags);
                 } else {
                     \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
-                    \Yii::$app->session->setFlash('error', 'ERR!');
+                    \Yii::$app->session->setFlash('error', "ERR! {$username}");
+                    break;
                 }
 
             }
