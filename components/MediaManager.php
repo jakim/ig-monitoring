@@ -159,19 +159,4 @@ class MediaManager extends Component
         \Yii::$app->db->createCommand($sql)
             ->execute();
     }
-
-    /**
-     * @param \app\models\Media $media
-     * @param \Jakim\Model\Post $data
-     * @return bool
-     */
-    private function statsNeedUpdate(Media $media, Post $data): bool
-    {
-        if (!$media->lastMediaStats) {
-            return true;
-        }
-
-        return $media->lastMediaStats->likes != $data->likes ||
-            $media->lastMediaStats->comments != $data->comments;
-    }
 }
