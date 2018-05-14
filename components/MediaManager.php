@@ -57,15 +57,7 @@ class MediaManager extends Component
             throw new Exception(json_encode($media->errors));
         }
 
-        if ($media->caption) {
-            $tags = (array)Text::getTags($media->caption);
-            $this->updateTags($media, $tags);
-
-            $usernames = (array)Text::getUsernames($media->caption);
-            // ignore owner of media
-            ArrayHelper::removeValue($usernames, $this->account->username);
-            $this->updateUsernames($media, $usernames);
-        }
+        $this->extractRelatedData($media);
     }
 
     public function updateUsernames(Media $media, array $usernames)
@@ -121,6 +113,24 @@ class MediaManager extends Component
         $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
         \Yii::$app->db->createCommand($sql)
             ->execute();
+    }
+
+    /**
+     * @param \app\models\Media $media
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    protected function extractRelatedData(Media $media): void
+    {
+        if ($media->caption) {
+            $tags = (array)Text::getTags($media->caption);
+            $this->updateTags($media, $tags);
+
+            $usernames = (array)Text::getUsernames($media->caption);
+            // ignore owner of media
+            ArrayHelper::removeValue($usernames, $this->account->username);
+            $this->updateUsernames($media, $usernames);
+        }
     }
 
 }
