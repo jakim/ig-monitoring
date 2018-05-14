@@ -72,7 +72,7 @@ class MediaManager extends Component
     {
         $manager = \Yii::createObject(AccountManager::class);
         $manager->saveUsernames($usernames);
-        if ($this->account) {
+        if ($this->account && $this->account->accounts_monitoring_level) {
             $manager->monitorMultiple($usernames, $this->account);
         }
 
