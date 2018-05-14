@@ -54,7 +54,9 @@ class AccountStats extends Component
 
         $er = [];
         foreach ($media as $m) {
-            $er[] = ($m->lastMediaStats->likes + $m->lastMediaStats->comments) / $m->lastMediaStats->account_followed_by;
+            if ($m->account_followed_by) {
+                $er[] = ($m->likes + $m->comments) / $m->account_followed_by;
+            }
         }
 
         $er = $er ? array_sum($er) / count($er) : 0;

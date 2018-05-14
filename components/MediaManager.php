@@ -36,11 +36,25 @@ class MediaManager extends Component
      */
     public function update(Media $media, Post $data)
     {
-        $media = $this->updateDetails($media, $data);
+        $this->account = $media->account ?? $this->account;
 
-        if (!$this->account) {
-            $this->account = $media->account;
-            $this->account->refresh();
+        $media->instagram_id = $data->id;
+        $media->shortcode = $data->shortcode;
+        $media->is_video = $data->isVideo;
+        $media->caption = $data->caption;
+        $media->taken_at = (new \DateTime('@' . $data->takenAt))->format('Y-m-d H:i:s');
+
+        $media->likes = $data->likes;
+        $media->comments = $data->comments;
+        if ($this->account->lastAccountStats) {
+            $media->account_followed_by = $this->account->lastAccountStats->followed_by;
+            $media->account_follows = $this->account->lastAccountStats->follows;
+        }
+
+        $media->account_id = $this->account->id;
+
+        if (!$media->save()) {
+            throw new Exception(json_encode($media->errors));
         }
 
         if ($media->caption) {
@@ -52,57 +66,6 @@ class MediaManager extends Component
             ArrayHelper::removeValue($usernames, $this->account->username);
             $this->updateUsernames($media, $usernames);
         }
-
-        $this->updateStats($media, $data);
-    }
-
-    /**
-     * @param \app\models\Media $media
-     * @param \Jakim\Model\Post $data
-     * @return \app\models\Media
-     * @throws \yii\base\Exception
-     */
-    public function updateDetails(Media $media, Post $data): Media
-    {
-        $media->instagram_id = $data->id;
-        $media->shortcode = $data->shortcode;
-        $media->is_video = $data->isVideo;
-        $media->caption = $data->caption;
-        $media->taken_at = (new \DateTime('@' . $data->takenAt))->format('Y-m-d H:i:s');
-
-        if (!$media->account_id && $this->account) {
-            $media->account_id = $this->account->id;
-        }
-
-        if (!$media->save()) {
-            throw new Exception(json_encode($media->errors));
-        }
-
-        return $media;
-    }
-
-    /**
-     * @param \app\models\Media $media
-     * @param \Jakim\Model\Post $data
-     * @return \app\models\MediaStats|null
-     */
-    public function updateStats(Media $media, Post $data): ?MediaStats
-    {
-        $account = $media->account ?? $this->account;
-        if (empty($account->lastAccountStats)) {
-            return null;
-        }
-        $mediaStats = null;
-        if ($this->statsNeedUpdate($media, $data)) {
-            $mediaStats = new MediaStats();
-            $mediaStats->likes = $data->likes;
-            $mediaStats->comments = $data->comments;
-            $mediaStats->account_followed_by = $this->account->lastAccountStats->followed_by;
-            $mediaStats->account_follows = $this->account->lastAccountStats->follows;
-            $media->link('mediaStats', $mediaStats);
-        }
-
-        return $mediaStats;
     }
 
     public function updateUsernames(Media $media, array $usernames)
@@ -159,4 +122,5 @@ class MediaManager extends Component
         \Yii::$app->db->createCommand($sql)
             ->execute();
     }
+
 }
