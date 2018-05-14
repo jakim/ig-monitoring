@@ -11,10 +11,13 @@ namespace app\modules\api\v1\controllers;
 use app\models\Tag;
 use app\modules\api\v1\components\ActiveController;
 use app\modules\api\v1\models\Account;
+use app\modules\api\v1\models\AccountSearchForm;
+use yii\data\ActiveDataFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
+use yii\rest\IndexAction;
 use yii\web\ServerErrorHttpException;
 
 class AccountController extends ActiveController
@@ -25,6 +28,15 @@ class AccountController extends ActiveController
     {
         $actions = parent::actions();
         unset($actions['create']);
+
+        $actions['index'] = [
+            'class' => IndexAction::class,
+            'modelClass' => $this->modelClass,
+            'dataFilter' => [
+                'class' => ActiveDataFilter::class,
+                'searchModel' => AccountSearchForm::class,
+            ],
+        ];
 
         return $actions;
     }
