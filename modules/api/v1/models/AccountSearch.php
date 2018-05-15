@@ -58,6 +58,23 @@ class AccountSearch extends Model
             'query' => $query,
         ]);
 
+        $dataProvider->sort->attributes['followed_by'] = [
+            'asc' => ['account_stats.followed_by' => SORT_ASC],
+            'desc' => ['account_stats.followed_by' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['follows'] = [
+            'asc' => ['account_stats.follows' => SORT_ASC],
+            'desc' => ['account_stats.follows' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['media'] = [
+            'asc' => ['account_stats.media' => SORT_ASC],
+            'desc' => ['account_stats.media' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['er'] = [
+            'asc' => ['account_stats.er' => SORT_ASC],
+            'desc' => ['account_stats.er' => SORT_DESC],
+        ];
+
         return $dataProvider;
     }
 

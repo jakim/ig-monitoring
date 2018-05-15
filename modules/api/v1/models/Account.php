@@ -10,15 +10,10 @@ namespace app\modules\api\v1\models;
 
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 class Account extends \app\models\Account
 {
-    public $as_followed_by;
-    public $as_follows;
-    public $as_media;
-    public $as_er;
-    public $as_created_at;
-
     public function behaviors()
     {
         return ArrayHelper::merge(parent::behaviors(), [
@@ -40,7 +35,9 @@ class Account extends \app\models\Account
             'monitoring',
             'disabled',
             'name',
-            'profile_pic_url',
+            'profile_pic_url' => function () {
+                return Url::to($this->profile_pic_url, true);
+            },
             'full_name',
             'biography',
             'external_url',
@@ -54,5 +51,22 @@ class Account extends \app\models\Account
 //            'media' => 'as_media',
 //            'er' => 'as_er',
         ];
+    }
+
+    public function extraFields()
+    {
+        return [
+            'lastAccountStats',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastAccountStats()
+    {
+        return $this->hasOne(AccountStats::class, ['account_id' => 'id'])
+            ->orderBy('account_stats.id DESC')
+            ->limit(1);
     }
 }
