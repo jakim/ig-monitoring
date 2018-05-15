@@ -13,6 +13,12 @@ use yii\helpers\ArrayHelper;
 
 class Account extends \app\models\Account
 {
+    public $as_followed_by;
+    public $as_follows;
+    public $as_media;
+    public $as_er;
+    public $as_created_at;
+
     public function behaviors()
     {
         return ArrayHelper::merge(parent::behaviors(), [
@@ -42,6 +48,11 @@ class Account extends \app\models\Account
             'notes',
             'updated_at',
             'created_at',
+
+//            'followed_by' => 'as_followed_by',
+//            'follows' => 'as_follows',
+//            'media' => 'as_media',
+//            'er' => 'as_er',
         ];
     }
 }

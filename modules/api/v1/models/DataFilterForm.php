@@ -2,7 +2,7 @@
 /**
  * Created for IG Monitoring.
  * User: jakim <pawel@jakimowski.info>
- * Date: 14.05.2018
+ * Date: 15.05.2018
  */
 
 namespace app\modules\api\v1\models;
@@ -10,14 +10,18 @@ namespace app\modules\api\v1\models;
 
 use yii\base\Model;
 
-class AccountSearchForm extends Model
+class DataFilterForm extends Model
 {
+    public $er;
+    public $followed_by;
+    public $follows;
+    public $media;
     public $username;
 
     public function rules()
     {
         return [
-            [['username'], 'safe'],
+            [['er', 'followed_by', 'follows', 'media', 'username'], 'safe'],
         ];
     }
 }

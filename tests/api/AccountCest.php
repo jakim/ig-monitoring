@@ -46,7 +46,7 @@ class AccountCest
             'filter' => [
                 'username' => ['in' => [$account5->username, $account7->username]],
             ],
-            'sort' => 'id'
+            'sort' => 'id',
         ]);
 
         $I->seeProperListResponse(Api::responseAccountJsonType());
@@ -61,7 +61,7 @@ class AccountCest
             'filter' => [
                 'username' => ['in' => [$account5->username, $account7->username]],
             ],
-            'sort' => 'id'
+            'sort' => 'id',
         ]);
 
         $I->seeProperListResponse(Api::responseAccountJsonType());
@@ -72,6 +72,67 @@ class AccountCest
         $I->assertEquals($account7->username, $response['1']['username']);
         $I->assertEquals($account7->name, $response['1']['name']);
 
+    }
+
+    public function tryToGetFilteredListByStats(ApiTester $I)
+    {
+        $I->haveFixtures([
+            'account_stats' => \app\tests\fixtures\AccountStatsFixture::class,
+        ]);
+
+        $I->sendGET('/accounts', [
+            'filter' => [
+                'er' => ['>' => 0.5],
+                'or' => [
+                    ['follows' => 10],
+                    ['followed_by' => 9],
+                ],
+            ],
+        ]);
+
+        $I->seeProperListResponse(Api::responseAccountJsonType());
+        $response = $I->grabJsonResponseAsArray();
+        $I->assertCount(2, $response);
+    }
+
+    public function tryToGetFilteredListByTags(ApiTester $I)
+    {
+        $I->haveFixtures([
+            'tag' => \app\tests\fixtures\TagFixture::class,
+            'account_tag' => \app\tests\fixtures\AccountTagFixture::class,
+        ]);
+
+        $I->sendGET('/accounts', [
+            'filter' => [
+                'tags' => 'tag0',
+            ],
+        ]);
+
+        $I->seeProperListResponse(Api::responseAccountJsonType());
+        $I->assertCount(1, $I->grabJsonResponseAsArray());
+
+        $account = $I->grabFixture('account', 'account0');
+        $tag = $I->grabFixture('tag', 'tag2');
+
+        $I->haveRecord(\app\models\AccountTag::class, ['account_id' => $account->id, 'tag_id' => $tag->id]);
+
+        $I->sendGET('/accounts', [
+            'filter' => [
+                'tags' => "tag0, {$tag->name}",
+            ],
+        ]);
+
+        $I->seeProperListResponse(Api::responseAccountJsonType());
+        $I->assertCount(1, $I->grabJsonResponseAsArray());
+
+        $I->sendGET('/accounts', [
+            'filter' => [
+                'tags' => $tag->name,
+            ],
+        ]);
+
+        $I->seeProperListResponse(Api::responseAccountJsonType());
+        $I->assertCount(2, $I->grabJsonResponseAsArray());
     }
 
     public function tryCreateAccount(ApiTester $I)
