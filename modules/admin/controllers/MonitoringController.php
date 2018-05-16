@@ -115,12 +115,6 @@ class MonitoringController extends Controller
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['account.monitoring' => 1]);
 
-        // TODO remove after few test sessions or transfer to search model
-        $dataProvider->sort->defaultOrder = [
-            'disabled' => SORT_DESC,
-            'id' => SORT_DESC,
-        ];
-
         return $this->render('accounts', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

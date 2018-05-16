@@ -61,8 +61,12 @@ class AccountSearch extends Account
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
         ]);
+
+        $dataProvider->sort->defaultOrder = [
+            'disabled' => SORT_DESC,
+            'id' => SORT_DESC,
+        ];
 
         $dataProvider->sort->attributes['username'] = [
             'asc' => ['name' => SORT_ASC, 'username' => SORT_ASC],
