@@ -3,11 +3,13 @@
 namespace app\modules\admin\controllers;
 
 use app\components\AccountManager;
+use app\models\Media;
 use app\models\Tag;
 use app\modules\admin\components\AccountStatsManager;
 use app\modules\admin\controllers\actions\FavoriteAction;
 use app\modules\admin\controllers\actions\MonitoringAction;
 use app\modules\admin\models\Account;
+use app\modules\admin\models\AccountStats;
 use Yii;
 use app\modules\admin\models\AccountSearch;
 use yii\data\ActiveDataProvider;
@@ -32,6 +34,8 @@ class AccountController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'delete-stats' => ['POST'],
+                    'delete-associated' => ['POST'],
                     'monitoring' => ['POST'],
                     'tags' => ['POST'],
                     'favorite' => ['POST'],
@@ -73,6 +77,27 @@ class AccountController extends Controller
         return $this->render('settings', [
             'model' => $model,
         ]);
+    }
+
+    public function actionDeleteStats($id)
+    {
+        AccountStats::deleteAll(['account_id' => $id]);
+
+        return $this->redirect(['account/dashboard', 'id' => $id]);
+    }
+
+    public function actionDeleteAssociated($id)
+    {
+        Media::deleteAll(['account_id' => $id]);
+
+        return $this->redirect(['account/dashboard', 'id' => $id]);
+    }
+
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['monitoring/accounts']);
     }
 
     public function actionTags($id)
@@ -235,20 +260,6 @@ class AccountController extends Controller
                 'model' => $model,
             ]);
         }
-    }
-
-    /**
-     * Deletes an existing Account model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     *
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
     }
 
     /**

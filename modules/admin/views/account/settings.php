@@ -24,16 +24,49 @@ $lastAccountStats = $model->lastAccountStats;
             <div class="nav-tabs-custom">
                 <?= $this->render('_tabs', ['model' => $model]) ?>
                 <div class="tab-content">
-                    <?php $form = ActiveForm::begin(); ?>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <?php $form = ActiveForm::begin(); ?>
 
-                    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-                    <?= $form->field($model, 'accounts_monitoring_level')->textInput(['type' => 'number', 'step' => 1, 'min' => 0]) ?>
+                            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                            <?= $form->field($model, 'accounts_monitoring_level')->textInput(['type' => 'number', 'step' => 1, 'min' => 0]) ?>
 
-                    <div class="form-group">
-                        <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>
+                            <div class="form-group">
+                                <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>
+                            </div>
+
+                            <?php ActiveForm::end() ?>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-2">
+                            <p>
+                                <?= Html::a('Delete statistics history', ['account/delete-stats', 'id' => $model->id], [
+                                    'class' => 'btn btn-danger',
+                                    'data' => [
+                                        'method' => 'post',
+                                        'confirm' => 'Statistical data will be permanently deleted, are you sure?',
+                                    ],
+                                ]) ?>
+                            </p>
+                            <p>
+                                <?= Html::a('Delete associated data', ['account/delete-associated', 'id' => $model->id], [
+                                    'class' => 'btn btn-danger',
+                                    'data' => [
+                                        'method' => 'post',
+                                        'confirm' => 'Associated data (media tags, media accounts) will be permanently deleted, are you sure?',
+                                    ],
+                                ]) ?>
+                            </p>
+                            <p>
+                                <?= Html::a('Delete account', ['account/delete', 'id' => $model->id], [
+                                    'class' => 'btn btn-danger',
+                                    'data' => [
+                                        'method' => 'post',
+                                        'confirm' => 'Account and all associated data will be permanently deleted, are you sure?',
+                                    ],
+                                ]) ?>
+                            </p>
+                        </div>
                     </div>
-
-                    <?php ActiveForm::end() ?>
                 </div>
             </div>
         </div>
