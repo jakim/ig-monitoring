@@ -66,15 +66,7 @@ $formatter = Yii::$app->formatter;
                     'statsAttribute' => 'er',
                     'numberFormat' => ['percent', 2, ['sign' => false]],
                 ],
-                [
-                    'attribute' => 's_tags',
-                    'value' => function (Account $model) {
-                        $tags = $model->getTags()->select('tag.name')->column();
-                        if ($tags) {
-                            return implode(', ', $tags);
-                        }
-                    },
-                ],
+                's_tags',
                 [
                     'attribute' => 'as_created_at',
                     'label' => 'Updated At',

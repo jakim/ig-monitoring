@@ -6,6 +6,7 @@ use app\models\AccountStats;
 use app\models\AccountTag;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\Expression;
 use yii\helpers\StringHelper;
 
 /**
@@ -51,11 +52,19 @@ class AccountSearch extends Account
                 'account_stats.media as as_media',
                 'account_stats.er as as_er',
                 'account_stats.created_at as as_created_at',
+                new Expression('GROUP_CONCAT(tag.name SEPARATOR \', \') as s_tags'),
             ])
-            ->leftJoin(
-                AccountStats::tableName(),
-                'account.id=account_stats.account_id and account_stats.id = (SELECT MAX(id) FROM account_stats WHERE account_stats.account_id=account.id)'
-            );
+            ->leftJoin([
+                'as_max' => AccountStats::find()
+                    ->select([
+                        new Expression('MAX(id) as id'),
+                        'account_id',
+                    ])
+                    ->groupBy('account_id'),
+            ], 'account.id=as_max.account_id')
+            ->leftJoin(AccountStats::tableName(), 'account_stats.id=as_max.id')
+            ->joinWith('tags', false)
+            ->groupBy('account.id');
 
         // add conditions that should always apply here
 
