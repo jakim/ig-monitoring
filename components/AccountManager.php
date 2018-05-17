@@ -70,9 +70,9 @@ class AccountManager extends Component
 
         $posts = $scraper->fetchMedia($account);
         // update account media
-        $details->updateMedia($account, $posts);
+        $n = $details->updateMedia($account, $posts);
         // update account er
-        $stats->updateEr($account);
+        $stats->updateEr($account, $n);
     }
 
     public function monitorMultiple(array $usernames, Account $parent)

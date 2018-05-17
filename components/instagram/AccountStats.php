@@ -39,7 +39,7 @@ class AccountStats extends Component
             $account->lastAccountStats->media != $data->media;
     }
 
-    public function updateEr(Account $account)
+    public function updateEr(Account $account, int $mediaLimit = 10)
     {
         $account->refresh();
         if (!$account->lastAccountStats) {
@@ -49,7 +49,7 @@ class AccountStats extends Component
         $media = Media::find()
             ->andWhere(['account_id' => $account->id])
             ->orderBy('taken_at DESC')
-            ->limit(10)
+            ->limit($mediaLimit)
             ->all();
 
         $er = [];
