@@ -16,6 +16,7 @@ use app\models\AccountTag;
 use app\models\Tag;
 use yii\base\Component;
 use yii\db\IntegrityException;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 class AccountManager extends Component
@@ -72,7 +73,8 @@ class AccountManager extends Component
         // update account media
         $media = $details->updateMedia($account, $posts);
         // update account er
-        $stats->updateEr($account, count($media), ['id' => \yii\helpers\ArrayHelper::getColumn($media, 'id')]);
+        $mediaCount = count($media);
+        $stats->updateEr($account, ($mediaCount > 10 ? 10 : $mediaCount), ['id' => ArrayHelper::getColumn($media, 'id')]);
     }
 
     public function monitorMultiple(array $usernames, Account $parent)
