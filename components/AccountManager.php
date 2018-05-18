@@ -70,9 +70,9 @@ class AccountManager extends Component
 
         $posts = $scraper->fetchMedia($account);
         // update account media
-        $n = $details->updateMedia($account, $posts);
+        $media = $details->updateMedia($account, $posts);
         // update account er
-        $stats->updateEr($account, $n);
+        $stats->updateEr($account, count($media), ['id' => \yii\helpers\ArrayHelper::getColumn($media, 'id')]);
     }
 
     public function monitorMultiple(array $usernames, Account $parent)

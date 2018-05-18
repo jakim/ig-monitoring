@@ -31,7 +31,7 @@ class AccountDetails extends Component
     /**
      * @param \app\models\Account $account
      * @param \Generator|\Jakim\Model\Post[] $items
-     * @return int
+     * @return array|Media[]
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
@@ -43,17 +43,16 @@ class AccountDetails extends Component
             'account' => $account,
         ]);
 
-        $n = 0;
+        $arr = [];
         foreach ($items as $item) {
             $media = Media::findOne(['instagram_id' => $item->id]);
             if ($media === null) {
                 $media = new Media(['account_id' => $account->id]);
             }
-            $manager->update($media, $item);
-            $n++;
+            $arr[] = $manager->update($media, $item);
         }
 
-        return $n;
+        return $arr;
     }
 
     public function profilePicNeedUpdate(Account $account, \Jakim\Model\Account $data): bool

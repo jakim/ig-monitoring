@@ -30,11 +30,12 @@ class MediaManager extends Component
     /**
      * @param \app\models\Media $media
      * @param \Jakim\Model\Post $data
+     * @return \app\models\Media
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
-    public function update(Media $media, Post $data)
+    public function update(Media $media, Post $data): Media
     {
         $this->account = $media->account ?? $this->account;
 
@@ -58,6 +59,8 @@ class MediaManager extends Component
         }
 
         $this->extractRelatedData($media);
+
+        return $media;
     }
 
     public function updateUsernames(Media $media, array $usernames)
