@@ -17,6 +17,7 @@ use app\models\Tag;
 use yii\base\Component;
 use yii\db\IntegrityException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 use yii\web\NotFoundHttpException;
 
 class AccountManager extends Component
@@ -94,7 +95,8 @@ class AccountManager extends Component
             }
             $account->save();
 
-            $this->updateTags($account, $parent->tags);
+            $tags = empty($parent->accounts_default_tags) ? $parent->tags : StringHelper::explode($parent->accounts_default_tags, ',', true, true);
+            $this->updateTags($account, $tags);
         }
     }
 

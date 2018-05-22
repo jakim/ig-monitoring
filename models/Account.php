@@ -29,6 +29,7 @@ use yii\helpers\ArrayHelper;
  * @property string $notes
  * @property bool $disabled
  * @property int $accounts_monitoring_level
+ * @property string $accounts_default_tags
  *
  * @property string $usernamePrefixed
  * @property string $displayName
@@ -105,7 +106,7 @@ class Account extends \yii\db\ActiveRecord
     {
         return [
             [['username'], 'required'],
-            [['updated_at', 'created_at'], 'safe'],
+            [['updated_at', 'created_at', 'accounts_default_tags'], 'safe'],
             [['proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
             ['accounts_monitoring_level', 'integer', 'min' => 0],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes', 'uid'], 'string', 'max' => 255],
@@ -145,6 +146,7 @@ class Account extends \yii\db\ActiveRecord
         return [
             'name' => 'The name displayed in the lists, if empty, the \'username\' will be used.',
             'accounts_monitoring_level' => 'Automatically monitors discovered accounts. Be careful.',
+            'accounts_default_tags' => 'Automatically tag discovered accounts. If not set, parent tags will be used.',
         ];
     }
 

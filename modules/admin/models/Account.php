@@ -34,6 +34,7 @@ class Account extends \app\models\Account
             'name',
             'accounts_monitoring_level',
             'disabled',
+            'accounts_default_tags',
         ];
 
         return $scenarios;
@@ -53,7 +54,7 @@ class Account extends \app\models\Account
             'as_er' => 'Er',
             's_tags' => 'Tags',
             'as_created_at' => 'Created At',
-            'disabled' => 'An exclamation triangle in the list of accounts, is set automatically if the account is not reachable. Disabled this option if you are sure that this account exists and want to try to refresh stats again.'
+            'disabled' => 'An exclamation triangle in the list of accounts, is set automatically if the account is not reachable. Disabled this option if you are sure that this account exists and want to try to refresh stats again.',
         ]);
     }
 

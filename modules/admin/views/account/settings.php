@@ -2,7 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use yii\widgets\DetailView;
+use yii\helpers\ArrayHelper;
+use app\modules\admin\models\Account;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Account */
@@ -30,6 +31,7 @@ $lastAccountStats = $model->lastAccountStats;
 
                             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                             <?= $form->field($model, 'accounts_monitoring_level')->textInput(['type' => 'number', 'step' => 1, 'min' => 0]) ?>
+                            <?= $form->field($model, 'accounts_default_tags')->textInput(['maxlength' => true, 'placeholder' => 'comma separated list...']); ?>
                             <?= $form->field($model, 'disabled')->checkbox() ?>
 
                             <div class="form-group">
