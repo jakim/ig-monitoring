@@ -118,7 +118,7 @@ class AccountSearch extends Account
 
         $query->andFilterWhere(['or',
             ['like', 'username', $this->username],
-            ['like', 'name', $this->username],
+            ['like', 'account.name', $this->username],
         ]);
 
         if ($this->s_tags) {
