@@ -42,6 +42,7 @@ class Unit extends \Codeception\Module
         $data->media = $modifier;
         $data->follows = $modifier;
         $data->followedBy = $modifier;
+        $data->isPrivate = true;
 
         return $data;
     }

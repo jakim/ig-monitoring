@@ -35,7 +35,10 @@ $formatter = Yii::$app->formatter;
                         $html[] = Html::a($model->displayName, ['account/dashboard', 'id' => $model->id]);
                         $html[] = Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
 
-                        if ($model->accounts_monitoring_level){
+                        if ($model->is_private) {
+                            $html[] = '<span class="fa fa-user-secret text-muted pull-right" title="is private"></span>';
+                        }
+                        if ($model->accounts_monitoring_level) {
                             $html[] = sprintf('<span class="fa fa-magic text-muted pull-right" title="monitoring level: %s"></span>', $model->accounts_monitoring_level);
                         }
                         if ($model->disabled) {

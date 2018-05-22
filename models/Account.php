@@ -30,6 +30,7 @@ use yii\helpers\ArrayHelper;
  * @property bool $disabled
  * @property int $accounts_monitoring_level
  * @property string $accounts_default_tags
+ * @property bool $is_private
  *
  * @property string $usernamePrefixed
  * @property string $displayName
@@ -110,7 +111,7 @@ class Account extends \yii\db\ActiveRecord
             [['proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
             ['accounts_monitoring_level', 'integer', 'min' => 0],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes', 'uid'], 'string', 'max' => 255],
-            [['monitoring', 'disabled'], 'boolean'],
+            [['monitoring', 'disabled', 'is_private'], 'boolean'],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
             [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],

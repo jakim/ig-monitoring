@@ -37,6 +37,7 @@ class AccountDetailsTest extends \Codeception\Test\Unit
             'biography' => 'test_data1',
             'external_url' => 'test_data1',
             'instagram_id' => 'test_data1',
+            'is_private' => 1,
         ]);
     }
 
