@@ -132,8 +132,11 @@ class AccountManager extends Component
             ->execute();
     }
 
-    public function updateTags(Account $account, array $tags)
+    public function updateTags(Account $account, array $tags, bool $merge = true)
     {
+        if (!$merge) {
+            AccountTag::deleteAll(['account_id' => $account->id]);
+        }
         foreach ($tags as $tag) {
             if (is_string($tag)) {
                 $name = $tag;

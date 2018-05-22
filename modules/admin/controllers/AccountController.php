@@ -105,7 +105,7 @@ class AccountController extends Controller
         $tags = Yii::$app->request->post('account_tags', []);
 
         $manager = Yii::createObject(AccountManager::class);
-        $manager->updateTags($model, $tags);
+        $manager->updateTags($model, $tags, false);
 
         return $this->redirect(Url::previous());
     }
