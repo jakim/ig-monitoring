@@ -1,18 +1,8 @@
-**2018.04.18 NOTE:**
-
-**I have restored the basic functions, just run “composer update”.**
-
-**Have fun** :sunglasses:
-
-12.04.2018 NOTE:
-
-~~Instagram has made changes, all public endpoints have stopped working. I will look for a workaround.~~
-
-~~At the moment the tool is dead :confused:~~
-
 ## IG Monitoring
 
 [Screenshots](#screenshots)
+
+[Account statistics](#account-statistics)
 
 [FAQ](#faq)
 
@@ -40,12 +30,11 @@ DEV stage.  **Use at your own risk.**
 - create cron hourly for: `./yii stats/update-accounts` and `./yii stats/update-tags`
 
 # Manual
-Everything should be added from the command line.
+A few things can be done only from the command line.
 > NOTE: Everything will be slowly moved to the admin panel.
 
-- `./yii proxy/create` (moved)
-- `./yii monitoring/account` (moved)
-- `./yii monitoring/tag` (moved)
+- `./yii user/activate  ID - activation of the user account
+- `./yii - list of all commands
 - `./yii help monitoring/account` - displays help for the command
 
 See `./yii` for more commands.
@@ -70,6 +59,29 @@ This is an independent tool. **Use at your own risk.**
 ![image](https://user-images.githubusercontent.com/839118/37048055-0b5362f8-216d-11e8-9dab-a82304dd4353.png)
 ![image](https://user-images.githubusercontent.com/839118/37048109-3372280a-216d-11e8-988d-c825dfe2432c.png)
 
+## Account statistics
+
+- total number of “followed by”
+- total number of “follows”
+- total number of media
+- engangment rate (calculated for last 10 posts)
+- chart for last month’s data
+- daily change
+- monthly change
+- a public link to view statistics, e.g. for the client
+- tags linked to account
+- accounts linked to account
+
+## Tag statistics
+
+- total number of media
+- total number of likes from top 9 posts
+- min likes from top 9 posts
+- max likes from top 9 posts
+- total number of comments from top 9 posts
+- min comments from top 9 posts
+- max comments from top 9 posts
+
 # FAQ
 Why did I build it?
 
@@ -86,3 +98,14 @@ You never known, but I’m using this for few months now without any issue.
 What do I expect from this share?
 
 New ideas would be great, feel free to create issue and PR. :)
+
+# PREMIUM SUPPORT
+
+If you do not know how to get into the installation, I can do it for you. As part of the support, I offer:
+- installation of a www server
+- database installation
+- script configuration
+- free, good ssl certificate (letsencrypt)
+- script modifications, according to requirements
+- other software integration 
+
