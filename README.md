@@ -6,6 +6,8 @@
 
 [FAQ](#faq)
 
+[PREMIUM SUPPORT](#premium-support)
+
 # Version
 DEV stage.  **Use at your own risk.**
 
