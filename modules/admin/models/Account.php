@@ -10,11 +10,6 @@ namespace app\modules\admin\models;
 
 use app\components\ArrayHelper;
 
-/**
- * @inheritdoc
- *
- * @property \app\models\AccountStats $lastStats
- */
 class Account extends \app\models\Account
 {
     const SCENARIO_UPDATE = 'update';
@@ -38,11 +33,6 @@ class Account extends \app\models\Account
         ];
 
         return $scenarios;
-    }
-
-    public function getLastStats()
-    {
-        return $this->getLastAccountStats();
     }
 
     public function attributeLabels()

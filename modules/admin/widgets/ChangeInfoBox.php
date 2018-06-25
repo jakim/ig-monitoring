@@ -13,7 +13,7 @@ use yii\base\Widget;
 class ChangeInfoBox extends Widget
 {
     public $header = 'Bookmarks';
-    public $number = '41,410';
+    public $number = '41';
     public $format = 'integer';
 
     protected $bgCssClass = 'bg-blue';

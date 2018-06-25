@@ -67,22 +67,18 @@ $lastTagStats = $model->lastTagStats;
                 </li>
             </ul>
         <?php endif; ?>
-        <?= Html::a($model->monitoring ? '<span class="fa fa-stop"></span> Turn off monitoring' : '<span class="fa fa-play"></span> Turn on monitoring', ['monitoring', 'id' => $model->id], [
-            'class' => 'btn btn-block ' . ($model->monitoring ? 'btn-danger' : 'btn-success'),
-            'data' => [
-                'method' => 'post',
-                'confirm' => 'Are you sure?',
-            ],
+        <?= \app\modules\admin\widgets\OnOffMonitoringButton::widget([
+            'model' => $model,
         ]) ?>
     </div>
 </div>
 
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Description</h3>
-    </div>
-    <!-- /.box-header -->
-    <div class="box-body">
+<!--<div class="box box-primary">-->
+<!--    <div class="box-header with-border">-->
+<!--        <h3 class="box-title">Description</h3>-->
+<!--    </div>-->
+<!--    <!-- /.box-header -->
+<!--    <div class="box-body">-->
 <!--        <strong><i class="fa fa-external-link margin-r-5"></i>-->
 <!--            Title-->
 <!--        </strong>-->
@@ -90,29 +86,29 @@ $lastTagStats = $model->lastTagStats;
 <!--            description-->
 <!--        </p>-->
 <!--        <hr>-->
-        <strong>
-            <i class="fa fa-tags margin-r-5"></i> Tags (TODO)
-            <a href="#" class="btn btn-xs btn-link">add</a>
-        </strong>
-
-        <p>
-            <span class="label label-danger">UI Design</span>
-            <span class="label label-success">Coding</span>
-            <span class="label label-info">Javascript</span>
-            <span class="label label-warning">PHP</span>
-            <span class="label label-primary">Node.js</span>
-        </p>
-
-        <hr>
-
-        <strong>
-            <i class="fa fa-file-text-o margin-r-5"></i> Notes (TODO)
-            <a href="#" class="btn btn-xs btn-link">add</a>
-        </strong>
-
-        <p>
-            Administrator notes
-        </p>
-    </div>
-    <!-- /.box-body -->
-</div>
+<!--        <strong>-->
+<!--            <i class="fa fa-tags margin-r-5"></i> Tags (TODO)-->
+<!--            <a href="#" class="btn btn-xs btn-link">add</a>-->
+<!--        </strong>-->
+<!---->
+<!--        <p>-->
+<!--            <span class="label label-danger">UI Design</span>-->
+<!--            <span class="label label-success">Coding</span>-->
+<!--            <span class="label label-info">Javascript</span>-->
+<!--            <span class="label label-warning">PHP</span>-->
+<!--            <span class="label label-primary">Node.js</span>-->
+<!--        </p>-->
+<!---->
+<!--        <hr>-->
+<!---->
+<!--        <strong>-->
+<!--            <i class="fa fa-file-text-o margin-r-5"></i> Notes (TODO)-->
+<!--            <a href="#" class="btn btn-xs btn-link">add</a>-->
+<!--        </strong>-->
+<!---->
+<!--        <p>-->
+<!--            Administrator notes-->
+<!--        </p>-->
+<!--    </div>-->
+<!--    <!-- /.box-body -->
+<!--</div>-->

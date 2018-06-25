@@ -10,11 +10,6 @@ namespace app\modules\admin\models;
 
 use app\components\ArrayHelper;
 
-/**
- * @inheritdoc
- *
- * @property \app\models\TagStats $lastStats
- */
 class Tag extends \app\models\Tag
 {
     public $ts_media;
@@ -24,11 +19,7 @@ class Tag extends \app\models\Tag
     public $ts_max_likes;
     public $ts_min_comments;
     public $ts_max_comments;
-
-    public function getLastStats()
-    {
-        return $this->getLastTagStats();
-    }
+    public $ts_created_at;
 
     public function attributeLabels()
     {
@@ -40,6 +31,7 @@ class Tag extends \app\models\Tag
             'ts_max_likes' => 'Max Likes',
             'ts_min_comments' => 'Min Comments',
             'ts_max_comments' => 'Max Comments',
+            'ts_created_at' => 'Created At',
         ]);
     }
 }

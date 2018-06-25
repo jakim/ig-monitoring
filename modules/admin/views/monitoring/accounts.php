@@ -6,9 +6,13 @@ use app\modules\admin\models\Account;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
-/* @var $this yii\web\View */
-/* @var $searchModel app\modules\admin\models\AccountSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/**
+ * @var yii\web\View $this
+ * @var app\modules\admin\models\AccountSearch $searchModel
+ * @var yii\data\ActiveDataProvider $dataProvider
+ * @var array $dailyDiff
+ * @var array $monthlyDiff
+ */
 
 $this->title = 'Monitoring :: Accounts';
 $this->params['breadcrumbs'][] = 'Monitoring';
@@ -22,7 +26,6 @@ $formatter = Yii::$app->formatter;
     <?= $this->render('_tabs') ?>
 
     <div class="tab-content table-responsive">
-
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
@@ -52,22 +55,29 @@ $formatter = Yii::$app->formatter;
                     'class' => StatsColumn::class,
                     'attribute' => 'as_followed_by',
                     'statsAttribute' => 'followed_by',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 [
                     'class' => StatsColumn::class,
                     'attribute' => 'as_follows',
                     'statsAttribute' => 'follows',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 [
                     'class' => StatsColumn::class,
                     'attribute' => 'as_media',
                     'statsAttribute' => 'media',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 [
                     'class' => StatsColumn::class,
                     'attribute' => 'as_er',
                     'statsAttribute' => 'er',
-                    'numberFormat' => ['percent', 2, ['sign' => false]],
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 's_tags',
                 [

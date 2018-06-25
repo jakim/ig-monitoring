@@ -9,6 +9,11 @@ namespace app\modules\admin\controllers;
 
 
 use app\components\AccountManager;
+use app\components\stats\AccountDailyDiff;
+use app\components\stats\AccountMonthlyDiff;
+use app\components\stats\TagDailyDiff;
+use app\components\stats\TagMonthlyDiff;
+use app\components\TagManager;
 use app\models\Favorite;
 use app\modules\admin\models\Account;
 use app\modules\admin\models\AccountMonitoringForm;
@@ -16,6 +21,7 @@ use app\modules\admin\models\AccountSearch;
 use app\modules\admin\models\Tag;
 use app\modules\admin\models\TagMonitoringForm;
 use app\modules\admin\models\TagSearch;
+use Carbon\Carbon;
 use yii\filters\VerbFilter;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -41,15 +47,12 @@ class MonitoringController extends Controller
 
         if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
             $names = StringHelper::explode($form->names, ',', true, true);
+
+            $tagManager = \Yii::createObject(TagManager::class);
+
             foreach ($names as $name) {
-                $tag = Tag::findOne(['slug' => Inflector::slug($name)]);
-                if ($tag === null) {
-                    $tag = new Tag(['name' => $name]);
-                }
-                $tag->proxy_id = $form->proxy_id ?: null;
-                $tag->proxy_tag_id = $form->proxy_tag_id ?: null;
-                $tag->monitoring = 1;
-                if ($tag->save()) {
+                $tag = $tagManager->monitor($name, $form->proxy_id, $form->proxy_tag_id);
+                if (!$tag->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
                 } else {
                     \Yii::error('Validation error: ' . json_encode($tag->errors), __METHOD__);
@@ -75,7 +78,8 @@ class MonitoringController extends Controller
                 $account = $accountManager->monitor($username, $form->proxy_id, $form->proxy_tag_id);
                 if (!$account->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
-                    $accountManager->updateTags($account, (array)$form->tags);
+                    $tagManager = \Yii::createObject(TagManager::class);
+                    $tagManager->saveForAccount($account, (array)$form->tags);
                 } else {
                     \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
                     \Yii::$app->session->setFlash('error', "ERR! {$username}");
@@ -90,12 +94,27 @@ class MonitoringController extends Controller
 
     public function actionTags()
     {
-        $searchModel = new TagSearch(['monitoring' => 1]);
+        $searchModel = new TagSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['tag.monitoring' => 1]);
+
+        $dailyDiff = \Yii::createObject([
+            'class' => TagDailyDiff::class,
+            'models' => $dataProvider->models,
+        ]);
+        $dailyDiff->initLastDiff();
+
+        $monthlyDiff = \Yii::createObject([
+            'class' => TagMonthlyDiff::class,
+            'models' => $dataProvider->models,
+        ]);
+        $monthlyDiff->initLastDiff();
 
         return $this->render('tags', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'dailyDiff' => $dailyDiff,
+            'monthlyDiff' => $monthlyDiff,
         ]);
     }
 
@@ -115,9 +134,23 @@ class MonitoringController extends Controller
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['account.monitoring' => 1]);
 
+        $dailyDiff = \Yii::createObject([
+            'class' => AccountDailyDiff::class,
+            'models' => $dataProvider->models,
+        ]);
+        $dailyDiff->initLastDiff();
+
+        $monthlyDiff = \Yii::createObject([
+            'class' => AccountMonthlyDiff::class,
+            'models' => $dataProvider->models,
+        ]);
+        $monthlyDiff->initLastDiff();
+
         return $this->render('accounts', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'dailyDiff' => $dailyDiff,
+            'monthlyDiff' => $monthlyDiff,
         ]);
     }
 }

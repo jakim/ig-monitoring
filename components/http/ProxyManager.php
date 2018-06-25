@@ -5,12 +5,13 @@
  * Date: 09.05.2018
  */
 
-namespace app\components;
+namespace app\components\http;
 
 
 use app\models\Account;
 use app\models\Proxy;
 use app\models\ProxyTag;
+use app\models\Tag;
 use yii\base\Component;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -19,8 +20,7 @@ class ProxyManager extends Component
 {
     public $restTime = 1;
 
-    // TODO ultimately, it will also handle tag model
-    public function reserve(Account $model)
+    public function reserve($model): Proxy
     {
         $uid = $this->generateUid();
 

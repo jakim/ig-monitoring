@@ -20,8 +20,6 @@ use yii\helpers\ArrayHelper;
  * @property string $created_at
  * @property int $likes
  * @property int $comments
- * @property int $account_followed_by
- * @property int $account_follows
  *
  * @property Account $account
  * @property MediaAccount[] $mediaAccounts
@@ -52,7 +50,7 @@ class Media extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['account_id', 'likes', 'comments', 'account_followed_by', 'account_follows'], 'integer'],
+            [['account_id', 'likes', 'comments'], 'integer'],
             [['is_video'], 'boolean'],
             [['shortcode'], 'required'],
             [['caption'], 'string'],
@@ -80,8 +78,6 @@ class Media extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'likes' => 'Likes',
             'comments' => 'Comments',
-            'account_followed_by' => 'Account Followed By',
-            'account_follows' => 'Account Follows',
         ];
     }
 

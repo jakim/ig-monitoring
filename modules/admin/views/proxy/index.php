@@ -37,8 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
 
                 ],
-                'default_for_accounts:boolean',
-                'default_for_tags:boolean',
                 'created_at:date',
 
                 [

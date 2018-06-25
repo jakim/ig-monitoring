@@ -8,120 +8,67 @@
 namespace app\components\instagram;
 
 
-use app\components\http\Client;
-use app\components\http\CacheStorage;
-use app\models\Account;
-use app\models\Proxy;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\HandlerStack;
+use app\components\instagram\base\Scraper;
+use app\components\instagram\contracts\AccountScraperInterface;
+use app\components\instagram\models\Account as IgAccount;
 use Jakim\Query\AccountQuery;
-use Kevinrob\GuzzleCache\CacheMiddleware;
-use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
-use yii\base\Component;
-use yii\base\InvalidConfigException;
-use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 
-class AccountScraper extends Component
+class AccountScraper extends Scraper implements AccountScraperInterface
 {
     /**
-     * @var Proxy
+     * @param string $ident username or id
+     * @return \app\components\instagram\models\Account|null
      */
-    public $proxy;
+    public function fetchOne(string $ident): ?IgAccount
+    {
+        $query = new AccountQuery($this->httpClient);
+        $account = $query->findOne($ident);
+        $profilePic = $this->fetchProfilePicIfNeeded($account->username, $account->profilePicUrl);
+
+        $model = new IgAccount();
+        $model->id = $account->id;
+        $model->username = $account->username;
+        $model->profilePicUrl = $profilePic;
+        $model->fullName = $account->fullName;
+        $model->biography = $account->biography;
+        $model->externalUrl = $account->externalUrl;
+        $model->followedBy = $account->followedBy;
+        $model->follows = $account->follows;
+        $model->media = $account->media;
+        $model->isPrivate = $account->isPrivate;
+
+        return $model;
+    }
 
     /**
-     * @var bool
+     * @param string $username
+     * @return \app\components\instagram\models\Post[]
      */
-    public $cache = true;
-
-    public function fetchDetails(Account $account): \Jakim\Model\Account
+    public function fetchLastPosts(string $username): array
     {
-        $query = $this->queryFactory($account);
+        $query = new AccountQuery($this->httpClient);
+        $posts = $query->findLastPosts($username, 10);
+        $posts = $this->preparePosts($posts);
 
-        $ident = $account->username;
-        $attempt = 0;
+        return $posts;
+    }
 
-        while ($attempt < 2) {
-            try {
-                $attempt++;
+    private function fetchProfilePicIfNeeded($username, $profilePicUrl)
+    {
+        $username = strtolower($username);
+        $filename = sprintf('%s_%s', $username, basename($profilePicUrl));
+        $path = sprintf('/uploads/%s', substr($username, 0, 2));
 
-                return $query->findOne($ident);
+        $fullPath = \Yii::getAlias("@app/web/{$path}");
+        @mkdir($fullPath);
+        @chmod($fullPath, 0777);
 
-            } catch (ClientException $exception) {
-                $ident = $account->instagram_id;
-                if ($ident) {
-                    continue;
-                }
-                break;
-            }
-        };
-
-        $httpCode = isset($exception) ? $exception->getResponse()->getStatusCode() : null;
-        if ($httpCode == 404) {
-            throw new NotFoundHttpException('Account not found.');
+        $file = "{$fullPath}/{$filename}";
+        if (!file_exists($file)) {
+            $content = $this->httpClient->get($profilePicUrl)->getBody()->getContents();
+            file_put_contents($file, $content);
         }
 
-        throw $exception ?? new ServerErrorHttpException('Something is wrong!');
-    }
-
-    /**
-     * @param \app\models\Account $account
-     * @return \Generator|\Jakim\Model\Post[]
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function fetchMedia(Account $account)
-    {
-        $query = $this->queryFactory($account);
-
-        return $query->findPosts($account->username, 10);
-    }
-
-    /**
-     * @param \app\models\Account $account
-     * @param string $url
-     * @return null|string image data
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function fetchProfilePic(Account $account, string $url): ?string
-    {
-        $proxy = $this->getProxy($account);
-        $client = Client::factory($proxy);
-
-        return $client->get($url)->getBody()->getContents();
-    }
-
-    protected function getProxy(Account $account): Proxy
-    {
-        $proxy = $this->proxy ?: $account->proxy;
-        if (!$proxy || !$proxy->active) {
-            throw new InvalidConfigException('Account proxy must be set and be active.');
-        }
-
-        return $proxy;
-    }
-
-    /**
-     * @param \app\models\Account $account
-     * @return AccountQuery
-     * @throws \yii\base\InvalidConfigException
-     */
-    private function queryFactory(Account $account): AccountQuery
-    {
-        $proxy = $this->getProxy($account);
-
-        if ($this->cache) {
-            $stack = HandlerStack::create();
-            $stack->push(new CacheMiddleware(
-                new GreedyCacheStrategy(
-                    new CacheStorage(), 3600)
-            ), 'cache');
-            $client = Client::factory($proxy, ['handler' => $stack]);
-        } else {
-            $client = Client::factory($proxy);
-        }
-
-        $query = new AccountQuery($client);
-
-        return $query;
+        return "{$path}/{$filename}";
     }
 }

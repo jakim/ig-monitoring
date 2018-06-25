@@ -17,8 +17,6 @@ use yii\behaviors\TimestampBehavior;
  * @property int $active
  * @property string $updated_at
  * @property string $created_at
- * @property bool $default_for_accounts
- * @property bool $default_for_tags
  * @property string $reservation_uid
  *
  * @property string $curlString
@@ -91,7 +89,6 @@ class Proxy extends \yii\db\ActiveRecord
             'active' => 'Active',
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
-            'default_for_accounts' => 'Default For Accounts',
         ];
     }
 

@@ -8,10 +8,9 @@
 namespace app\jobs;
 
 
-use app\components\TagManager;
+use app\components\services\TagFullUpdate;
 use app\models\Tag;
 use yii\queue\JobInterface;
-use yii\queue\Queue;
 
 class TagUpdate implements JobInterface
 {
@@ -25,8 +24,11 @@ class TagUpdate implements JobInterface
     {
         $tag = Tag::findOne($this->id);
         if ($tag) {
-            $manager = \Yii::createObject(TagManager::class);
-            $manager->update($tag);
+            $service = \Yii::createObject([
+                'class' => TagFullUpdate::class,
+                'tag' => $tag,
+            ]);
+            $service->run();
         }
     }
 }

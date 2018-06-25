@@ -8,10 +8,7 @@
 namespace app\commands;
 
 
-use app\components\AccountManager;
-use app\components\instagram\AccountScraper;
 use app\components\JobFactory;
-use app\components\TagManager;
 use app\models\Account;
 use app\models\AccountStats;
 use app\models\Tag;

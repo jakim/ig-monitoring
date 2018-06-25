@@ -33,7 +33,8 @@
     "jakim-pj/ua": "@dev",
     "jakim-pj/ig": "@dev",
     "jakim-pj/ig-client": "@dev",
-    "kevinrob/guzzle-cache-middleware": "^3.2"
+    "kevinrob/guzzle-cache-middleware": "^3.2",
+    "nesbot/carbon": "^1.29"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.0.0",
