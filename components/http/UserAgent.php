@@ -5,7 +5,7 @@
  * Date: 11.01.2018
  */
 
-namespace app\components;
+namespace app\components\http;
 
 
 use yii\base\Component;

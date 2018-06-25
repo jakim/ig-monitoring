@@ -9,7 +9,9 @@ namespace app\modules\admin\widgets;
 
 
 use app\components\ArrayHelper;
+use app\models\Tag;
 use app\modules\admin\models\AccountMonitoringForm;
+use app\modules\admin\models\TagMonitoringForm;
 use yii\base\Widget;
 use yii\helpers\Html;
 
@@ -29,6 +31,21 @@ class OnOffMonitoringButton extends Widget
                 'data' => [
                     'method' => 'post',
                     'confirm' => 'Are you sure?',
+                ],
+            ]);
+        } elseif ($this->model instanceof Tag) {
+            $form = $this->form ?: new TagMonitoringForm([
+                'names' => $this->model->name,
+                'proxy_id' => $this->model->proxy_id,
+                'proxy_tag_id' => $this->model->proxy_tag_id,
+            ]);
+            echo CreateMonitoringModal::widget([
+                'form' => $form,
+                'title' => 'Tags',
+                'formAction' => ['monitoring/create-tag'],
+                'modalToggleButton' => [
+                    'class' => "{$this->linkCssClass} {$this->startLinkCssClass}",
+                    'label' => '<span class="fa fa-play"></span> Turn on monitoring',
                 ],
             ]);
         } else {

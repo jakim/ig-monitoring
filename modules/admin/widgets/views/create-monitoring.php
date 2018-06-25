@@ -76,7 +76,7 @@ $form = ActiveForm::begin([
             ])->label(false) ?>
             <div class="form-group-sm">or</div>
             <div class="well well-sm">
-                leave empty if you want to use the default one
+                leave empty if you want to use the random one
             </div>
         </div>
     </div>

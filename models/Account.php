@@ -44,6 +44,7 @@ use yii\helpers\ArrayHelper;
  * @property Tag[] $tags
  * @property Media[] $media
  * @property MediaAccount[] $mediaAccounts
+ * @property \app\models\Account[] $accounts
  */
 class Account extends \yii\db\ActiveRecord
 {
@@ -52,6 +53,7 @@ class Account extends \yii\db\ActiveRecord
     public static function usedTags()
     {
         return Tag::find()
+            ->distinct()
             ->innerJoin('account_tag', 'tag.id=account_tag.tag_id')
             ->orderBy('tag.slug ASC')
             ->all();
@@ -207,6 +209,24 @@ class Account extends \yii\db\ActiveRecord
     public function getMedia()
     {
         return $this->hasMany(Media::class, ['account_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMediaMediaAccounts()
+    {
+        return $this->hasMany(MediaAccount::class, ['media_id' => 'id'])
+            ->via('media');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAccounts()
+    {
+        return $this->hasMany(Account::class, ['id' => 'account_id'])
+            ->via('mediaMediaAccounts');
     }
 
     /**

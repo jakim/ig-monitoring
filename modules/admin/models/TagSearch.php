@@ -18,7 +18,7 @@ class TagSearch extends Tag
     public function rules()
     {
         return [
-            [['id', 'main_tag_id', 'monitoring', 'proxy_id'], 'integer'],
+            [['id', 'monitoring', 'proxy_id'], 'integer'],
             [['name', 'slug'], 'safe'],
         ];
     }
@@ -51,6 +51,7 @@ class TagSearch extends Tag
                 'tag_stats.max_likes as ts_max_likes',
                 'tag_stats.min_comments as ts_min_comments',
                 'tag_stats.max_comments as ts_max_comments',
+                'tag_stats.created_at as ts_created_at',
             ])
             ->leftJoin(
                 TagStats::tableName(),
@@ -92,6 +93,10 @@ class TagSearch extends Tag
             'asc' => ['ts_max_comments' => SORT_ASC],
             'desc' => ['ts_max_comments' => SORT_DESC],
         ];
+        $dataProvider->sort->attributes['ts_created_at'] = [
+            'asc' => ['ts_created_at' => SORT_ASC],
+            'desc' => ['ts_created_at' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -103,12 +108,14 @@ class TagSearch extends Tag
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'main_tag_id' => $this->main_tag_id,
             'monitoring' => $this->monitoring,
             'proxy_id' => $this->proxy_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['or',
+            ['like', 'name', $this->name],
+            ['like', 'slug', $this->name],
+        ]);
 
         return $dataProvider;
     }

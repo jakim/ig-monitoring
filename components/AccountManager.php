@@ -8,84 +8,24 @@
 namespace app\components;
 
 
-use app\components\instagram\AccountDetails;
-use app\components\instagram\AccountScraper;
-use app\components\instagram\AccountStats;
+use app\components\traits\FindOrCreate;
 use app\models\Account;
-use app\models\AccountTag;
-use app\models\Tag;
+use app\models\Media;
+use app\models\MediaAccount;
 use yii\base\Component;
-use yii\db\IntegrityException;
-use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
-use yii\web\NotFoundHttpException;
 
 class AccountManager extends Component
 {
-    public $scraper = AccountScraper::class;
+    use FindOrCreate;
 
-    /**
-     * Fetch data from API, update details and stats.
-     *
-     * @param \app\models\Account $account
-     * @throws \Throwable
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @throws \yii\web\NotFoundHttpException
-     */
-    public function update(Account $account)
+    public function monitorRelatedAccounts(Account $parent, array $accounts)
     {
-        /** @var AccountScraper $scraper */
-        $scraper = \Yii::createObject($this->scraper);
-        /** @var AccountDetails $details */
-        $details = \Yii::createObject(AccountDetails::class);
-        /** @var AccountStats $stats */
-        $stats = \Yii::createObject(AccountStats::class);
-
-        try {
-            $data = $scraper->fetchDetails($account);
-
-        } catch (NotFoundHttpException $exception) {
-
-            $account->disabled = 1;
-            $account->update(false);
-
-            throw $exception;
-        } catch (\Throwable $exception) {
-            throw $exception;
-        }
-
-        // update account details
-        $details->updateDetails($account, $data);
-
-        // update profile pic
-        if ($details->profilePicNeedUpdate($account, $data)) {
-            $content = $scraper->fetchProfilePic($account, $data->profilePicUrl);
-            $details->updateProfilePic($account, $data, $content);
-        }
-
-        // update account stats
-        if ($stats->statsNeedUpdate($account, $data)) {
-            $stats->updateStats($account, $data);
-        }
-
-        $posts = $scraper->fetchMedia($account);
-        // update account media
-        $media = $details->updateMedia($account, $posts);
-        // update account er
-        $mediaCount = count($media);
-        $stats->updateEr($account, ($mediaCount > 10 ? 10 : $mediaCount), ['id' => ArrayHelper::getColumn($media, 'id')]);
-    }
-
-    public function monitorMultiple(array $usernames, Account $parent)
-    {
-        $usernames = array_filter(array_unique($usernames));
-        foreach ($usernames as $username) {
-            $account = $this->monitor($username);
-            $account->proxy_id = $parent->proxy_id;
-            $account->proxy_tag_id = $parent->proxy_tag_id;
-
+        foreach ($accounts as $account) {
+            if (is_string($account)) {
+                /** @var Account $account */
+                $account = $this->findOrCreate(['username' => $account], Account::class);
+            }
             //calculation monitoring level
             if ($parent->accounts_monitoring_level > 1) {
                 $level = $parent->accounts_monitoring_level - 1;
@@ -93,18 +33,20 @@ class AccountManager extends Component
                     $account->accounts_monitoring_level = $level;
                 }
             }
-            $account->save();
+
+            $this->monitor($account, $parent->proxy_id, $parent->proxy_tag_id);
 
             $tags = empty($parent->accounts_default_tags) ? $parent->tags : StringHelper::explode($parent->accounts_default_tags, ',', true, true);
-            $this->updateTags($account, $tags);
+            $tagManager = \Yii::createObject(TagManager::class);
+            $tagManager->saveForAccount($account, $tags);
         }
     }
 
-    public function monitor(string $username, $proxyId = null, $proxyTagId = null): Account
+    public function monitor($account, $proxyId = null, $proxyTagId = null): Account
     {
-        $account = Account::findOne(['username' => $username]);
-        if ($account === null) {
-            $account = new Account(['username' => $username]);
+        if (is_string($account)) {
+            /** @var Account $account */
+            $account = $this->findOrCreate(['username' => $account], Account::class);
         }
 
         $account->proxy_id = $proxyId;
@@ -116,6 +58,32 @@ class AccountManager extends Component
         return $account;
     }
 
+    public function saveForMedia(Media $media, array $usernames)
+    {
+        $this->saveUsernames($usernames);
+
+        $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
+        $rows = array_map(function ($id) use ($media, $createdAt) {
+            return [
+                $media->id,
+                $id,
+                $createdAt,
+            ];
+        }, Account::find()
+            ->andWhere(['username' => $usernames])
+            ->column());
+
+        $sql = \Yii::$app->db->queryBuilder
+            ->batchInsert(MediaAccount::tableName(), ['media_id', 'account_id', 'created_at'], $rows);
+        $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
+        \Yii::$app->db->createCommand($sql)
+            ->execute();
+    }
+
+    /**
+     * @param array|string[] $usernames
+     * @throws \yii\db\Exception
+     */
     public function saveUsernames(array $usernames)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
@@ -132,27 +100,5 @@ class AccountManager extends Component
         $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
         \Yii::$app->db->createCommand($sql)
             ->execute();
-    }
-
-    public function updateTags(Account $account, array $tags, bool $merge = true)
-    {
-        if (!$merge) {
-            AccountTag::deleteAll(['account_id' => $account->id]);
-        }
-        foreach ($tags as $tag) {
-            if (is_string($tag)) {
-                $name = $tag;
-                $tag = Tag::findOne(['name' => $name]);
-                if ($tag === null) {
-                    $tag = new Tag(['name' => $name]);
-                    $tag->insert();
-                }
-            }
-            try {
-                $account->link('tags', $tag);
-            } catch (IntegrityException $exception) {
-                continue;
-            }
-        }
     }
 }

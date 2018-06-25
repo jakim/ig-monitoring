@@ -9,13 +9,24 @@ namespace app\components\http;
 
 
 use app\components\ArrayHelper;
-use app\components\UserAgent;
 use app\models\Proxy;
+use GuzzleHttp\HandlerStack;
+use Kevinrob\GuzzleCache\CacheMiddleware;
+use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 
 class Client
 {
-    public static function factory(Proxy $proxy, array $config = [])
+    public static function factory(Proxy $proxy, array $config = [], $cacheTtl = 0)
     {
+        if ($cacheTtl) {
+            $stack = HandlerStack::create();
+            $stack->push(new CacheMiddleware(
+                new GreedyCacheStrategy(
+                    new CacheStorage(), $cacheTtl)
+            ), 'cache');
+            $config = ['handler' => $stack];
+        }
+
         $config = ArrayHelper::merge([
             'proxy' => $proxy->curlString,
             'headers' => [

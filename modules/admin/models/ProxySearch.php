@@ -19,7 +19,7 @@ class ProxySearch extends Proxy
     public function rules()
     {
         return [
-            [['id', 'port', 'default_for_accounts', 'default_for_tags'], 'integer'],
+            [['id', 'port'], 'integer'],
             [['ip', 'username', 'password', 'active', 'tagString'], 'safe'],
         ];
     }
@@ -66,9 +66,7 @@ class ProxySearch extends Proxy
         $query->andFilterWhere(['like', 'ip', $this->ip])
             ->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'password', $this->password])
-            ->andFilterWhere(['active' => $this->active])
-            ->andFilterWhere(['default_for_accounts' => $this->default_for_accounts])
-            ->andFilterWhere(['default_for_tags' => $this->default_for_tags]);
+            ->andFilterWhere(['active' => $this->active]);
 
         if ($this->tagString) {
             $proxyIds = ProxyTag::find()

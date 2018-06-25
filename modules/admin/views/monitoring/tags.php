@@ -4,9 +4,13 @@ use app\modules\admin\components\grid\StatsColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
-/* @var $this yii\web\View */
-/* @var $searchModel app\modules\admin\models\TagSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/**
+ * @var yii\web\View $this
+ * @var app\modules\admin\models\TagSearch $searchModel
+ * @var yii\data\ActiveDataProvider $dataProvider
+ * @var array $dailyDiff
+ * @var array $monthlyDiff
+ */
 
 $this->title = 'Monitoring :: Tags';
 $this->params['breadcrumbs'][] = 'Monitoring';
@@ -26,7 +30,7 @@ $this->params['breadcrumbs'][] = 'Tags';
 
                 [
                     'attribute' => 'name',
-                    'content' => function(\app\models\Tag $model) {
+                    'content' => function (\app\models\Tag $model) {
                         return Html::a($model->namePrefixed, ['tag/stats', 'id' => $model->id]);
                     },
                 ],
@@ -34,38 +38,60 @@ $this->params['breadcrumbs'][] = 'Tags';
                     'class' => StatsColumn::class,
                     'statsAttribute' => 'media',
                     'attribute' => 'ts_media',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 [
                     'class' => StatsColumn::class,
                     'statsAttribute' => 'likes',
                     'attribute' => 'ts_likes',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 [
                     'class' => StatsColumn::class,
                     'statsAttribute' => 'comments',
                     'attribute' => 'ts_comments',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 [
                     'class' => StatsColumn::class,
                     'statsAttribute' => 'min_likes',
                     'attribute' => 'ts_min_likes',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 [
                     'class' => StatsColumn::class,
                     'statsAttribute' => 'max_likes',
                     'attribute' => 'ts_max_likes',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 [
                     'class' => StatsColumn::class,
                     'statsAttribute' => 'min_comments',
                     'attribute' => 'ts_min_comments',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
                 [
                     'class' => StatsColumn::class,
                     'statsAttribute' => 'max_comments',
                     'attribute' => 'ts_max_comments',
+                    'dailyDiff' => $dailyDiff,
+                    'monthlyDiff' => $monthlyDiff,
                 ],
-                'created_at:date',
+                [
+                    'attribute' => 'ts_created_at',
+                    'label' => 'Updated At',
+                    'format' => 'date',
+                ],
+                [
+                    'attribute' => 'created_at',
+                    'format' => 'date',
+                ],
             ],
         ]); ?>
 

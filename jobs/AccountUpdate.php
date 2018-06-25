@@ -8,14 +8,9 @@
 namespace app\jobs;
 
 
-use app\components\AccountManager;
-use app\components\instagram\AccountScraper;
-use app\components\ProxyManager;
+use app\components\services\AccountFullUpdate;
 use app\models\Account;
-use app\models\Proxy;
-use yii\base\Exception;
 use yii\queue\JobInterface;
-use yii\queue\Queue;
 
 class AccountUpdate implements JobInterface
 {
@@ -32,31 +27,11 @@ class AccountUpdate implements JobInterface
         $account = Account::findOne($this->id);
         if ($account && !$account->disabled) {
 
-            $proxyManager = \Yii::createObject(ProxyManager::class);
-
-            try {
-
-                $proxy = $proxyManager->reserve($account);
-
-                $manager = \Yii::createObject([
-                    'class' => AccountManager::class,
-                    'scraper' => [
-                        'class' => AccountScraper::class,
-                        'proxy' => $proxy,
-                    ],
-                ]);
-                $manager->update($account);
-                $proxyManager->release($proxy);
-
-            } catch (\Throwable $exception) {
-                
-                if (isset($proxy)) {
-                    $proxyManager->release($proxy);
-                }
-
-                throw $exception;
-            }
-
+            $service = \Yii::createObject([
+                'class' => AccountFullUpdate::class,
+                'account' => $account,
+            ]);
+            $service->run();
         }
     }
 }

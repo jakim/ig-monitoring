@@ -13,14 +13,4 @@ class ProxyQuery extends \yii\db\ActiveQuery
     {
         return $this->andWhere(['active' => 1]);
     }
-
-    public function defaultForAccounts()
-    {
-        return $this->andWhere(['default_for_accounts' => 1]);
-    }
-
-    public function defaultForTags()
-    {
-        return $this->andWhere(['default_for_tags' => 1]);
-    }
 }

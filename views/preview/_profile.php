@@ -68,7 +68,6 @@ $lastAccountStats = $model->lastAccountStats;
     <div class="box-header with-border">
         <h3 class="box-title">Description</h3>
     </div>
-    <!-- /.box-header -->
     <div class="box-body">
         <?php if ($model->external_url): ?>
             <strong><i class="fa fa-external-link margin-r-5"></i>
@@ -88,5 +87,4 @@ $lastAccountStats = $model->lastAccountStats;
             </p>
         <?php endif; ?>
     </div>
-    <!-- /.box-body -->
 </div>

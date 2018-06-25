@@ -8,10 +8,8 @@
 namespace app\modules\admin\components\grid;
 
 
-use app\models\Account;
-use app\modules\admin\components\AccountStatsManager;
-use yii\di\Instance;
 use yii\grid\DataColumn;
+use yii\helpers\ArrayHelper;
 
 class StatsColumn extends DataColumn
 {
@@ -20,7 +18,15 @@ class StatsColumn extends DataColumn
     public $statsAttribute;
     public $headerOptions = ['class' => 'sort-numerical'];
 
-    public $statsManager = AccountStatsManager::class;
+    /**
+     * @var \app\components\stats\AccountDailyDiff
+     */
+    public $dailyDiff;
+
+    /**
+     * @var \app\components\stats\AccountMonthlyDiff
+     */
+    public $monthlyDiff;
 
     public function init()
     {
@@ -35,35 +41,25 @@ class StatsColumn extends DataColumn
      * @param mixed $key
      * @param int $index
      * @return null|string
-     * @throws \yii\base\InvalidConfigException
      */
     public function getDataCellValue($model, $key, $index)
     {
-        if (!$model->lastStats) {
-            return null;
-        }
-
         /** @var \app\components\Formatter $formatter */
         $formatter = $this->grid->formatter;
 
-        if ($model instanceof Account) {
-            /** @var \app\modules\admin\components\AccountStatsManager $manager */
-            $manager = \Yii::createObject([
-                'class' => $this->statsManager,
-                'account' => $model,
-            ]);
-            $lastChange = $manager->lastChange($this->statsAttribute);
-            $monthlyChange = $manager->lastMonthChange($this->statsAttribute);
-        } else {
-            $lastChange = $model->lastChange($this->statsAttribute);
-            $monthlyChange = $model->monthlyChange($this->statsAttribute);
-        }
+        $lastChange = $this->dailyDiff->getLastDiff($model->id);
+        $lastChange = current($lastChange);
+        $lastChange = ArrayHelper::getValue($lastChange, $this->statsAttribute);
+
+        $monthlyChanges = $this->monthlyDiff->getLastDiff($model->id);
+        $monthlyChange = current($monthlyChanges);
+        $monthlyChange = ArrayHelper::getValue($monthlyChange, $this->statsAttribute);
 
         return sprintf(
             "%s (%s/%s)",
-            $formatter->format($model->lastStats->{$this->statsAttribute}, $this->numberFormat),
-            $lastChange ? $formatter->asChange($lastChange, true, $this->numberFormat) : 0,
-            $monthlyChange ? $formatter->asChange($monthlyChange, true, $this->numberFormat) : 0
+            $formatter->format($model->{$this->attribute}, $this->numberFormat),
+            is_numeric($lastChange) ? $formatter->asChange($lastChange, true, $this->numberFormat) : '-',
+            is_numeric($monthlyChange) ? $formatter->asChange($monthlyChange, true, $this->numberFormat) : '-'
         );
     }
 }

@@ -3,13 +3,17 @@
 namespace app\modules\admin\controllers;
 
 use app\components\AccountManager;
+use app\components\stats\AccountDaily;
+use app\components\stats\AccountDailyDiff;
+use app\components\stats\AccountMonthlyDiff;
+use app\components\TagManager;
 use app\models\Media;
 use app\models\Tag;
-use app\modules\admin\components\AccountStatsManager;
 use app\modules\admin\controllers\actions\FavoriteAction;
 use app\modules\admin\controllers\actions\MonitoringAction;
 use app\modules\admin\models\Account;
 use app\modules\admin\models\AccountStats;
+use Carbon\Carbon;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
@@ -64,6 +68,43 @@ class AccountController extends Controller
         return false;
     }
 
+    public function actionDashboard($id)
+    {
+        $model = $this->findModel($id);
+
+        $dailyDiff = Yii::createObject([
+            'class' => AccountDailyDiff::class,
+            'models' => $model,
+        ]);
+        $dailyDiff->initDiff(Carbon::now()->subMonth());
+        $dailyChanges = $dailyDiff->getDiff($model->id);
+        $dailyDiff->initLastDiff();
+        $lastDailyChange = $dailyDiff->getLastDiff($model->id);
+
+
+        $monthlyDiff = Yii::createObject([
+            'class' => AccountMonthlyDiff::class,
+            'models' => $model,
+        ]);
+        $monthlyDiff->initDiff(Carbon::now()->subYear());
+        $monthlyChanges = $monthlyDiff->getDiff($model->id);
+        $monthlyDiff->initLastDiff();
+        $lastMonthlyChange = $monthlyDiff->getLastDiff($model->id);
+
+        $dailyStats = Yii::createObject(AccountDaily::class, [$model]);
+        $dailyStats->initDiff(Carbon::now()->subMonth());
+        $dailyStats = $dailyStats->get();
+
+        return $this->render('dashboard', [
+            'model' => $model,
+            'lastDailyChange' => current($lastDailyChange),
+            'lastMonthlyChange' => current($lastMonthlyChange),
+            'dailyStats' => $dailyStats,
+            'dailyChanges' => $dailyChanges,
+            'monthlyChanges' => $monthlyChanges,
+        ]);
+    }
+
     public function actionSettings($id)
     {
         $model = $this->findModel($id);
@@ -104,25 +145,10 @@ class AccountController extends Controller
         $model = $this->findModel($id);
         $tags = Yii::$app->request->post('account_tags', []);
 
-        $manager = Yii::createObject(AccountManager::class);
-        $manager->updateTags($model, $tags, false);
+        $manager = Yii::createObject(TagManager::class);
+        $manager->setForAccount($model, $tags);
 
         return $this->redirect(Url::previous());
-    }
-
-    public function actionDashboard($id)
-    {
-        $model = $this->findModel($id);
-
-        $manager = Yii::createObject([
-            'class' => AccountStatsManager::class,
-            'account' => $model,
-        ]);
-
-        return $this->render('dashboard', [
-            'manager' => $manager,
-            'model' => $model,
-        ]);
     }
 
     public function actionStats($id)
