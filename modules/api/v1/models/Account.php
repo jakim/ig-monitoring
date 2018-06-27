@@ -35,7 +35,7 @@ class Account extends \app\models\Account
             'monitoring',
             'disabled',
             'name',
-            'profile_pic_url' => function () {
+            'profile_pic_url' => function() {
                 return Url::to($this->profile_pic_url, true);
             },
             'full_name',

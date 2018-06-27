@@ -56,7 +56,7 @@ abstract class Diff extends Component
      */
     public function setModels($models)
     {
-        $this->models = (array)$models;
+        $this->models = (array) $models;
 
         return $this;
     }

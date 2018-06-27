@@ -63,7 +63,7 @@ class AccountManager extends Component
         $this->saveUsernames($usernames);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function ($id) use ($media, $createdAt) {
+        $rows = array_map(function($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
@@ -87,7 +87,7 @@ class AccountManager extends Component
     public function saveUsernames(array $usernames)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function ($username) use ($createdAt) {
+        $rows = array_map(function($username) use ($createdAt) {
             return [
                 $username,
                 $createdAt,

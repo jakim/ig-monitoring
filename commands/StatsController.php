@@ -130,7 +130,7 @@ class StatsController extends Controller
     private function whereInterval($interval): Expression
     {
         return new Expression('DATE_FORMAT(created_at, \'%Y-%m-%d %H\') > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL :interval HOUR), \'%Y-%m-%d %H\')', [
-            'interval' => (int)$interval,
+            'interval' => (int) $interval,
         ]);
     }
 }

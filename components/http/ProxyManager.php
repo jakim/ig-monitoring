@@ -62,7 +62,7 @@ class ProxyManager extends Component
             'and',
             ['active' => 1],
             ['reservation_uid' => null],
-            ['<=', 'updated_at', (new \DateTime(sprintf('-%d seconds', (int)$this->restTime)))->format('Y-m-d H:i:s')],
+            ['<=', 'updated_at', (new \DateTime(sprintf('-%d seconds', (int) $this->restTime)))->format('Y-m-d H:i:s')],
         ];
 
         if ($model->proxy_id) {

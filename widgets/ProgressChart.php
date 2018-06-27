@@ -70,7 +70,7 @@ class ProgressChart extends Widget
             $color = array_shift($this->colors);
             $data = ArrayHelper::getColumn($stats, $attribute);
             if ($attribute == 'er') {
-                $data = array_map(function ($item) {
+                $data = array_map(function($item) {
                     return number_format($item * 100, 2);
                 }, $data);
             }
