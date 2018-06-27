@@ -74,7 +74,7 @@ class AccountStats extends \yii\db\ActiveRecord
             'followed_by' => 'Followed By',
             'follows' => 'Follows',
             'media' => 'Media',
-            'er' => 'Er',
+            'er' => 'Engagement',
             'created_at' => 'Created At',
         ];
     }

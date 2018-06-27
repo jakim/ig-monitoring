@@ -3,7 +3,7 @@
 return [
     'definitions' => [
         \yii\behaviors\TimestampBehavior::class => [
-            'value' => function() {
+            'value' => function () {
                 return (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
             },
         ],
@@ -12,7 +12,7 @@ return [
         ],
         \yii\data\Pagination::class => [
             'defaultPageSize' => 50,
-            'pageSizeLimit' => [1, 100],
+            'pageSizeLimit' => [1, 1000],
         ],
     ],
 ];

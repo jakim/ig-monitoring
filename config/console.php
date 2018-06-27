@@ -62,7 +62,7 @@ $config = [
                 'yii\queue\db\migrations',
             ],
         ],
-        'fixture' => [// Fixture generation command line.
+        'fixture' => [ // Fixture generation command line.
             'class' => \yii\faker\FixtureController::class,
             'templatePath' => 'tests/fixtures/templates',
             'fixtureDataPath' => 'tests/fixtures/data',

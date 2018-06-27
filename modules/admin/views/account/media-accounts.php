@@ -45,7 +45,7 @@ $lastAccountStats = $model->lastAccountStats;
                                 },
                             ],
                             [
-                                'label' => 'Er',
+                                'label' => $lastAccountStats->getAttributeLabel('er'),
                                 'value' => function(Account $account) use ($formatter) {
                                     if ($account->lastAccountStats) {
                                         $er = $account->lastAccountStats->er;

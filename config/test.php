@@ -1,6 +1,6 @@
 <?php
 
-$webConfig = require __DIR__ . '/web.php';
+$webConfig = require __DIR__.'/web.php';
 
 $db = require __DIR__ . '/test_db.php';
 

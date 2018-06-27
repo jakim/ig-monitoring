@@ -41,7 +41,7 @@ class Account extends \app\models\Account
             'as_followed_by' => 'Followed By',
             'as_follows' => 'Follows',
             'as_media' => 'Media',
-            'as_er' => 'Er',
+            'as_er' => 'Engagement',
             's_tags' => 'Tags',
             'as_created_at' => 'Created At',
             'disabled' => 'An exclamation triangle in the list of accounts, is set automatically if the account is not reachable. Disabled this option if you are sure that this account exists and want to try to refresh stats again.',
