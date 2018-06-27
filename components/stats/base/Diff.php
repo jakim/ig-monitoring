@@ -32,14 +32,22 @@ abstract class Diff extends Component
         }
     }
 
-    public function getDiff($accountId = null)
+    /**
+     * @param null $id AccountId or TagId
+     * @return array
+     */
+    public function getDiff($id = null)
     {
-        return $this->getFromCache($this->diffCache, $accountId);
+        return $this->getFromCache($this->diffCache, $id);
     }
 
-    public function getLastDiff($accountId = null)
+    /**
+     * @param null $id AccountId or TagId
+     * @return array
+     */
+    public function getLastDiff($id = null)
     {
-        return $this->getFromCache($this->lastDiffCache, $accountId);
+        return $this->getFromCache($this->lastDiffCache, $id);
     }
 
     /**
@@ -48,7 +56,7 @@ abstract class Diff extends Component
      */
     public function setModels($models)
     {
-        $this->models = is_array($models) ? $models : [$models];
+        $this->models = (array)$models;
 
         return $this;
     }
@@ -62,7 +70,9 @@ abstract class Diff extends Component
     {
         if ($accountId === null) {
             return $cache;
-        } elseif ($accountId && isset($cache[$accountId])) {
+        }
+
+        if ($accountId && isset($cache[$accountId])) {
             return $cache[$accountId];
         }
 

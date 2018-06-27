@@ -10,15 +10,9 @@ namespace app\components;
 
 use app\components\traits\FindOrCreate;
 use app\models\Account;
-use app\models\AccountStats;
 use app\models\Media;
-use app\models\MediaAccount;
-use app\models\MediaTag;
-use app\models\Tag;
 use jakim\ig\Text;
-use Jakim\Model\Post;
 use yii\base\Component;
-use yii\base\Exception;
 
 class MediaManager extends Component
 {
@@ -77,5 +71,7 @@ class MediaManager extends Component
                 $manager->monitorRelatedAccounts($account, $usernames);
             }
         }
+
+        return true;
     }
 }

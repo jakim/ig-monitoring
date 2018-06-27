@@ -9,7 +9,6 @@ namespace app\components\http;
 
 
 use yii\base\Component;
-use yii\caching\Cache;
 use yii\di\Instance;
 
 class UserAgent extends Component
@@ -25,7 +24,7 @@ class UserAgent extends Component
         /** @var \yii\caching\Cache $cache */
         $cache = Instance::ensure($this->cache);
 
-        $items = $cache->getOrSet(__METHOD__, function(Cache $cache) {
+        $items = $cache->getOrSet(__METHOD__, function() {
             return (new \jakim\ua\UserAgent())->fetch();
         }, 60 * 60 * 24 * 30);
 

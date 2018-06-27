@@ -14,6 +14,7 @@ trait FindOrCreate
 {
     public function findOrCreate(array $conditions, string $class): ActiveRecord
     {
+        /** @var ActiveRecord $class */
         $model = $class::findOne($conditions);
         if ($model === null) {
             $model = new $class($conditions);

@@ -70,7 +70,7 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
             } catch (ClientException $exception) {
                 \Yii::error($exception->getMessage(), __METHOD__);
                 continue;
-            };
+            }
             break;
         }
 

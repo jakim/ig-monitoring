@@ -8,10 +8,8 @@
 namespace app\components\http;
 
 
-use app\models\Account;
 use app\models\Proxy;
 use app\models\ProxyTag;
-use app\models\Tag;
 use yii\base\Component;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -55,7 +53,7 @@ class ProxyManager extends Component
 
     protected function generateUid()
     {
-        return sprintf("%s_%s", \Yii::$app->security->generateRandomString(64), time());
+        return sprintf('%s_%s', \Yii::$app->security->generateRandomString(64), time());
     }
 
     private function prepareCondition($model)

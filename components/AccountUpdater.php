@@ -76,7 +76,7 @@ class AccountUpdater extends Component
             $er[] = ($post->likes + $post->comments) / $accountStats->followed_by;
         }
 
-        $er = $er ? array_sum($er) / count($er) : 0;
+        $er = $er ? array_sum($er) / \count($er) : 0;
         $accountStats->er = round($er, 4);
         $this->saveModel($accountStats);
 

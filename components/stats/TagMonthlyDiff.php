@@ -15,8 +15,6 @@ use yii\helpers\ArrayHelper;
 
 class TagMonthlyDiff extends TagDiff
 {
-    protected $lastDiffCache = [];
-
     public function getLastDiff($tagId = null)
     {
         return $this->getFromCache($this->lastDiffCache, $tagId);

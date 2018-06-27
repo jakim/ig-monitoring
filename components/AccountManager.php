@@ -22,7 +22,7 @@ class AccountManager extends Component
     public function monitorRelatedAccounts(Account $parent, array $accounts)
     {
         foreach ($accounts as $account) {
-            if (is_string($account)) {
+            if (\is_string($account)) {
                 /** @var Account $account */
                 $account = $this->findOrCreate(['username' => $account], Account::class);
             }
@@ -44,7 +44,7 @@ class AccountManager extends Component
 
     public function monitor($account, $proxyId = null, $proxyTagId = null): Account
     {
-        if (is_string($account)) {
+        if (\is_string($account)) {
             /** @var Account $account */
             $account = $this->findOrCreate(['username' => $account], Account::class);
         }

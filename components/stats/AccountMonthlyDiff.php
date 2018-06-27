@@ -15,13 +15,6 @@ use yii\helpers\ArrayHelper;
 
 class AccountMonthlyDiff extends AccountDiff
 {
-    protected $lastDiffCache = [];
-
-    public function getLastDiff($accountId = null)
-    {
-        return $this->getFromCache($this->lastDiffCache, $accountId);
-    }
-
     public function initLastDiff()
     {
         $accountIds = $this->getModelIds();

@@ -80,7 +80,7 @@ class TagManager extends Component
      */
     public function saveForAccount(Account $account, array $tags)
     {
-        if (is_string($tags['0'])) {
+        if (\is_string($tags['0'])) {
             $this->saveTags($tags);
         } else {
             $tags = ArrayHelper::getColumn($tags, 'name');
