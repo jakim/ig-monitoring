@@ -3,7 +3,7 @@
 return [
     'definitions' => [
         \yii\behaviors\TimestampBehavior::class => [
-            'value' => function () {
+            'value' => function() {
                 return (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
             },
         ],

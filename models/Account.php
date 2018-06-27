@@ -70,7 +70,7 @@ class Account extends \yii\db\ActiveRecord
                     BaseActiveRecord::EVENT_BEFORE_UPDATE => ['uid'],
                 ],
                 'preserveNonEmptyValues' => true,
-                'value' => function () {
+                'value' => function() {
                     do {
                         $uid = Yii::$app->security->generateRandomString(64);
                         $uidExist = static::find()

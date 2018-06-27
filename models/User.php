@@ -36,7 +36,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
                     BaseActiveRecord::EVENT_BEFORE_UPDATE => ['access_token'],
                 ],
                 'preserveNonEmptyValues' => true,
-                'value' => function () {
+                'value' => function() {
                     do {
                         $token = Yii::$app->security->generateRandomString(64);
                         $tokenExist = static::find()

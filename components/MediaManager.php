@@ -53,13 +53,13 @@ class MediaManager extends Component
             return false;
         }
 
-        $tags = (array)Text::getTags($media->caption);
+        $tags = (array) Text::getTags($media->caption);
         if ($tags) {
             $manager = \Yii::createObject(TagManager::class);
             $manager->saveForMedia($media, $tags);
         }
 
-        $usernames = (array)Text::getUsernames($media->caption);
+        $usernames = (array) Text::getUsernames($media->caption);
         if ($usernames) {
             // ignore owner of media
             ArrayHelper::removeValue($usernames, $account->username);
