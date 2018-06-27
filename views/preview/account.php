@@ -32,14 +32,14 @@ $formatter = Yii::$app->formatter;
                     <?php endif; ?>
 
                     <?php if ($lastDailyChange): ?>
-                        <?= $this->render('_change-row', [
+                        <?= $this->render('@app/modules/admin/views/account/_change-row', [
                             'header' => 'Daily change',
                             'change' => $lastDailyChange,
                         ]); ?>
                     <?php endif; ?>
 
                     <?php if ($lastMonthlyChange): ?>
-                        <?= $this->render('_change-row', [
+                        <?= $this->render('@app/modules/admin/views/account/_change-row', [
                             'header' => 'Monthly change',
                             'change' => $lastMonthlyChange,
                         ]); ?>
