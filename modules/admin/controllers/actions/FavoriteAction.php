@@ -18,10 +18,15 @@ class FavoriteAction extends Action
     {
         $this->controller->findModel($id);
 
+        $user = \Yii::$app->user;
         $request = \Yii::$app->request;
-        $favorite = Favorite::findOne(['label' => $request->post('label')]);
+        $favorite = Favorite::findOne([
+            'user_id' => $user->id,
+            'label' => $request->post('label'),
+        ]);
         if ($favorite === null) {
             $favorite = new Favorite();
+            $favorite->user_id = $user->id;
             $favorite->label = $request->post('label');
             $favorite->url = $request->post('url');
             $favorite->save();

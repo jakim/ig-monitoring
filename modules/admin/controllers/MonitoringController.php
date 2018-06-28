@@ -79,7 +79,7 @@ class MonitoringController extends Controller
                 if (!$account->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
                     $tagManager = \Yii::createObject(TagManager::class);
-                    $tagManager->saveForAccount($account, (array) $form->tags);
+                    $tagManager->saveForAccount($account, (array)$form->tags);
                 } else {
                     \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
                     \Yii::$app->session->setFlash('error', "ERR! {$username}");
@@ -125,6 +125,7 @@ class MonitoringController extends Controller
         $url = \Yii::$app->request->post('url');
         if ($label && $url) {
             (new Favorite([
+                'user_id' => \Yii::$app->user->id,
                 'url' => $url,
                 'label' => "<span class='fa fa-search'></span> $label",
             ]))->insert(false);

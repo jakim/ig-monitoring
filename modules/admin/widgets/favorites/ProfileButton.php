@@ -40,7 +40,10 @@ class ProfileButton extends Widget
     private function isFavorite()
     {
         return Favorite::find()
-            ->andWhere(['url' => $this->getUrl()])
+            ->andWhere([
+                'user_id' => \Yii::$app->user->id,
+                'url' => $this->getUrl()]
+            )
             ->exists();
     }
 

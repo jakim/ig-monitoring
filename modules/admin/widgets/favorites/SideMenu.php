@@ -24,26 +24,15 @@ class SideMenu extends Menu
     {
         $this->options = ['class' => 'sidebar-menu tree favorites', 'data-widget' => 'tree'];
         $this->defaultIconHtml = '<i class="fa fa-star"></i> ';
-//        $this->view->registerJs('
-//        jQuery(\'.favorites .delete\').click(function(e){
-//            e.preventDefault();
-//            var $el = jQuery(this);
-//            var id = $el.attr(\'data-id\');
-//            jQuery.ajax({
-//                url: \'' . Url::to(['favorite/delete']) . '\',
-//                data: {id: id},
-//                success: function(){
-//                    jQuery(\'.favorites\').find(\'li[data-id=\'+id+\']\').remove();
-//                }
-//            })
-//        });
-//        ');
         parent::init();
     }
 
     public function run()
     {
         $favorites = Favorite::find()
+            ->andWhere([
+                'user_id' => \Yii::$app->user->id,
+            ])
             ->orderBy('label ASC')
             ->all();
         foreach ($favorites as $favorite) {

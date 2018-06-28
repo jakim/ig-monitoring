@@ -29,6 +29,9 @@ class FavoriteController extends Controller
 
     public function actionDelete($id)
     {
-        Favorite::deleteAll(['id' => $id]);
+        Favorite::deleteAll([
+            'user_id' => \Yii::$app->user->id,
+            'id' => $id,
+        ]);
     }
 }

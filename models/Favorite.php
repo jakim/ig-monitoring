@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "favorite".
@@ -11,9 +13,20 @@ use Yii;
  * @property string $label
  * @property string $url
  * @property string $created_at
+ * @property int $user_id [int(11)]
  */
 class Favorite extends \yii\db\ActiveRecord
 {
+    public function behaviors()
+    {
+        return ArrayHelper::merge(parent::behaviors(), [
+            'time' => [
+                'class' => TimestampBehavior::class,
+                'updatedAtAttribute' => false,
+            ],
+        ]);
+    }
+
     /**
      * @inheritdoc
      */
@@ -31,6 +44,7 @@ class Favorite extends \yii\db\ActiveRecord
             [['label', 'url'], 'required'],
             [['created_at'], 'safe'],
             [['label', 'url'], 'string', 'max' => 255],
+            [['user_id'], 'integer'],
         ];
     }
 
