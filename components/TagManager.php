@@ -153,7 +153,7 @@ class TagManager extends Component
      * @param int $userId
      * @return array
      */
-    private function getUserIds(int $userId): array
+    private function getUserIds(?int $userId): array
     {
         if (!$userId) {
             $userIds = User::find()
