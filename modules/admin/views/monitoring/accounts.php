@@ -33,7 +33,7 @@ $formatter = Yii::$app->formatter;
                 ['class' => \yii\grid\SerialColumn::class],
                 [
                     'attribute' => 'username',
-                    'content' => function(\app\models\Account $model) {
+                    'content' => function (\app\models\Account $model) {
                         $html = [];
                         $html[] = Html::a($model->displayName, ['account/dashboard', 'id' => $model->id]);
                         $html[] = Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
@@ -78,6 +78,11 @@ $formatter = Yii::$app->formatter;
                     'statsAttribute' => 'er',
                     'dailyDiff' => $dailyDiff,
                     'monthlyDiff' => $monthlyDiff,
+                    'numberFormat' => [
+                        'percent',
+                        2,
+                        ['sign' => false],
+                    ],
                 ],
                 's_tags',
                 [
