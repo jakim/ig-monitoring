@@ -54,11 +54,12 @@ class TagsSideWidget extends ProfileSideWidget
     private function getAvailableTags()
     {
         $query = Tag::find()
+            ->distinct()
             ->orderBy('name ASC');
 
         if ($this->model instanceof \app\models\Account) {
             return $query
-                ->innerJoinWith('accountTags')
+                ->innerJoinWith('accountTags', false)
                 ->all();
 
         } elseif ($this->model instanceof \app\models\Tag) {
