@@ -60,9 +60,7 @@ class AccountScraper extends Scraper implements AccountScraperInterface
         $path = sprintf('/uploads/%s', substr($username, 0, 2));
 
         $fullPath = \Yii::getAlias("@app/web/{$path}");
-        if (!mkdir($fullPath) && !is_dir($fullPath)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $fullPath));
-        }
+        @mkdir($fullPath);
         @chmod($fullPath, 0777);
 
         $file = "{$fullPath}/{$filename}";
