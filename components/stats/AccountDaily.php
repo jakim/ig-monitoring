@@ -29,18 +29,18 @@ class AccountDaily extends Component
         'er',
     ];
 
-    private static $cache = [];
+    protected $cache = [];
 
     public function __construct(Account $model, array $config = [])
     {
         $this->model = $model;
-        static::$cache = [];
+        $this->cache = [];
         parent::__construct($config);
     }
 
     public function get()
     {
-        return static::$cache;
+        return $this->cache;
     }
 
     /**
@@ -50,12 +50,12 @@ class AccountDaily extends Component
      * @param null $newerDate
      * @return \app\components\stats\AccountDaily
      */
-    public function initDiff($olderDate, $newerDate = null)
+    public function initData($olderDate, $newerDate = null)
     {
         $olderDate = (new Carbon($olderDate))->startOfDay()->toDateTimeString();
         $newerDate = (new Carbon($newerDate))->endOfDay()->toDateTimeString();
 
-        if (empty(static::$cache)) {
+        if (empty($this->cache)) {
             //group by DATE Y-m-d
             $ids = AccountStats::find()
                 ->select(new Expression('MAX(id) as id'))
@@ -79,7 +79,7 @@ class AccountDaily extends Component
             foreach ($stats as $stat) {
                 foreach ($this->statsAttributes as $statsAttribute) {
                     $value = ArrayHelper::getValue($stat, $statsAttribute, 0);
-                    static::$cache[$stat['created_at']][$statsAttribute] = $value;
+                    $this->cache[$stat['created_at']][$statsAttribute] = $value;
                 }
             }
         }

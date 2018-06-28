@@ -42,7 +42,7 @@ class PreviewController extends Controller
         $lastMonthlyChange = end($monthlyChanges);
 
         $dailyStats = Yii::createObject(AccountDaily::class, [$model]);
-        $dailyStats->initDiff(Carbon::now()->subMonth());
+        $dailyStats->initData(Carbon::now()->subMonth());
         $dailyStats = $dailyStats->get();
 
         return $this->render('account', [

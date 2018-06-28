@@ -32,13 +32,8 @@ $formatter = Yii::$app->formatter;
             <div class="nav-tabs-custom">
                 <?= $this->render('_tabs', ['model' => $model]) ?>
                 <div class="tab-content">
-                    
-                    <?php if (!$dailyStats): ?>
-                        <div class="callout callout-info">
-                            <p class="lead"><span class="fa fa-cog fa-spin"></span> Collecting data...</p>
-                            <p>Please come back tomorrow.</p>
-                        </div>
-                    <?php endif; ?>
+
+                    <?= \app\modules\admin\widgets\NoStatsDataAlert::widget(['model' => $model]) ?>
 
                     <?php if ($lastDailyChange): ?>
                         <?= $this->render('_change-row', [

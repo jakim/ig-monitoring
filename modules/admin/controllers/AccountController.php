@@ -94,7 +94,7 @@ class AccountController extends Controller
         $lastMonthlyChange = $monthlyDiff->getLastDiff($model->id);
 
         $dailyStats = Yii::createObject(AccountDaily::class, [$model]);
-        $dailyStats->initDiff(Carbon::now()->subMonth());
+        $dailyStats->initData(Carbon::now()->subMonth());
         $dailyStats = $dailyStats->get();
 
         return $this->render('dashboard', [

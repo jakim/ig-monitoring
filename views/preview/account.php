@@ -24,12 +24,7 @@ $formatter = Yii::$app->formatter;
             <div class="box box-primary">
                 <div class="box-body">
 
-                    <?php if (!$dailyStats): ?>
-                        <div class="callout callout-info">
-                            <p class="lead"><span class="fa fa-cog fa-spin"></span> Collecting data...</p>
-                            <p>Please come back tomorrow.</p>
-                        </div>
-                    <?php endif; ?>
+                    <?= \app\modules\admin\widgets\NoStatsDataAlert::widget(['model' => $model]) ?>
 
                     <?php if ($lastDailyChange): ?>
                         <?= $this->render('@app/modules/admin/views/account/_change-row', [
