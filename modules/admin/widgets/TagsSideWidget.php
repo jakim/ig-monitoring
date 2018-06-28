@@ -9,6 +9,7 @@ namespace app\modules\admin\widgets;
 
 
 use app\components\ArrayHelper;
+use app\models\AccountTag;
 use app\modules\admin\models\Tag;
 use app\modules\admin\widgets\base\ProfileSideWidget;
 use kartik\select2\Select2;
@@ -46,29 +47,20 @@ class TagsSideWidget extends ProfileSideWidget
     public function init()
     {
         parent::init();
-        $this->modelTags = $this->model->tags;
-        $this->allTags = $this->getAvailableTags();
+        $userId = (int)\Yii::$app->user->id;
+        $this->modelTags = $this->getTags($userId, $this->model->id);
+        $this->allTags = $this->getTags($userId);
         $this->formAction = $this->formAction ?: ['tags', 'id' => $this->model->id];
     }
 
-    private function getAvailableTags()
+    private function getTags($userId, $accountId = null)
     {
-        $query = Tag::find()
+        return Tag::find()
             ->distinct()
-            ->orderBy('name ASC');
-
-        if ($this->model instanceof \app\models\Account) {
-            return $query
-                ->innerJoinWith('accountTags', false)
-                ->all();
-
-        } elseif ($this->model instanceof \app\models\Tag) {
-            return $query
-                ->innerJoinWith('accountTags')
-                ->all();
-        }
-
-        return [];
+            ->innerJoin(AccountTag::tableName(), 'tag.id=account_tag.tag_id AND account_tag.user_id=' . $userId)
+            ->andFilterWhere(['account_tag.account_id' => $accountId])
+            ->orderBy('name ASC')
+            ->all();
     }
 
     protected function renderBoxContent()

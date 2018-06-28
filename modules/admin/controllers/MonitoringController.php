@@ -79,7 +79,7 @@ class MonitoringController extends Controller
                 if (!$account->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
                     $tagManager = \Yii::createObject(TagManager::class);
-                    $tagManager->saveForAccount($account, (array)$form->tags);
+                    $tagManager->saveForAccount($account, (array)$form->tags, \Yii::$app->user->id);
                 } else {
                     \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
                     \Yii::$app->session->setFlash('error', "ERR! {$username}");

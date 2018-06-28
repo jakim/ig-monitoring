@@ -167,7 +167,7 @@ class AccountController extends Controller
         $tags = Yii::$app->request->post('account_tags', []);
 
         $manager = Yii::createObject(TagManager::class);
-        $manager->setForAccount($model, $tags);
+        $manager->setForAccount($model, $tags, Yii::$app->user->id);
 
         return $this->redirect(Url::previous());
     }

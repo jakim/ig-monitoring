@@ -4,6 +4,7 @@ namespace app\modules\admin\models;
 
 use app\models\AccountStats;
 use app\models\AccountTag;
+use app\models\Tag;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
@@ -44,6 +45,8 @@ class AccountSearch extends Account
      */
     public function search($params)
     {
+        $userId = (int)\Yii::$app->user->id;
+
         $query = Account::find()
             ->select([
                 'account.*',
@@ -63,7 +66,8 @@ class AccountSearch extends Account
                     ->groupBy('account_id'),
             ], 'account.id=as_max.account_id')
             ->leftJoin(AccountStats::tableName(), 'account_stats.id=as_max.id')
-            ->joinWith('tags', false)
+            ->leftJoin(AccountTag::tableName(), 'account.id=account_tag.account_id AND account_tag.user_id=' . $userId)
+            ->leftJoin(Tag::tableName(), 'account_tag.tag_id=tag.id')
             ->groupBy('account.id');
 
         // add conditions that should always apply here
@@ -124,10 +128,10 @@ class AccountSearch extends Account
         if ($this->s_tags) {
             $tags = StringHelper::explode($this->s_tags, ',', true, true);
             $tag = array_shift($tags);
-            $accountIds = $this->getTaggedAccountIds($tag);
+            $accountIds = $this->getTaggedAccountIds($tag, $userId);
 
             foreach ($tags as $tag) {
-                $accountIds = array_intersect($accountIds, $this->getTaggedAccountIds($tag));
+                $accountIds = array_intersect($accountIds, $this->getTaggedAccountIds($tag, $userId));
             }
 
 
@@ -141,11 +145,13 @@ class AccountSearch extends Account
      * @param $tag
      * @return array
      */
-    private function getTaggedAccountIds($tag): array
+    private function getTaggedAccountIds($tag, $userId): array
     {
         $accountIds = AccountTag::find()
+            ->distinct()
             ->select('account_id')
             ->innerJoinWith('tag')
+            ->andWhere(['user_id' => $userId])
             ->andFilterWhere(['like', 'tag.name', $tag])
             ->column();
 

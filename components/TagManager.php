@@ -14,6 +14,7 @@ use app\models\AccountTag;
 use app\models\Media;
 use app\models\MediaTag;
 use app\models\Tag;
+use app\models\User;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -41,7 +42,7 @@ class TagManager extends Component
         $this->saveTags($tags);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($id) use ($media, $createdAt) {
+        $rows = array_map(function ($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
@@ -63,12 +64,15 @@ class TagManager extends Component
      *
      * @param \app\models\Account $account
      * @param array|Tag[] $tags
+     * @param int|null $userId
      * @throws \yii\db\Exception
      */
-    public function setForAccount(Account $account, array $tags)
+    public function setForAccount(Account $account, array $tags, ?int $userId = null)
     {
-        AccountTag::deleteAll(['account_id' => $account->id]);
-        $this->saveForAccount($account, $tags);
+        $this->deleteAccountTags($account, $userId);
+        if ($tags) {
+            $this->saveForAccount($account, $tags, $userId);
+        }
     }
 
     /**
@@ -76,29 +80,29 @@ class TagManager extends Component
      *
      * @param \app\models\Account $account
      * @param array|Tag[] $tags
+     * @param int|null $userId
      * @throws \yii\db\Exception
      */
-    public function saveForAccount(Account $account, array $tags)
+    public function saveForAccount(Account $account, array $tags, ?int $userId = null)
     {
-        if (\is_string($tags['0'])) {
-            $this->saveTags($tags);
-        } else {
-            $tags = ArrayHelper::getColumn($tags, 'name');
+        $rows = [];
+        $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
+        $userIds = $this->getUserIds($userId);
+        $tagIds = $this->getTagIds($tags);
+        foreach ($userIds as $userId) {
+            $tmp = array_map(function ($tagId) use ($account, $userId, $createdAt) {
+                return [
+                    $account->id,
+                    $tagId,
+                    $userId,
+                    $createdAt,
+                ];
+            }, $tagIds);
+            $rows = ArrayHelper::merge($rows, $tmp);
         }
 
-        $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($tagId) use ($account, $createdAt) {
-            return [
-                $account->id,
-                $tagId,
-                $createdAt,
-            ];
-        }, Tag::find()
-            ->andWhere(['name' => $tags])
-            ->column());
-
         $sql = \Yii::$app->db->queryBuilder
-            ->batchInsert(AccountTag::tableName(), ['account_id', 'tag_id', 'created_at'], $rows);
+            ->batchInsert(AccountTag::tableName(), ['account_id', 'tag_id', 'user_id', 'created_at'], $rows);
         $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
         \Yii::$app->db->createCommand($sql)
             ->execute();
@@ -111,7 +115,7 @@ class TagManager extends Component
     public function saveTags(array $tags)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($tag) use ($createdAt) {
+        $rows = array_map(function ($tag) use ($createdAt) {
             return [
                 $tag,
                 Inflector::slug($tag),
@@ -125,5 +129,49 @@ class TagManager extends Component
         $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
         \Yii::$app->db->createCommand($sql)
             ->execute();
+    }
+
+    /**
+     * @param array $tags
+     * @return array
+     * @throws \yii\db\Exception
+     */
+    private function getTagIds(array $tags): array
+    {
+        if (\is_string($tags['0'])) {
+            $this->saveTags($tags);
+        } else {
+            $tags = ArrayHelper::getColumn($tags, 'name');
+        }
+
+        return Tag::find()
+            ->andWhere(['name' => $tags])
+            ->column();
+    }
+
+    /**
+     * @param int $userId
+     * @return array
+     */
+    private function getUserIds(int $userId): array
+    {
+        if (!$userId) {
+            $userIds = User::find()
+                ->andWhere(['active' => 1])
+                ->column();
+        } else {
+            $userIds = (array)$userId;
+        }
+
+        return $userIds;
+    }
+
+    private function deleteAccountTags(Account $account, ?int $userId)
+    {
+        if ($userId) {
+            return AccountTag::deleteAll(['account_id' => $account->id, 'user_id' => $userId]);
+        }
+
+        return AccountTag::deleteAll(['account_id' => $account->id]);
     }
 }
