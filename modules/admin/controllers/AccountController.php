@@ -7,6 +7,7 @@ use app\components\stats\AccountDaily;
 use app\components\stats\AccountDailyDiff;
 use app\components\stats\AccountMonthlyDiff;
 use app\components\TagManager;
+use app\models\AccountNote;
 use app\models\Media;
 use app\models\Tag;
 use app\modules\admin\controllers\actions\FavoriteAction;
@@ -42,6 +43,7 @@ class AccountController extends Controller
                     'monitoring' => ['POST'],
                     'tags' => ['POST'],
                     'favorite' => ['POST'],
+                    'update-note' => ['POST'],
                 ],
             ],
         ];
@@ -103,6 +105,25 @@ class AccountController extends Controller
             'dailyChanges' => $dailyChanges,
             'monthlyChanges' => $monthlyChanges,
         ]);
+    }
+
+    public function actionUpdateNote($id)
+    {
+        $model = $this->findModel($id);
+        $user = Yii::$app->user;
+
+        AccountNote::deleteAll([
+            'account_id' => $model->id,
+            'user_id' => $user->id,
+        ]);
+
+        $note = new AccountNote();
+        $note->load(Yii::$app->request->post());
+        $note->account_id = $model->id;
+        $note->user_id = $user->id;
+        $note->save();
+
+        return $this->redirect(['account/dashboard', 'id' => $id]);
     }
 
     public function actionSettings($id)
@@ -178,7 +199,7 @@ class AccountController extends Controller
                     'tag.*',
                     'count(tag.id) as occurs',
                 ])
-                ->innerJoinWith(['media' => function(Query $q) use ($model) {
+                ->innerJoinWith(['media' => function (Query $q) use ($model) {
                     $q->andWhere(['media.account_id' => $model->id]);
                 }])
                 ->groupBy('tag.id'),
@@ -210,7 +231,7 @@ class AccountController extends Controller
                     'account.*',
                     'count(account.id) as occurs',
                 ])
-                ->innerJoinWith(['mediaAccounts.media' => function(Query $q) use ($model) {
+                ->innerJoinWith(['mediaAccounts.media' => function (Query $q) use ($model) {
                     $q->andWhere(['media.account_id' => $model->id]);
                 }])
                 ->groupBy('account.id'),

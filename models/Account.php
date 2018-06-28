@@ -39,6 +39,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property Proxy $proxy
  * @property Tag $proxyTag
+ * @property AccountNote[] $accountNotes
  * @property AccountStats[] $accountStats
  * @property AccountTag[] $accountTags
  * @property Tag[] $tags
@@ -167,6 +168,14 @@ class Account extends \yii\db\ActiveRecord
     public function getProxyTag()
     {
         return $this->hasOne(Tag::class, ['id' => 'proxy_tag_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAccountNotes()
+    {
+        return $this->hasMany(AccountNote::class, ['account_id' => 'id']);
     }
 
     /**
