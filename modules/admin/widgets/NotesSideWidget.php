@@ -27,13 +27,25 @@ class NotesSideWidget extends ProfileSideWidget
      */
     public $model;
 
+    protected $note;
+
+    public function init()
+    {
+        parent::init();
+        /** @var AccountNote $model */
+        $model = $this->model
+            ->getAccountNotes()
+            ->limit(1)
+            ->one();
+        $this->note = $model ? $model->note : null;
+    }
+
     protected function renderModalContent()
     {
         $form = ActiveForm::begin([
             'method' => 'post',
             'action' => ['account/update-note', 'id' => $this->model->id],
         ]);
-        $note = $this->getNote();
         echo $form
             ->field(new AccountNote(), 'note')
             ->label(false)
@@ -42,7 +54,7 @@ class NotesSideWidget extends ProfileSideWidget
                 'rows' => 5,
                 'placeholder' => true,
                 'autofocus' => true,
-                'value' => $note,
+                'value' => $this->note,
             ]);
 
         echo Html::submitButton('Update', ['class' => 'btn btn-small btn-primary']);
@@ -52,17 +64,8 @@ class NotesSideWidget extends ProfileSideWidget
 
     protected function renderBoxContent()
     {
-        $note = $this->getNote();
         echo "<p class=\"text-muted\">\n";
-        echo \Yii::$app->formatter->asNtext($note);
+        echo \Yii::$app->formatter->asNtext($this->note);
         echo "</p>\n";
-    }
-
-    protected function getNote()
-    {
-        /** @var AccountNote $note */
-        $note = $this->model->getAccountNotes()->limit(1)->one();
-
-        return $note ? $note->note : null;
     }
 }
