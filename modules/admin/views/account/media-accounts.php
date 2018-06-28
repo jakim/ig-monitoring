@@ -16,7 +16,6 @@ $this->params['breadcrumbs'][] = ['label' => $model->usernamePrefixed, 'url' => 
 $this->params['breadcrumbs'][] = 'Media Accounts';
 
 $formatter = Yii::$app->formatter;
-$lastAccountStats = $model->lastAccountStats;
 ?>
 <div class="account-view">
     <div class="row">
@@ -34,7 +33,7 @@ $lastAccountStats = $model->lastAccountStats;
                             [
                                 'attribute' => 'username',
                                 'format' => 'raw',
-                                'value' => function(Account $model, $key, $index, $column) {
+                                'value' => function (Account $model, $key, $index, $column) {
                                     if ($model->monitoring) {
                                         $value = Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]);
                                     } else {
@@ -45,9 +44,9 @@ $lastAccountStats = $model->lastAccountStats;
                                 },
                             ],
                             [
-                                'label' => $lastAccountStats->getAttributeLabel('er'),
-                                'value' => function(Account $account) use ($formatter) {
-                                    if ($account->lastAccountStats) {
+                                'label' => (new \app\models\AccountStats())->getAttributeLabel('er'),
+                                'value' => function (Account $account) use ($formatter) {
+                                    if ($account->monitoring && $account->lastAccountStats) {
                                         $er = $account->lastAccountStats->er;
 
                                         return $formatter->asPercent($er, 2);
@@ -59,7 +58,7 @@ $lastAccountStats = $model->lastAccountStats;
                             'occurs',
                             [
                                 'format' => 'raw',
-                                'value' => function(Account $account) use ($model) {
+                                'value' => function (Account $account) use ($model) {
                                     return OnOffMonitoringButton::widget([
                                         'model' => $account,
                                         'form' => new AccountMonitoringForm([
