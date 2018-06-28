@@ -42,14 +42,8 @@ class Account extends \app\models\Account
             'biography',
             'external_url',
             'instagram_id',
-            'notes',
             'updated_at',
             'created_at',
-
-//            'followed_by' => 'as_followed_by',
-//            'follows' => 'as_follows',
-//            'media' => 'as_media',
-//            'er' => 'as_er',
         ];
     }
 

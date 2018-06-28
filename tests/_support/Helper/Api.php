@@ -21,7 +21,6 @@ class Api extends \Codeception\Module
             'biography' => 'string|null',
             'external_url' => 'string|null',
             'instagram_id' => 'string|null',
-            'notes' => 'string|null',
             'updated_at' => 'string|null',
             'created_at' => 'string|null',
         ];

@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
  * @property int $account_id
  * @property int $tag_id
  * @property string $created_at
+ * @property int $user_id [int(11)]
  *
  * @property Account $account
  * @property Tag $tag
@@ -42,12 +43,13 @@ class AccountTag extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['account_id', 'tag_id'], 'required'],
-            [['account_id', 'tag_id'], 'integer'],
+            [['account_id', 'tag_id', 'user_id'], 'required'],
+            [['account_id', 'tag_id', 'user_id'], 'integer'],
             [['created_at'], 'safe'],
-            [['account_id', 'tag_id'], 'unique', 'targetAttribute' => ['account_id', 'tag_id']],
+            [['account_id', 'tag_id', 'user_id'], 'unique', 'targetAttribute' => ['account_id', 'tag_id', 'user_id']],
             [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::class, 'targetAttribute' => ['account_id' => 'id']],
             [['tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['tag_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -77,6 +79,14 @@ class AccountTag extends \yii\db\ActiveRecord
     public function getTag()
     {
         return $this->hasOne(Tag::class, ['id' => 'tag_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**

@@ -8,4 +8,5 @@
 return [
     'account_id' => $index + 1,
     'tag_id' => $index + 1,
+    'user_id' => $index + 1,
 ];

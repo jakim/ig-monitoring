@@ -104,26 +104,30 @@ class AccountCest
 
         $I->sendGET('/accounts', [
             'filter' => [
-                'tags' => 'tag0',
+                'tags' => 'tag1',
             ],
         ]);
 
         $I->seeProperListResponse(Api::responseAccountJsonType());
         $I->assertCount(1, $I->grabJsonResponseAsArray());
 
-        $account = $I->grabFixture('account', 'account0');
+        $account = $I->grabFixture('account', 'account1');
         $tag = $I->grabFixture('tag', 'tag2');
-
-        $I->haveRecord(\app\models\AccountTag::class, ['account_id' => $account->id, 'tag_id' => $tag->id]);
-
+        $user = $I->grabFixture('user', 'user1');
+//
+        $I->haveRecord(\app\models\AccountTag::class, ['account_id' => $account->id, 'tag_id' => $tag->id, 'user_id' => $user->id]);
+//
         $I->sendGET('/accounts', [
             'filter' => [
-                'tags' => "tag0, {$tag->name}",
+                'tags' => "tag1, {$tag->name}",
             ],
         ]);
 
         $I->seeProperListResponse(Api::responseAccountJsonType());
         $I->assertCount(1, $I->grabJsonResponseAsArray());
+
+        $account2 = $I->grabFixture('account', 'account2');
+        $I->haveRecord(\app\models\AccountTag::class, ['account_id' => $account2->id, 'tag_id' => $tag->id, 'user_id' => $user->id]);
 
         $I->sendGET('/accounts', [
             'filter' => [

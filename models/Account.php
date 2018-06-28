@@ -26,7 +26,6 @@ use yii\helpers\ArrayHelper;
  * @property bool $monitoring
  * @property int $proxy_id
  * @property int $proxy_tag_id
- * @property string $notes
  * @property bool $disabled
  * @property int $accounts_monitoring_level
  * @property string $accounts_default_tags
@@ -113,7 +112,7 @@ class Account extends \yii\db\ActiveRecord
             [['updated_at', 'created_at', 'accounts_default_tags'], 'safe'],
             [['proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
             ['accounts_monitoring_level', 'integer', 'min' => 0],
-            [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'notes', 'uid'], 'string', 'max' => 255],
+            [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'uid'], 'string', 'max' => 255],
             [['monitoring', 'disabled', 'is_private'], 'boolean'],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
@@ -140,7 +139,6 @@ class Account extends \yii\db\ActiveRecord
             'monitoring' => 'Monitoring',
             'proxy_id' => 'Proxy ID',
             'proxy_tag_id' => 'Proxy Tag ID',
-            'notes' => 'Notes',
             'accounts_monitoring_level' => 'Accounts Monitoring Level',
         ];
     }

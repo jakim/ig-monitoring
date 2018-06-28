@@ -33,10 +33,11 @@ class AccountSearch extends Model
         if ($tags) {
             $tags = StringHelper::explode($tags, ',', true, true);
             $tag = array_shift($tags);
-            $accountIds = $this->getTaggedAccountIds($tag);
+            $userId = \Yii::$app->user->id;
+            $accountIds = $this->getTaggedAccountIds($tag, $userId);
 
             foreach ($tags as $tag) {
-                $accountIds = array_intersect($accountIds, $this->getTaggedAccountIds($tag));
+                $accountIds = array_intersect($accountIds, $this->getTaggedAccountIds($tag, $userId));
             }
 
             $query->andWhere(['account.id' => $accountIds]);
@@ -78,15 +79,12 @@ class AccountSearch extends Model
         return $dataProvider;
     }
 
-    /**
-     * @param $tag
-     * @return array
-     */
-    private function getTaggedAccountIds($tag): array
+    private function getTaggedAccountIds($tag, $userId): array
     {
         $accountIds = AccountTag::find()
             ->select('account_id')
             ->innerJoinWith('tag')
+            ->andWhere(['user_id' => $userId])
             ->andFilterWhere(['tag.slug' => Inflector::slug($tag)])
             ->column();
 
