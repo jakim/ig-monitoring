@@ -1,11 +1,13 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
 
 dmstr\web\AdminLteAsset::register($this);
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -30,7 +32,7 @@ dmstr\web\AdminLteAsset::register($this);
     </div>
     <div>
         <p class="margin text-center">
-            <?= Html::a('IG Monitoring', 'https://github.com/jakim/ig-monitoring') ?> - Free, Instagram Analytics and Stats.
+            <?= \app\modules\admin\widgets\PoweredBy::widget() ?>
         </p>
     </div>
 </div>
