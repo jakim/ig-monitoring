@@ -10,6 +10,7 @@ namespace app\components;
 
 use app\components\traits\FindOrCreate;
 use app\models\Account;
+use app\models\AccountTag;
 use app\models\Media;
 use app\models\MediaAccount;
 use yii\base\Component;
@@ -63,7 +64,7 @@ class AccountManager extends Component
         $this->saveUsernames($usernames);
 
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($id) use ($media, $createdAt) {
+        $rows = array_map(function ($id) use ($media, $createdAt) {
             return [
                 $media->id,
                 $id,
@@ -87,7 +88,7 @@ class AccountManager extends Component
     public function saveUsernames(array $usernames)
     {
         $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function($username) use ($createdAt) {
+        $rows = array_map(function ($username) use ($createdAt) {
             return [
                 $username,
                 $createdAt,
@@ -100,5 +101,31 @@ class AccountManager extends Component
         $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
         \Yii::$app->db->createCommand($sql)
             ->execute();
+    }
+
+    /**
+     * @param string|string[] $tags
+     * @param null|int $userId
+     * @return array|int[]
+     */
+    public function findByTags($tags, $userId = null): array
+    {
+        if (is_string($tags)) {
+            $tags = StringHelper::explode($tags, ',', true, true);
+            $tags = array_unique($tags);
+        }
+
+        $ids = [];
+        foreach ($tags as $tag) {
+            $ids[] = AccountTag::find()
+                ->distinct()
+                ->select('account_id')
+                ->innerJoinWith('tag')
+                ->andFilterWhere(['user_id' => $userId])
+                ->andFilterWhere(['like', 'tag.name', $tag])
+                ->column();
+        }
+
+        return array_intersect(...$ids, ...$ids);
     }
 }

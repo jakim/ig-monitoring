@@ -8,14 +8,12 @@
 namespace app\modules\api\v1\models;
 
 
+use app\components\AccountManager;
 use app\models\AccountStats;
-use app\models\AccountTag;
 use yii\base\Model;
 use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Inflector;
-use yii\helpers\StringHelper;
 
 class AccountSearch extends Model
 {
@@ -31,14 +29,8 @@ class AccountSearch extends Model
         unset($params['filter']['tags']);
 
         if ($tags) {
-            $tags = StringHelper::explode($tags, ',', true, true);
-            $tag = array_shift($tags);
-            $userId = \Yii::$app->user->id;
-            $accountIds = $this->getTaggedAccountIds($tag, $userId);
-
-            foreach ($tags as $tag) {
-                $accountIds = array_intersect($accountIds, $this->getTaggedAccountIds($tag, $userId));
-            }
+            $manager = \Yii::createObject(AccountManager::class);
+            $accountIds = $manager->findByTags($tags, \Yii::$app->user->id);
 
             $query->andWhere(['account.id' => $accountIds]);
         }
@@ -77,17 +69,5 @@ class AccountSearch extends Model
         ];
 
         return $dataProvider;
-    }
-
-    private function getTaggedAccountIds($tag, $userId): array
-    {
-        $accountIds = AccountTag::find()
-            ->select('account_id')
-            ->innerJoinWith('tag')
-            ->andWhere(['user_id' => $userId])
-            ->andFilterWhere(['tag.slug' => Inflector::slug($tag)])
-            ->column();
-
-        return $accountIds;
     }
 }

@@ -2,13 +2,13 @@
 
 namespace app\modules\admin\models;
 
+use app\components\AccountManager;
 use app\models\AccountStats;
 use app\models\AccountTag;
 use app\models\Tag;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
-use yii\helpers\StringHelper;
 
 /**
  * AccountSearch represents the model behind the search form of `app\models\Account`.
@@ -42,6 +42,7 @@ class AccountSearch extends Account
      * @param array $params
      *
      * @return ActiveDataProvider
+     * @throws \yii\base\InvalidConfigException
      */
     public function search($params)
     {
@@ -126,35 +127,12 @@ class AccountSearch extends Account
         ]);
 
         if ($this->s_tags) {
-            $tags = StringHelper::explode($this->s_tags, ',', true, true);
-            $tag = array_shift($tags);
-            $accountIds = $this->getTaggedAccountIds($tag, $userId);
-
-            foreach ($tags as $tag) {
-                $accountIds = array_intersect($accountIds, $this->getTaggedAccountIds($tag, $userId));
-            }
-
+            $manager = \Yii::createObject(AccountManager::class);
+            $accountIds = $manager->findByTags($this->s_tags, $userId);
 
             $query->andWhere(['account.id' => $accountIds]);
         }
 
         return $dataProvider;
-    }
-
-    /**
-     * @param $tag
-     * @return array
-     */
-    private function getTaggedAccountIds($tag, $userId): array
-    {
-        $accountIds = AccountTag::find()
-            ->distinct()
-            ->select('account_id')
-            ->innerJoinWith('tag')
-            ->andWhere(['user_id' => $userId])
-            ->andFilterWhere(['like', 'tag.name', $tag])
-            ->column();
-
-        return $accountIds;
     }
 }
