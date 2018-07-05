@@ -71,7 +71,7 @@ class Proxy extends \yii\db\ActiveRecord
             [['port'], 'integer'],
             [['updated_at', 'created_at'], 'safe'],
             [['ip', 'username', 'password', 'reservation_uid'], 'string', 'max' => 255],
-            [['active', 'default_for_accounts', 'default_for_tags'], 'boolean'],
+            [['active'], 'boolean'],
         ];
     }
 
