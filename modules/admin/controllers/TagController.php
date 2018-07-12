@@ -2,9 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
-use Yii;
 use app\models\Tag;
-use app\modules\admin\models\TagSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -28,15 +26,6 @@ class TagController extends Controller
                 ],
             ],
         ];
-    }
-
-    public function actionMonitoring($id)
-    {
-        $model = $this->findModel($id);
-        $model->monitoring = $model->monitoring ? 0 : 1;
-        $model->update();
-
-        return $this->redirect(['tag/stats', 'id' => $model->id]);
     }
 
     public function actionStats($id)

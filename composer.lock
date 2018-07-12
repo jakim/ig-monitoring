@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09c277a09ec5c15acacd062ff4d2ed76",
+    "content-hash": "477cf273ac26fa76f9e508f91f4a355d",
     "packages": [
         {
             "name": "2amigos/yii2-chartjs-widget",
@@ -190,6 +190,22 @@
             ]
         },
         {
+            "name": "bower-asset/ladda",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hakimel/Ladda.git",
+                "reference": "52ca8d108feed8c6d85dec4f8970c8184d8c7682"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hakimel/Ladda/zipball/52ca8d108feed8c6d85dec4f8970c8184d8c7682",
+                "reference": "52ca8d108feed8c6d85dec4f8970c8184d8c7682",
+                "shasum": null
+            },
+            "type": "bower-asset"
+        },
+        {
             "name": "bower-asset/punycode",
             "version": "v1.3.2",
             "source": {
@@ -202,6 +218,25 @@
                 "url": "https://api.github.com/repos/bestiejs/punycode.js/zipball/38c8d3131a82567bfef18da09f7f4db68c84f8a3",
                 "reference": "38c8d3131a82567bfef18da09f7f4db68c84f8a3",
                 "shasum": null
+            },
+            "type": "bower-asset"
+        },
+        {
+            "name": "bower-asset/spin",
+            "version": "v1.1.6",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:ksylvest/jquery-spin.git",
+                "reference": "dc4553f1646155277b0f35b028554477bcfd1983"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ksylvest/jquery-spin/zipball/dc4553f1646155277b0f35b028554477bcfd1983",
+                "reference": "dc4553f1646155277b0f35b028554477bcfd1983",
+                "shasum": null
+            },
+            "require": {
+                "bower-asset/jquery": "dev-default|*"
             },
             "type": "bower-asset"
         },
@@ -452,16 +487,16 @@
         },
         {
             "name": "dmstr/yii2-adminlte-asset",
-            "version": "2.6.0",
+            "version": "2.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dmstr/yii2-adminlte-asset.git",
-                "reference": "1a7649cfd493faf10e797eaa8eb19ac5e81523af"
+                "reference": "613821a6b0b805aa8fddc0d47b0ab6bb3a3e0456"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dmstr/yii2-adminlte-asset/zipball/1a7649cfd493faf10e797eaa8eb19ac5e81523af",
-                "reference": "1a7649cfd493faf10e797eaa8eb19ac5e81523af",
+                "url": "https://api.github.com/repos/dmstr/yii2-adminlte-asset/zipball/613821a6b0b805aa8fddc0d47b0ab6bb3a3e0456",
+                "reference": "613821a6b0b805aa8fddc0d47b0ab6bb3a3e0456",
                 "shasum": ""
             },
             "require": {
@@ -508,7 +543,7 @@
                 "theme",
                 "yii2"
             ],
-            "time": "2017-12-05T15:17:33+00:00"
+            "time": "2018-07-06T08:48:15+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -1085,16 +1120,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.31.1",
+            "version": "1.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "385780c8ca2dbfd25452666e3f55e8dc1df58c41"
+                "reference": "64563e2b9f69e4db1b82a60e81efa327a30ff343"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/385780c8ca2dbfd25452666e3f55e8dc1df58c41",
-                "reference": "385780c8ca2dbfd25452666e3f55e8dc1df58c41",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/64563e2b9f69e4db1b82a60e81efa327a30ff343",
+                "reference": "64563e2b9f69e4db1b82a60e81efa327a30ff343",
                 "shasum": ""
             },
             "require": {
@@ -1136,7 +1171,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-06-25T13:15:16+00:00"
+            "time": "2018-07-05T06:59:26+00:00"
         },
         {
             "name": "pahanini/yii2-consolelog",
@@ -1724,16 +1759,16 @@
         },
         {
             "name": "yiisoft/yii2-composer",
-            "version": "2.0.6",
+            "version": "2.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-composer.git",
-                "reference": "163419f1f197e02f015713b0d4f85598d8f8aa80"
+                "reference": "1439e78be1218c492e6cde251ed87d3f128b9534"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-composer/zipball/163419f1f197e02f015713b0d4f85598d8f8aa80",
-                "reference": "163419f1f197e02f015713b0d4f85598d8f8aa80",
+                "url": "https://api.github.com/repos/yiisoft/yii2-composer/zipball/1439e78be1218c492e6cde251ed87d3f128b9534",
+                "reference": "1439e78be1218c492e6cde251ed87d3f128b9534",
                 "shasum": ""
             },
             "require": {
@@ -1774,7 +1809,7 @@
                 "extension installer",
                 "yii2"
             ],
-            "time": "2018-03-21T16:15:55+00:00"
+            "time": "2018-07-05T15:44:47+00:00"
         },
         {
             "name": "yiisoft/yii2-httpclient",

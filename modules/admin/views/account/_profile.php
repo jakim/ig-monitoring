@@ -64,6 +64,7 @@ $lastAccountStats = $model->lastAccountStats;
         <?= \app\modules\admin\widgets\OnOffMonitoringButton::widget([
             'model' => $model,
         ]) ?>
+
         <?= \app\modules\admin\widgets\favorites\ProfileButton::widget([
             'model' => $model,
         ]) ?>

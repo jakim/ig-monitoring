@@ -14,17 +14,16 @@ use app\components\stats\AccountMonthlyDiff;
 use app\components\stats\TagDailyDiff;
 use app\components\stats\TagMonthlyDiff;
 use app\components\TagManager;
+use app\dictionaries\TrackerType;
+use app\models\Account;
 use app\models\Favorite;
-use app\modules\admin\models\Account;
-use app\modules\admin\models\AccountMonitoringForm;
+use app\models\Tag;
+use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\models\AccountSearch;
-use app\modules\admin\models\Tag;
-use app\modules\admin\models\TagMonitoringForm;
 use app\modules\admin\models\TagSearch;
-use Carbon\Carbon;
 use yii\filters\VerbFilter;
-use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 use yii\web\Controller;
 
 class MonitoringController extends Controller
@@ -36,14 +35,44 @@ class MonitoringController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'create-account' => ['POST'],
+                    'delete-account' => ['POST'],
+                    'create-tag' => ['POST'],
+                    'delete-tag' => ['POST'],
                 ],
             ],
         ];
     }
 
+    public function actionDeleteTag($id)
+    {
+        $model = Tag::findOne($id);
+        $model->monitoring = 0;
+        if ($model->save()) {
+            \Yii::$app->session->setFlash('success', 'OK!');
+
+            return Url::to(['monitoring/tags']);
+        } else {
+            \Yii::$app->session->setFlash('error', 'ERROR!');
+        }
+    }
+
+    public function actionDeleteAccount($id)
+    {
+        $model = Account::findOne($id);
+        $model->monitoring = 0;
+        if ($model->save()) {
+            \Yii::$app->session->setFlash('success', 'OK!');
+
+            return Url::to(['monitoring/accounts']);
+        } else {
+            \Yii::$app->session->setFlash('error', 'ERROR!');
+        }
+    }
+
     public function actionCreateTag()
     {
-        $form = new TagMonitoringForm();
+        $form = new MonitoringForm();
+        $form->setScenario(TrackerType::TAG);
 
         if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
             $names = StringHelper::explode($form->names, ',', true, true);
@@ -56,7 +85,8 @@ class MonitoringController extends Controller
                     \Yii::$app->session->setFlash('success', 'OK!');
                 } else {
                     \Yii::error('Validation error: ' . json_encode($tag->errors), __METHOD__);
-                    \Yii::$app->session->setFlash('error', 'ERR!');
+                    \Yii::$app->session->setFlash('error', "ERR! {$name}");
+                    break;
                 }
 
             }
@@ -67,7 +97,8 @@ class MonitoringController extends Controller
 
     public function actionCreateAccount()
     {
-        $form = new AccountMonitoringForm();
+        $form = new MonitoringForm();
+        $form->setScenario(TrackerType::ACCOUNT);
 
         if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
             $usernames = StringHelper::explode($form->names, ',', true, true);
@@ -78,8 +109,11 @@ class MonitoringController extends Controller
                 $account = $accountManager->monitor($username, $form->proxy_id, $form->proxy_tag_id);
                 if (!$account->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
-                    $tagManager = \Yii::createObject(TagManager::class);
-                    $tagManager->saveForAccount($account, (array)$form->tags, \Yii::$app->user->id);
+                    $tags = array_filter((array)$form->tags);
+                    if ($tags) {
+                        $tagManager = \Yii::createObject(TagManager::class);
+                        $tagManager->saveForAccount($account, $tags, \Yii::$app->user->id);
+                    }
                 } else {
                     \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
                     \Yii::$app->session->setFlash('error', "ERR! {$username}");

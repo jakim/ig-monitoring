@@ -2,7 +2,7 @@
 
 use app\components\ArrayHelper;
 use app\models\Account;
-use app\modules\admin\models\AccountMonitoringForm;
+use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\widgets\OnOffMonitoringButton;
 use jakim\ig\Url;
 use yii\helpers\Html;
@@ -61,13 +61,17 @@ $formatter = Yii::$app->formatter;
                                 'value' => function (Account $account) use ($model) {
                                     return OnOffMonitoringButton::widget([
                                         'model' => $account,
-                                        'form' => new AccountMonitoringForm([
+                                        'form' => new MonitoringForm([
+//                                                'scenario' => 'account',
                                             'names' => $account->username,
                                             'tags' => ArrayHelper::getColumn($model->tags, 'name'),
                                             'proxy_id' => $model->proxy_id,
                                             'proxy_tag_id' => $model->proxy_tag_id,
                                         ]),
-                                        'linkCssClass' => 'btn btn-xs',
+                                        'btnCssClass' => 'btn btn-xs',
+                                        'offAjaxOptions' => [
+                                            'success' => new \yii\web\JsExpression('function(){location.reload();}'),
+                                        ],
                                     ]);
                                 },
                             ],

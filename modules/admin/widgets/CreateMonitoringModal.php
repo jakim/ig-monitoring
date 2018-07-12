@@ -9,23 +9,21 @@ namespace app\modules\admin\widgets;
 
 
 use app\components\ArrayHelper;
+use app\dictionaries\TrackerType;
 use app\models\Account;
 use app\models\Proxy;
-use app\models\Tag;
-use app\modules\admin\models\AccountMonitoringForm;
+use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\widgets\base\ModalWidget;
-use kartik\select2\Select2;
-use yii\helpers\Html;
+use yii\helpers\Inflector;
 
 class CreateMonitoringModal extends ModalWidget
 {
-    public $title = 'Accounts';
+    public $trackerType = TrackerType::ACCOUNT;
+
+    public $title;
     public $form;
-    public $formAction;
     public $modalHeader = 'Create monitoring';
-    public $modalToggleButton = [
-        'label' => 'Create',
-    ];
+    public $modalToggleButton = ['label' => 'Create'];
 
     protected static $tags;
     protected static $proxies;
@@ -33,16 +31,15 @@ class CreateMonitoringModal extends ModalWidget
 
     public function run()
     {
-        $this->form = $this->form ?: new AccountMonitoringForm();
-        $this->formAction = $this->formAction ?: ['monitoring/create-account'];
+        $this->form = $this->form ?: new MonitoringForm(['scenario' => $this->trackerType]);
         parent::run();
     }
 
     protected function renderModalContent()
     {
         echo $this->render('create-monitoring', [
-            'formAction' => $this->formAction,
-            'title' => $this->title,
+            'formAction' => ["monitoring/create-{$this->trackerType}"],
+            'title' => $this->title ?: Inflector::pluralize($this->trackerType),
             'model' => $this->form,
             'tags' => $this->getTagPairs(),
             'proxies' => $this->getProxyPairs(),
@@ -52,11 +49,11 @@ class CreateMonitoringModal extends ModalWidget
 
     protected function getTagPairs()
     {
-        if ($this->form instanceof AccountMonitoringForm) {
+        if ($this->trackerType == TrackerType::ACCOUNT) {
             return static::$tags = static::$tags ?? ArrayHelper::map(Account::usedTags(), 'name', 'name');
         }
 
-        return [];
+        return false;
     }
 
     /**
@@ -66,7 +63,7 @@ class CreateMonitoringModal extends ModalWidget
     {
         static::$proxies = static::$proxies ?? Proxy::find()->joinWith('tags')->active()->all();
 
-        return ArrayHelper::map(static::$proxies, 'id', function(Proxy $model) {
+        return ArrayHelper::map(static::$proxies, 'id', function (Proxy $model) {
             $tags = ArrayHelper::getColumn($model->tags, 'name');
 
             return $model->ip . ($tags ? ' # ' . implode(',', $tags) : '');

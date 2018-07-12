@@ -110,7 +110,9 @@ class ProxyController extends Controller
      *
      * @param integer $id
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
     {

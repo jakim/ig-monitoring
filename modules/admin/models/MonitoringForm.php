@@ -8,9 +8,10 @@
 namespace app\modules\admin\models;
 
 
+use app\dictionaries\TrackerType;
 use yii\base\Model;
 
-class AccountMonitoringForm extends Model
+class MonitoringForm extends Model
 {
     public $names;
     public $tags;
@@ -25,10 +26,17 @@ class AccountMonitoringForm extends Model
         ];
     }
 
-    public function attributeLabels()
+    public function scenarios()
     {
         return [
-            'names' => 'Usernames'
+            TrackerType::ACCOUNT => [
+                'names',
+                'tags', 'proxy_id', 'proxy_tag_id',
+            ],
+            TrackerType::TAG => [
+                'names',
+                'proxy_id', 'proxy_tag_id',
+            ],
         ];
     }
 }

@@ -3,7 +3,6 @@
 namespace app\modules\admin\models;
 
 use app\models\TagStats;
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 

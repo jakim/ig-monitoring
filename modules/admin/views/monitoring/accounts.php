@@ -2,7 +2,6 @@
 
 use jakim\ig\Url;
 use app\modules\admin\components\grid\StatsColumn;
-use app\modules\admin\models\Account;
 use yii\helpers\Html;
 use yii\grid\GridView;
 

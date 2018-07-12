@@ -1,10 +1,5 @@
 <?php
 
-use app\modules\admin\widgets\ChangeInfoBox;
-use dosamigos\chartjs\ChartJs;
-use yii\helpers\ArrayHelper;
-use yii\web\JsExpression;
-
 /**
  * @var $this yii\web\View
  * @var $model app\models\Account

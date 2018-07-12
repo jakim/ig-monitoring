@@ -11,10 +11,10 @@ use yii\widgets\ActiveForm;
 
 /**
  * @var \yii\web\View $this
- * @var \app\modules\admin\models\TagMonitoringForm $model
+ * @var \app\modules\admin\models\MonitoringForm $model
  * @var array|string $formAction
  * @var string $title
- * @var array $tags
+ * @var array|false $tags
  * @var array $proxies
  * @var array $proxyTags
  */
@@ -24,7 +24,7 @@ $form = ActiveForm::begin([
 ]);
 ?>
     <div class="panel panel-primary">
-        <div class="panel-heading"><?= Html::encode($title) ?></div>
+        <div class="panel-heading text-capitalize"><?= Html::encode($title) ?></div>
         <div class="panel-body">
             <?= $form->field($model, 'names')
                 ->textInput(['maxlength' => true, 'placeholder' => true])
@@ -32,7 +32,7 @@ $form = ActiveForm::begin([
             ?>
 
             <?php
-            if ($model->hasProperty('tags', true, false)) {
+            if ($tags !== false) {
                 echo $form->field($model, 'tags')->widget(Select2::class, [
                     'options' => [
                         'id' => "tags_{$form->getId()}",

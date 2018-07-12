@@ -2,7 +2,6 @@
 
 namespace app\modules\admin\controllers;
 
-use app\components\AccountManager;
 use app\components\stats\AccountDaily;
 use app\components\stats\AccountDailyDiff;
 use app\components\stats\AccountMonthlyDiff;
@@ -11,7 +10,6 @@ use app\models\AccountNote;
 use app\models\Media;
 use app\models\Tag;
 use app\modules\admin\controllers\actions\FavoriteAction;
-use app\modules\admin\controllers\actions\MonitoringAction;
 use app\modules\admin\models\Account;
 use app\modules\admin\models\AccountStats;
 use Carbon\Carbon;
@@ -40,7 +38,6 @@ class AccountController extends Controller
                     'delete' => ['POST'],
                     'delete-stats' => ['POST'],
                     'delete-associated' => ['POST'],
-                    'monitoring' => ['POST'],
                     'tags' => ['POST'],
                     'favorite' => ['POST'],
                     'update-note' => ['POST'],
@@ -53,7 +50,6 @@ class AccountController extends Controller
     {
         return [
             'favorite' => FavoriteAction::class,
-            'monitoring' => MonitoringAction::class,
         ];
     }
 

@@ -20,6 +20,7 @@
   "minimum-stability": "stable",
   "require": {
     "php": ">=7.1.0",
+    "ext-json": "*",
     "yiisoft/yii2": "^2.0.15",
     "yiisoft/yii2-bootstrap": "~2.0.0",
     "yiisoft/yii2-swiftmailer": "~2.0.0",
@@ -34,7 +35,9 @@
     "jakim-pj/ig": "@dev",
     "jakim-pj/ig-client": "@dev",
     "kevinrob/guzzle-cache-middleware": "^3.2",
-    "nesbot/carbon": "^1.29"
+    "nesbot/carbon": "^1.29",
+    "bower-asset/ladda": "^2.0",
+    "bower-asset/spin": "^1.1"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.0.0",
