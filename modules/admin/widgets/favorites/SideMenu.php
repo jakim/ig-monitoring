@@ -8,9 +8,9 @@
 namespace app\modules\admin\widgets\favorites;
 
 
-use app\components\AjaxButton;
 use app\components\ArrayHelper;
 use app\models\Favorite;
+use app\modules\admin\widgets\AjaxButton;
 use dmstr\widgets\Menu;
 use yii\helpers\Url;
 use yii\web\JsExpression;
@@ -39,11 +39,7 @@ class SideMenu extends Menu
             $this->items[] = [
                 'label' => $favorite->label,
                 'url' => $favorite->url,
-                'options' => [
-                    'data' => [
-                        'id' => $favorite->id,
-                    ],
-                ],
+                'id' => $favorite->id,
             ];
         }
         if ($this->items) {
@@ -54,6 +50,13 @@ class SideMenu extends Menu
 
     protected function isItemActive($item)
     {
+        if (!isset($item['url'])) {
+            return false;
+        }
+
+        if ($item['url'] == Url::current()) {
+            return true;
+        }
         if (isset($item['url'])) {
             $url = Url::to(["/admin/{$this->view->context->id}/dashboard", 'id' => \Yii::$app->request->get('id')]);
 
@@ -66,25 +69,24 @@ class SideMenu extends Menu
     protected function renderItem($item)
     {
         $tmp = $this->linkTemplate;
-
-        $id = ArrayHelper::getValue($item, 'options.data.id');
+        $id = ArrayHelper::getValue($item, 'id');
+        $btnDelete = '';
         if ($id) {
             $btnDelete = AjaxButton::widget([
+                'confirm' => true,
                 'tag' => 'span',
                 'text' => '<i class="fa fa-trash-o pull-right delete"></i>',
-                'confirm' => 'Are you sure?',
                 'url' => ['favorite/delete', 'id' => $id],
-                'data' => [
-                    'id' => $id,
-                ],
                 'options' => [
                     'class' => 'pull-right-container',
+                    'data' => [
+                        'style' => 'slide-right',
+                    ],
                 ],
-                'successCallback' => new JsExpression(sprintf("function(){jQuery('.favorites').find('li[data-id=%s]').remove();}", $id)),
             ]);
-
-            $this->linkTemplate = str_replace('{btn-delete}', $btnDelete, $this->linkTemplate);
         }
+
+        $this->linkTemplate = str_replace('{btn-delete}', $btnDelete, $this->linkTemplate);
 
         $html = parent::renderItem($item);
         $this->linkTemplate = $tmp;

@@ -8,9 +8,11 @@
 namespace app\modules\admin\widgets\favorites;
 
 
+use app\models\Favorite;
 use app\modules\admin\widgets\base\ModalWidget;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 class AddToModal extends ModalWidget
 {
@@ -22,21 +24,21 @@ class AddToModal extends ModalWidget
 
     protected function renderModalContent()
     {
-        echo Html::beginForm();
-
-        echo "<div class=\"form-group\">";
-        echo Html::input('text', 'label', null, [
+        $model = new Favorite();
+        $form = ActiveForm::begin([
+            'action' => ['favorite/create'],
+        ]);
+        echo $form->field($model, 'label')->textInput([
             'placeholder' => 'Name',
-            'class' => 'form-control',
             'required' => true,
             'autofocus' => true,
         ]);
-        echo Html::hiddenInput('url', Url::current([], true));
+        echo $form->field($model, 'url')->hiddenInput(['value' => Url::current()])->label(false);
 
-        echo "</div>";
+        echo Html::hiddenInput('prefix', '<span class=\'fa fa-search\'></span> ');
 
-        echo Html::submitButton('Add', ['class' => 'btn btn-primary']);
+        echo Html::submitButton('Save', ['class' => 'btn btn-primary']);
 
-        echo Html::endForm();
+        ActiveForm::end();
     }
 }

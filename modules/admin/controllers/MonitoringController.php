@@ -16,7 +16,6 @@ use app\components\stats\TagMonthlyDiff;
 use app\components\TagManager;
 use app\dictionaries\TrackerType;
 use app\models\Account;
-use app\models\Favorite;
 use app\models\Tag;
 use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\models\AccountSearch;
@@ -154,17 +153,6 @@ class MonitoringController extends Controller
 
     public function actionAccounts()
     {
-
-        $label = \Yii::$app->request->post('label');
-        $url = \Yii::$app->request->post('url');
-        if ($label && $url) {
-            (new Favorite([
-                'user_id' => \Yii::$app->user->id,
-                'url' => $url,
-                'label' => "<span class='fa fa-search'></span> $label",
-            ]))->insert(false);
-        }
-
         $searchModel = new AccountSearch();
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['account.monitoring' => 1]);

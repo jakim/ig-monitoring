@@ -9,14 +9,12 @@ use app\components\TagManager;
 use app\models\AccountNote;
 use app\models\Media;
 use app\models\Tag;
-use app\modules\admin\controllers\actions\FavoriteAction;
 use app\modules\admin\models\Account;
 use app\modules\admin\models\AccountStats;
 use Carbon\Carbon;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
-use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -39,31 +37,10 @@ class AccountController extends Controller
                     'delete-stats' => ['POST'],
                     'delete-associated' => ['POST'],
                     'tags' => ['POST'],
-                    'favorite' => ['POST'],
                     'update-note' => ['POST'],
                 ],
             ],
         ];
-    }
-
-    public function actions()
-    {
-        return [
-            'favorite' => FavoriteAction::class,
-        ];
-    }
-
-    public function beforeAction($action)
-    {
-        if (parent::beforeAction($action)) {
-            if (in_array($this->action->id, ['stats', 'media-tags', 'media-accounts'])) {
-                Url::remember(Url::current());
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     public function actionDashboard($id)
@@ -165,7 +142,7 @@ class AccountController extends Controller
         $manager = Yii::createObject(TagManager::class);
         $manager->setForAccount($model, $tags, Yii::$app->user->id);
 
-        return $this->redirect(Url::previous());
+        return $this->redirect(['account/dashboard', 'id' => $id]);
     }
 
     public function actionStats($id)

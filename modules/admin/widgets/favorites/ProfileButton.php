@@ -10,6 +10,7 @@ namespace app\modules\admin\widgets\favorites;
 
 use app\models\Account;
 use app\models\Favorite;
+use app\modules\admin\widgets\AjaxButton;
 use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -18,52 +19,32 @@ class ProfileButton extends Widget
 {
     public $model;
 
+    public $addLabel = '<span class="fa fa-star text-yellow"></span> Add to favorites';
+    public $removeLabel = '<span class="fa fa-star-o text-yellow"></span> Remove from favorites';
+
     public function run()
     {
-        echo Html::a(
-            $this->isFavorite() ?
-                '<span class="fa fa-star-o text-yellow"></span> Remove from favorites' : '<span class="fa fa-star text-yellow"></span> Add to favorites',
-            ['favorite', 'id' => $this->model->id],
-            [
+        $url = Url::to(['/admin/account/dashboard', 'id' => $this->model->id]);
+
+        $model = Favorite::findOne([
+            'user_id' => \Yii::$app->user->id,
+            'url' => $url,
+        ]);
+
+        return AjaxButton::widget([
+            'confirm' => isset($model),
+            'text' => $model ? $this->removeLabel : $this->addLabel,
+            'url' => $model ? ['favorite/delete', 'id' => $model->id] : ['favorite/create'],
+            'data' => [
+                'url' => $url,
+                'label' => $this->model->usernamePrefixed,
+            ],
+            'options' => [
                 'class' => 'btn btn-block btn-default btn-sm',
                 'data' => [
-                    'method' => 'post',
-                    'confirm' => 'Are you sure?',
-                    'params' => [
-                        'url' => $this->getUrl(),
-                        'label' => $this->getLabel(),
-                    ],
+                    'style' => 'zoom-out',
                 ],
-            ]);
-    }
-
-    private function isFavorite()
-    {
-        return Favorite::find()
-            ->andWhere([
-                'user_id' => \Yii::$app->user->id,
-                'url' => $this->getUrl()]
-            )
-            ->exists();
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getLabel()
-    {
-        if ($this->model instanceof Account) {
-            return $this->model->usernamePrefixed;
-        }
-
-        return 'no label';
-    }
-
-    /**
-     * @return mixed|string
-     */
-    protected function getUrl()
-    {
-        return Url::to(["/admin/{$this->view->context->id}/dashboard", 'id' => $this->model->id]);
+            ],
+        ]);
     }
 }
