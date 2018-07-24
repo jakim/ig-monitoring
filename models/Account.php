@@ -2,11 +2,9 @@
 
 namespace app\models;
 
+use app\components\UidAttributeBehavior;
 use Yii;
-use yii\behaviors\AttributeBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\db\BaseActiveRecord;
-use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -63,24 +61,7 @@ class Account extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::behaviors(), [
             'time' => TimestampBehavior::class,
-            'uid' => [
-                'class' => AttributeBehavior::class,
-                'attributes' => [
-                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['uid'],
-                    BaseActiveRecord::EVENT_BEFORE_UPDATE => ['uid'],
-                ],
-                'preserveNonEmptyValues' => true,
-                'value' => function() {
-                    do {
-                        $uid = Yii::$app->security->generateRandomString(64);
-                        $uidExist = static::find()
-                            ->andWhere(['account.uid' => $uid])
-                            ->exists();
-                    } while ($uidExist);
-
-                    return $uid;
-                },
-            ],
+            'uid' => UidAttributeBehavior::class,
         ]);
     }
 
@@ -112,7 +93,7 @@ class Account extends \yii\db\ActiveRecord
             [['updated_at', 'created_at', 'accounts_default_tags'], 'safe'],
             [['proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
             ['accounts_monitoring_level', 'integer', 'min' => 0],
-            [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 'uid'], 'string', 'max' => 255],
+            [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', '!uid'], 'string', 'max' => 255],
             [['monitoring', 'disabled', 'is_private'], 'boolean'],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
