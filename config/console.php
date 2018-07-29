@@ -13,9 +13,7 @@ $config = [
     'container' => require __DIR__ . '/container.php',
     'components' => [
         'queue' => require __DIR__ . '/queue.php',
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
+        'cache' => require __DIR__ . '/cache.php',
         'log' => [
             'targets' => [
                 [

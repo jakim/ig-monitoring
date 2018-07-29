@@ -31,9 +31,7 @@ $config = [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'vT3_-Kt_uTwlkUroO-ijO3mWb-wpjKec',
         ],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
+        'cache' => require __DIR__ . '/cache.php',
         'user' => [
             'identityClass' => \app\models\User::class,
             'loginUrl' => ['/admin/auth/login'],
