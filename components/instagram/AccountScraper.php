@@ -57,6 +57,7 @@ class AccountScraper extends Scraper implements AccountScraperInterface
     {
         $username = strtolower($username);
         $filename = sprintf('%s_%s', $username, basename($profilePicUrl));
+        $filename = explode('?', $filename)['0'];
         $path = sprintf('/uploads/%s', substr($username, 0, 2));
 
         $fullPath = \Yii::getAlias("@app/web/{$path}");
