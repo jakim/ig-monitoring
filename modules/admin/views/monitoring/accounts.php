@@ -37,8 +37,11 @@ $formatter = Yii::$app->formatter;
                         $html[] = Html::a($model->displayName, ['account/dashboard', 'id' => $model->id]);
                         $html[] = Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
 
-                        if ($model->is_private) {
-                            $html[] = '<span class="fa fa-user-secret text-muted pull-right" title="is private"></span>';
+                        if (!$model->is_valid) {
+                            $html[] = sprintf(
+                                '<span class="fa fa-exclamation-triangle text-danger pull-right" title="%s"></span>',
+                                \app\dictionaries\AccountInvalidationType::getLabel($model->invalidation_type_id, 'Unknown reason')
+                            );
                         }
                         if ($model->accounts_monitoring_level) {
                             $html[] = sprintf('<span class="fa fa-magic text-muted pull-right" title="monitoring level: %s"></span>', $model->accounts_monitoring_level);

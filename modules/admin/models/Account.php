@@ -28,8 +28,9 @@ class Account extends \app\models\Account
         $scenarios[self::SCENARIO_UPDATE] = [
             'name',
             'accounts_monitoring_level',
-            'disabled',
             'accounts_default_tags',
+            'is_valid',
+            'disabled',
         ];
 
         return $scenarios;
@@ -44,7 +45,8 @@ class Account extends \app\models\Account
             'as_er' => 'Engagement',
             's_tags' => 'Tags',
             'as_created_at' => 'Created At',
-            'disabled' => 'An exclamation triangle in the list of accounts, is set automatically if the account is not reachable. Disabled this option if you are sure that this account exists and want to try to refresh stats again.',
+            'is_valid' => 'Is Valid - an exclamation triangle in the list of accounts, is set automatically if the account is not reachable. Check this option if you are sure that this account is valid and want to try to refresh stats again.',
+            'disabled' => 'Disabled - the account will disappear from the monitoring list and will be ignored even if it is automatically discovered.',
         ]);
     }
 

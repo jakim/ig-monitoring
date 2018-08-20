@@ -106,6 +106,7 @@ class MonitoringController extends Controller
 
             foreach ($usernames as $username) {
                 $account = $accountManager->monitor($username, $form->proxy_id, $form->proxy_tag_id);
+                $account->disabled = 0;
                 if (!$account->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
                     $tags = array_filter((array)$form->tags);

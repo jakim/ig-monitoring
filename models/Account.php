@@ -27,13 +27,17 @@ use yii\helpers\ArrayHelper;
  * @property bool $disabled
  * @property int $accounts_monitoring_level
  * @property string $accounts_default_tags
- * @property bool $is_private
+ * @property bool $is_valid [tinyint(1)]
+ * @property int $invalidation_type_id [int(11)]
+ * @property int $invalidation_count [int(11)]
+ * @property string $update_stats_after [datetime]
  *
  * @property string $usernamePrefixed
  * @property string $displayName
  *
  * @property AccountStats $lastAccountStats
  *
+ * @property AccountInvalidationType $invalidationType
  * @property Proxy $proxy
  * @property Tag $proxyTag
  * @property AccountNote[] $accountNotes
@@ -94,7 +98,7 @@ class Account extends \yii\db\ActiveRecord
             [['proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
             ['accounts_monitoring_level', 'integer', 'min' => 0],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', '!uid'], 'string', 'max' => 255],
-            [['monitoring', 'disabled', 'is_private'], 'boolean'],
+            [['monitoring', 'disabled', 'is_valid'], 'boolean'],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
             [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
@@ -131,6 +135,14 @@ class Account extends \yii\db\ActiveRecord
             'accounts_monitoring_level' => 'Automatically monitors discovered accounts. Be careful.',
             'accounts_default_tags' => 'Automatically tag discovered accounts. If not set, parent tags will be used.',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInvalidationType()
+    {
+        return $this->hasOne(AccountInvalidationType::class, ['id' => 'invalidation_type_id']);
     }
 
     /**

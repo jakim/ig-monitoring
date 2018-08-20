@@ -56,7 +56,6 @@ class StatsController extends Controller
      *
      * @param $name
      * @return int
-     * @throws \yii\base\InvalidConfigException
      */
     public function actionUpdateTag($name)
     {
@@ -79,21 +78,19 @@ class StatsController extends Controller
      * Create update jobs.
      *
      * @param int $force ignore interval
-     * @param int $interval in hours
      * @return int
      */
-    public function actionUpdateAccounts($force = 0, $interval = 24)
+    public function actionUpdateAccounts($force = 0)
     {
         $query = Account::find()
             ->select('id')
             ->monitoring();
 
         if (!$force) {
-            $accountIds = AccountStats::find()
-                ->select('account_id')
-                ->andWhere($this->whereInterval($interval))
-                ->column();
-            $query->andFilterWhere(['not', ['id' => $accountIds]]);
+            $query->andWhere(['or',
+                new Expression('DATE_FORMAT(update_stats_after, \'%Y-%m-%d %H\') < DATE_FORMAT(NOW(), \'%Y-%m-%d %H\')'),
+                ['update_stats_after' => null],
+            ]);
         }
 
         /** @var \yii\queue\Queue $queue */
@@ -130,7 +127,7 @@ class StatsController extends Controller
     private function whereInterval($interval): Expression
     {
         return new Expression('DATE_FORMAT(created_at, \'%Y-%m-%d %H\') > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL :interval HOUR), \'%Y-%m-%d %H\')', [
-            'interval' => (int) $interval,
+            'interval' => (int)$interval,
         ]);
     }
 }

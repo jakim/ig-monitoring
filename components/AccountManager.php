@@ -14,11 +14,49 @@ use app\models\AccountTag;
 use app\models\Media;
 use app\models\MediaAccount;
 use yii\base\Component;
+use yii\db\Expression;
 use yii\helpers\StringHelper;
 
 class AccountManager extends Component
 {
     use FindOrCreate;
+
+    /**
+     * @param \app\models\Account $account
+     * @param int $nextUpdateInterval In hours from now.
+     */
+    public function markAsValid(Account $account, int $nextUpdateInterval = 24)
+    {
+        $account->invalidation_count = 0;
+        $account->is_valid = 1;
+        $account->invalidation_type_id = null;
+
+        $this->setDateOfNextStatsUpdate($account, $nextUpdateInterval);
+    }
+
+    public function updateInvalidation(Account $account, ?int $invalidationType)
+    {
+        $account->invalidation_count = (int)$account->invalidation_count + 1;
+        $account->is_valid = 0;
+        $account->invalidation_type_id = $invalidationType;
+        $interval = 1;
+        for ($i = 1; $i <= $account->invalidation_count; $i++) {
+            $interval *= $i;
+        }
+        $this->setDateOfNextStatsUpdate($account, $interval);
+    }
+
+    /**
+     * @param \app\models\Account $account
+     * @param int $interval In hours from now.
+     */
+    public function setDateOfNextStatsUpdate(Account $account, int $interval = 24)
+    {
+        $account->update_stats_after = new Expression('DATE_ADD(NOW(), INTERVAL :interval HOUR)', [
+            'interval' => $interval,
+        ]);
+        $account->save();
+    }
 
     public function monitorRelatedAccounts(Account $parent, array $accounts)
     {
@@ -26,6 +64,9 @@ class AccountManager extends Component
             if (\is_string($account)) {
                 /** @var Account $account */
                 $account = $this->findOrCreate(['username' => $account], Account::class);
+                if ($account->disabled) {
+                    continue;
+                }
             }
             //calculation monitoring level
             if ($parent->accounts_monitoring_level > 1) {

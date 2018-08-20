@@ -40,7 +40,6 @@ class AccountUpdater extends Component
         $this->account->full_name = $account->fullName;
         $this->account->biography = $account->biography;
         $this->account->external_url = $account->externalUrl;
-        $this->account->is_private = $account->isPrivate;
 
         $this->saveModel($this->account);
 

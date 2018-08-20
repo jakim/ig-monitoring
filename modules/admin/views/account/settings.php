@@ -30,6 +30,7 @@ $lastAccountStats = $model->lastAccountStats;
                             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                             <?= $form->field($model, 'accounts_monitoring_level')->textInput(['type' => 'number', 'step' => 1, 'min' => 0]) ?>
                             <?= $form->field($model, 'accounts_default_tags')->textInput(['maxlength' => true, 'placeholder' => 'comma separated list...']); ?>
+                            <?= $form->field($model, 'is_valid')->checkbox() ?>
                             <?= $form->field($model, 'disabled')->checkbox() ?>
 
                             <div class="form-group">

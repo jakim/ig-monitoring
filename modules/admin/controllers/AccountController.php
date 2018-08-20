@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\components\AccountManager;
 use app\components\stats\AccountDaily;
 use app\components\stats\AccountDailyDiff;
 use app\components\stats\AccountMonthlyDiff;
@@ -104,7 +105,17 @@ class AccountController extends Controller
         $model = $this->findModel($id);
         $model->setScenario(Account::SCENARIO_UPDATE);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->disabled) {
+                $model->monitoring = 0;
+                $model->save();
+            } elseif ($model->is_valid) {
+                $accountManager = Yii::createObject(AccountManager::class);
+                $accountManager->markAsValid($model, 1); // save model
+            } else {
+                $model->save();
+            }
+
             return $this->redirect(['account/dashboard', 'id' => $model->id]);
         }
 

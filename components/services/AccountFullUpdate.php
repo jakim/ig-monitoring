@@ -8,6 +8,7 @@
 namespace app\components\services;
 
 
+use app\components\AccountManager;
 use app\components\AccountUpdater;
 use app\components\http\Client;
 use app\components\http\ProxyManager;
@@ -15,7 +16,9 @@ use app\components\instagram\AccountScraper;
 use app\components\instagram\models\Account;
 use app\components\MediaManager;
 use app\components\services\contracts\ServiceInterface;
+use app\dictionaries\AccountInvalidationType;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use yii\base\BaseObject;
 use yii\web\NotFoundHttpException;
 
@@ -29,6 +32,7 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
     public function run()
     {
         $proxyManager = \Yii::createObject(ProxyManager::class);
+        $accountManager = \Yii::createObject(AccountManager::class);
 
         try {
             $proxy = $proxyManager->reserve($this->account);
@@ -44,11 +48,18 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
             $proxyManager->release($proxy);
             unset($proxy);
 
-            $this->updateAccount($accountData, $posts);
+
+            if ($accountData->isPrivate) {
+                $accountManager->updateInvalidation($this->account, AccountInvalidationType::IS_PRIVATE);
+            } else {
+                $this->updateAccount($accountData, $posts);
+                $accountManager->markAsValid($this->account);
+            }
 
         } catch (NotFoundHttpException $exception) {
-            $this->account->disabled = 1;
-            $this->account->save();
+            $accountManager->updateInvalidation($this->account, AccountInvalidationType::NOT_FOUND);
+        } catch (RequestException $exception) {
+            $accountManager->updateInvalidation($this->account, null);
         } finally {
             if (isset($proxy)) {
                 $proxyManager->release($proxy);
