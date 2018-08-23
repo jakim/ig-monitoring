@@ -78,7 +78,8 @@ class AccountSearch extends Account
         ]);
 
         $dataProvider->sort->defaultOrder = [
-            'disabled' => SORT_DESC,
+            'is_valid' => SORT_ASC,
+            'invalidation_type_id' => SORT_DESC,
             'id' => SORT_DESC,
         ];
 
