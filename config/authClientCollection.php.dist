@@ -12,6 +12,7 @@ return [
             'class' => \yii\authclient\clients\Google::class,
             'clientId' => '',
             'clientSecret' => '',
+            'returnUrl' => '', // https://github.com/yiisoft/yii2-authclient/issues/241
         ],
     ],
 ];
