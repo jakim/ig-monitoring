@@ -1,6 +1,8 @@
 <?php
 
+use app\dictionaries\TagInvalidationType;
 use app\modules\admin\components\grid\StatsColumn;
+use jakim\ig\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -31,7 +33,22 @@ $this->params['breadcrumbs'][] = 'Tags';
                 [
                     'attribute' => 'name',
                     'content' => function (\app\models\Tag $model) {
-                        return Html::a($model->namePrefixed, ['tag/stats', 'id' => $model->id]);
+                        $html = [];
+                        $html[] = Html::a($model->namePrefixed, ['tag/stats', 'id' => $model->id]);
+                        $html[] = Html::a('<span class="fa fa-external-link text-sm"></span>', Url::tag($model->name), ['target' => '_blank']);
+
+                        if (!$model->is_valid) {
+                            $html[] = sprintf(
+                                '<span class="fa fa-exclamation-triangle text-danger pull-right" data-toggle="tooltip" data-placement="top"  title="%s, attempts: %s"></span>',
+                                TagInvalidationType::getLabel($model->invalidation_type_id, 'Unknown reason'),
+                                $model->invalidation_count
+                            );
+                        }
+                        if ($model->disabled) {
+                            $html[] = '<span class="fa fa-exclamation-triangle text-danger pull-right" title="Not found."></span>';
+                        }
+
+                        return implode(" \n", $html);
                     },
                 ],
                 [
@@ -101,3 +118,6 @@ $this->params['breadcrumbs'][] = 'Tags';
 
     </div>
 </div>
+
+<?php
+$this->registerJs('jQuery(\'[data-toggle="tooltip"]\').tooltip()');

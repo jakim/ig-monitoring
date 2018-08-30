@@ -19,6 +19,11 @@ use yii\helpers\ArrayHelper;
  * @property int $monitoring
  * @property int $proxy_id
  * @property int $proxy_tag_id
+ * @property bool $is_valid
+ * @property int $invalidation_type_id
+ * @property int $invalidation_count
+ * @property string $update_stats_after
+ * @property bool $disabled
  *
  * @property string $namePrefixed
  *
@@ -29,10 +34,12 @@ use yii\helpers\ArrayHelper;
  * @property MediaTag[] $mediaTags
  * @property Media[] $media
  * @property Proxy $proxy
+ * @property TagInvalidationType $invalidationType
  * @property TagStats[] $tagStats
  */
 class Tag extends \yii\db\ActiveRecord
 {
+    const SCENARIO_UPDATE = 'update';
     public $occurs;
 
     public function getNamePrefixed()
@@ -66,10 +73,12 @@ class Tag extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['monitoring', 'proxy_id', 'occurs'], 'integer'],
-            [['updated_at', 'created_at'], 'safe'],
+            [['monitoring', 'proxy_id', 'occurs', 'invalidation_type_id', 'invalidation_count'], 'integer'],
+            [['is_valid', 'disabled'], 'boolean'],
+            [['updated_at', 'created_at', 'update_stats_after'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['name'], 'unique'],
+            [['invalidation_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => TagInvalidationType::class, 'targetAttribute' => ['invalidation_type_id' => 'id']],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
             [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
         ];
@@ -89,6 +98,11 @@ class Tag extends \yii\db\ActiveRecord
             'monitoring' => 'Monitoring',
             'proxy_id' => 'Proxy ID',
             'proxy_tag_id' => 'Proxy Tag ID',
+            'is_valid' => 'Is Valid',
+            'invalidation_type_id' => 'Invalidation Type ID',
+            'invalidation_count' => 'Invalidation Count',
+            'update_stats_after' => 'Update Stats After',
+            'disabled' => 'Disabled',
         ];
     }
 
@@ -135,6 +149,14 @@ class Tag extends \yii\db\ActiveRecord
     public function getProxyTag()
     {
         return $this->hasOne(Tag::class, ['id' => 'proxy_tag_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInvalidationType()
+    {
+        return $this->hasOne(TagInvalidationType::className(), ['id' => 'invalidation_type_id']);
     }
 
     /**

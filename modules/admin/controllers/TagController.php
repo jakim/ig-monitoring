@@ -2,7 +2,10 @@
 
 namespace app\modules\admin\controllers;
 
-use app\models\Tag;
+use app\components\TagManager;
+use app\models\TagStats;
+use app\modules\admin\models\Tag;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -23,9 +26,41 @@ class TagController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'monitoring' => ['POST'],
+                    'delete-stats' => ['POST'],
                 ],
             ],
         ];
+    }
+
+    public function actionDeleteStats($id)
+    {
+        TagStats::deleteAll(['account_id' => $id]);
+
+        return $this->redirect(['tag/stats', 'id' => $id]);
+    }
+
+    public function actionSettings($id)
+    {
+        $model = $this->findModel($id);
+        $model->setScenario(Tag::SCENARIO_UPDATE);
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->disabled) {
+                $model->monitoring = 0;
+                $model->save();
+            } elseif ($model->is_valid) {
+                $accountManager = Yii::createObject(TagManager::class);
+                $accountManager->markAsValid($model, 1); // save model
+            } else {
+                $model->save();
+            }
+
+            return $this->redirect(['tag/stats', 'id' => $model->id]);
+        }
+
+        return $this->render('settings', [
+            'model' => $model,
+        ]);
     }
 
     public function actionStats($id)

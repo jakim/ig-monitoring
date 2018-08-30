@@ -10,9 +10,7 @@ namespace app\commands;
 
 use app\components\JobFactory;
 use app\models\Account;
-use app\models\AccountStats;
 use app\models\Tag;
-use app\models\TagStats;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\db\Expression;
@@ -24,21 +22,21 @@ class StatsController extends Controller
      * Create update jobs.
      *
      * @param int $force ignore interval
-     * @param int $interval in hours
      * @return int
      */
-    public function actionUpdateTags($force = 0, $interval = 24)
+    public function actionUpdateTags($force = 0)
     {
         $query = Tag::find()
             ->select('id')
             ->monitoring();
 
         if (!$force) {
-            $tagIds = TagStats::find()
-                ->select('tag_id')
-                ->andWhere($this->whereInterval($interval))
-                ->column();
-            $query->andFilterWhere(['not', ['id' => $tagIds]]);
+            if (!$force) {
+                $query->andWhere(['or',
+                    $this->updateAfterExpression(),
+                    ['update_stats_after' => null],
+                ]);
+            }
         }
 
         /** @var \yii\queue\Queue $queue */
@@ -88,7 +86,7 @@ class StatsController extends Controller
 
         if (!$force) {
             $query->andWhere(['or',
-                new Expression('DATE_FORMAT(update_stats_after, \'%Y-%m-%d %H\') < DATE_FORMAT(NOW(), \'%Y-%m-%d %H\')'),
+                $this->updateAfterExpression(),
                 ['update_stats_after' => null],
             ]);
         }
@@ -121,13 +119,10 @@ class StatsController extends Controller
     }
 
     /**
-     * @param $interval
      * @return Expression
      */
-    private function whereInterval($interval): Expression
+    protected function updateAfterExpression(): Expression
     {
-        return new Expression('DATE_FORMAT(created_at, \'%Y-%m-%d %H\') > DATE_FORMAT(DATE_SUB(NOW(), INTERVAL :interval HOUR), \'%Y-%m-%d %H\')', [
-            'interval' => (int)$interval,
-        ]);
+        return new Expression('DATE_FORMAT(update_stats_after, \'%Y-%m-%d %H\') < DATE_FORMAT(NOW(), \'%Y-%m-%d %H\')');
     }
 }

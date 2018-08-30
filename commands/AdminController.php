@@ -9,6 +9,7 @@ namespace app\commands;
 
 
 use app\dictionaries\AccountInvalidationType;
+use app\dictionaries\TagInvalidationType;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\helpers\Console;
@@ -20,6 +21,7 @@ class AdminController extends Controller
     {
         $dictionaries = [
             AccountInvalidationType::class,
+            TagInvalidationType::class,
         ];
 
         /** @var \app\dictionaries\Dictionary $dictionary */

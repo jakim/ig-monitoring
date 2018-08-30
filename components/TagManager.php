@@ -16,12 +16,54 @@ use app\models\MediaTag;
 use app\models\Tag;
 use app\models\User;
 use yii\base\Component;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 
 class TagManager extends Component
 {
     use FindOrCreate;
+
+    /**
+     * @param \app\models\Tag $tag
+     * @param int $nextUpdateInterval In hours from now.
+     */
+    public function markAsValid(Tag $tag, int $nextUpdateInterval = 24)
+    {
+        $tag->invalidation_count = 0;
+        $tag->is_valid = 1;
+        $tag->invalidation_type_id = null;
+
+        $this->setDateOfNextStatsUpdate($tag, $nextUpdateInterval);
+    }
+
+    /**
+     * @param \app\models\Tag $tag
+     * @param int|null $invalidationType
+     */
+    public function updateInvalidation(Tag $tag, ?int $invalidationType)
+    {
+        $tag->invalidation_count = (int)$tag->invalidation_count + 1;
+        $tag->is_valid = 0;
+        $tag->invalidation_type_id = $invalidationType;
+        $interval = 1;
+        for ($i = 1; $i <= $tag->invalidation_count; $i++) {
+            $interval *= $i;
+        }
+        $this->setDateOfNextStatsUpdate($tag, $interval);
+    }
+
+    /**
+     * @param \app\models\Tag $tag
+     * @param int $interval In hours from now.
+     */
+    public function setDateOfNextStatsUpdate(Tag $tag, int $interval = 24)
+    {
+        $tag->update_stats_after = new Expression('DATE_ADD(NOW(), INTERVAL :interval HOUR)', [
+            'interval' => $interval,
+        ]);
+        $tag->save();
+    }
 
     public function monitor(string $name, $proxyId = null, $proxyTagId = null): Tag
     {
@@ -31,6 +73,7 @@ class TagManager extends Component
         $tag->proxy_id = $proxyId;
         $tag->proxy_tag_id = $proxyTagId;
         $tag->monitoring = 1;
+        $tag->disabled = 0;
 
         $tag->save();
 

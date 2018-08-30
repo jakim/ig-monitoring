@@ -12,7 +12,11 @@ use app\components\http\Client;
 use app\components\http\ProxyManager;
 use app\components\instagram\TagScraper;
 use app\components\services\contracts\ServiceInterface;
+use app\components\TagManager;
 use app\components\TagUpdater;
+use app\dictionaries\TagInvalidationType;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 
 class TagFullUpdate implements ServiceInterface
 {
@@ -24,6 +28,7 @@ class TagFullUpdate implements ServiceInterface
     public function run()
     {
         $proxyManager = \Yii::createObject(ProxyManager::class);
+        $tagManager = \Yii::createObject(TagManager::class);
 
         try {
             $proxy = $proxyManager->reserve($this->tag);
@@ -39,15 +44,18 @@ class TagFullUpdate implements ServiceInterface
             unset($proxy);
 
             $updater = \Yii::createObject([
-                'class' =>TagUpdater::class,
+                'class' => TagUpdater::class,
                 'tag' => $this->tag,
             ]);
             $updater->stats($tagData);
-
-        } finally {
-            if (isset($proxy)) {
-                $proxyManager->release($proxy);
-            }
+        } catch (ClientException $exception) {
+            $tagManager->updateInvalidation($this->tag, TagInvalidationType::NOT_FOUND);
+//        } catch (RequestException $exception) {
+//            $tagManager->updateInvalidation($this->tag, null);
+//        } finally {
+//            if (isset($proxy)) {
+//                $proxyManager->release($proxy);
+//            }
         }
     }
 }
