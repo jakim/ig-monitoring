@@ -18,7 +18,7 @@ use yii\helpers\Html;
 ]) ?>
 <?php foreach ($authAuthChoice->getClients() as $client): ?>
     <div class="form-group">
-        <?= Html::a('Sign in with ' . $client->getTitle(), ['/admin/auth/auth', 'authclient' => $client->getName(),], ['class' => "btn btn-success btn-block $client->name "]) ?>
+        <?= Html::a("<span class='fa fa-$client->name'></span> Sign in with " . $client->getTitle(), ['/admin/auth/auth', 'authclient' => $client->getName(),], ['class' => "btn btn-block btn-social btn-$client->name "]) ?>
     </div>
 <?php endforeach; ?>
 <?php AuthChoice::end() ?>

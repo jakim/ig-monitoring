@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a0c808896cf0f36f539b45cad8ad311e",
+    "content-hash": "0773bd96c6df21ce6f242e0ec5d59b4f",
     "packages": [
         {
             "name": "2amigos/yii2-chartjs-widget",
@@ -131,6 +131,29 @@
             ]
         },
         {
+            "name": "bower-asset/bootstrap-social",
+            "version": "5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lipis/bootstrap-social.git",
+                "reference": "90826fa078a9a13a679928a0439fc28cbe2706a6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lipis/bootstrap-social/zipball/90826fa078a9a13a679928a0439fc28cbe2706a6",
+                "reference": "90826fa078a9a13a679928a0439fc28cbe2706a6",
+                "shasum": null
+            },
+            "require": {
+                "bower-asset/bootstrap": "~3",
+                "bower-asset/font-awesome": "~4.5"
+            },
+            "type": "bower-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
             "name": "bower-asset/chartjs",
             "version": "v2.7.2",
             "source": {
@@ -147,6 +170,27 @@
             "type": "bower-asset",
             "license": [
                 "MIT"
+            ]
+        },
+        {
+            "name": "bower-asset/font-awesome",
+            "version": "v4.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FortAwesome/Font-Awesome.git",
+                "reference": "a8386aae19e200ddb0f6845b5feeee5eb7013687"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/a8386aae19e200ddb0f6845b5feeee5eb7013687",
+                "reference": "a8386aae19e200ddb0f6845b5feeee5eb7013687",
+                "shasum": null
+            },
+            "type": "bower-asset",
+            "license": [
+                "OFL-1.1",
+                "MIT",
+                "CC-BY-3.0"
             ]
         },
         {
@@ -485,6 +529,53 @@
                 "zikula"
             ],
             "time": "2017-12-29T09:13:20+00:00"
+        },
+        {
+            "name": "denostr/yii2-bootstrap-social",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/denostr/yii2-bootstrap-social.git",
+                "reference": "7c7a1dc8175a35539058c9b2fa90c7453cd74b82"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/denostr/yii2-bootstrap-social/zipball/7c7a1dc8175a35539058c9b2fa90c7453cd74b82",
+                "reference": "7c7a1dc8175a35539058c9b2fa90c7453cd74b82",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/bootstrap-social": "~5.0.0",
+                "php": ">=5.4",
+                "rmrevin/yii2-fontawesome": "~2.17",
+                "yiisoft/yii2": "2.0.*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "denostr\\BootstrapSocial\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Denis Ostrovsky",
+                    "email": "ostrovsky.dennis@gmail.com"
+                }
+            ],
+            "description": "Asset Bundle for Yii2 with bootstrap-social https://lipis.github.io/bootstrap-social/",
+            "keywords": [
+                "asset",
+                "bootstrap",
+                "bundle",
+                "social",
+                "yii",
+                "yii2"
+            ],
+            "time": "2017-03-23T20:58:00+00:00"
         },
         {
             "name": "dmstr/yii2-adminlte-asset",

@@ -7,6 +7,7 @@
 
 namespace app\assets;
 
+use denostr\BootstrapSocial\BootstrapSocialAsset;
 use yii\bootstrap\BootstrapAsset;
 use yii\bootstrap\BootstrapPluginAsset;
 use yii\web\AssetBundle;
@@ -31,5 +32,6 @@ class AppAsset extends AssetBundle
         YiiAsset::class,
         BootstrapAsset::class,
         BootstrapPluginAsset::class,
+        BootstrapSocialAsset::class,
     ];
 }
