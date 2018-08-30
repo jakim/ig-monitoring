@@ -9,14 +9,16 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 [Screenshots](#screenshots)
 
-[Account statistics](#account-statistics)
+[Account statistics](#account-tracker)
+
+[Tag statistics](#tag-tracker)
 
 [FAQ](#faq)
 
-[PREMIUM SUPPORT](#premium-support)
+[PREMIUM SUPPORT](#free-version-premium-support)
 
 # Version
-DEV stage.  **Use at your own risk.**
+BETA stage.  **Use at your own risk.**
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/9bbae6907e6cbf039950/maintainability)](https://codeclimate.com/github/jakim/ig-monitoring/maintainability)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jakim/ig-monitoring/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jakim/ig-monitoring/?branch=master)
@@ -24,38 +26,61 @@ DEV stage.  **Use at your own risk.**
 
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
 
+
 # Install
-- git clone
-- composer install
 
+## Before you start
+
+You need at least one, **WORKING proxy**.
+
+You need a server (vps will be ok) with linux, root access and configured LEMP, that is:
+
+- php minimum 7.1
+- latest nginx, recommended server configuration https://www.yiiframework.com/doc/guide/2.0/en/start-installation#configuring-web-servers
+- mysql minimum 5.7 (or the appropriate mariadb, e.g. 10.3)
+- [installation instructions on Debian](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-on-debian-8) (there is no need for a firewall ;)
+
+## System installation (terminal)
 - create database: mysql, utf8mb4
-- copy config/db.dist => config/db.php
-- `./yii migrate`
+- run `git clone https://github.com/jakim/ig-monitoring.git`
+- run `cd ig-monitoring` (you will enter the project catalog)
+- [download composer](https://getcomposer.org/download/)
+- run `php composer.phar install`
+- run `chmod 0777 runtime`
+- run `chmod 0777 web/assets`
+- run `chmod 0777 web/uploads`
+- copy `config/db.dist` => `config/db.php` and enter the access data to the created database
+- run `./yii migrate` (tables in the database should be created)
+- run `./yii admin/dictionaries` 
 
-- [register google project for Google+ Sign-In](https://developers.google.com/+/web/signin/)
-- copy config/authClientCollection.php.dist => config/authClientCollection.php
+## Configure google sign-in
+- go to: https://console.developers.google.com and create a new project
+- enable API: Google+ API
+- add oAuth login credentials (type: web application)
+- add authorized redirect url `YOUR_DOMAIN/admin/auth/auth?authclient=google`
+- copy `config/authClientCollection.php.dist` => `config/authClientCollection.php` and enter `clientId`, `clientSecret` and `redirectUrl` as above
 
-- [configure worker](https://github.com/yiisoft/yii2-queue/blob/master/docs/guide/worker.md)
-- create cron hourly for: `./yii stats/update-accounts` and `./yii stats/update-tags`
+## Worker configuration (data refreshing)
+- install the `supervisord`, [the method of installation depends on the system](http://supervisord.org/installing.html#installing-a-distribution-package)
+- add configuration according to https://github.com/yiisoft/yii2-queue/blob/master/docs/guide/worker.md (in Debian 8 and 9: `/etc/supervisor/conf.d/ig_monitoring.conf`)
+- change in the configuration:
+    * `user` => `nginx`
+    * `numprocs` => `2` is enough (I recommend twice less than the number of proxy and a number equal to the number of processor cores/threads)
+    * I suggest `stdout_logfile` to be set to the project directory, ie `PROJECT_FULL_PATH/runtime/logs/supervisor.log`
+- run `supervisord`
+- add [cron hourly](https://crontab.guru/every-hour) for `/PROJECT_FULL_PATH/yii stats/update-accounts` and `/PROJECT_FULL_PATH/yii stats/update-tags`
 
-# Manual
-A few things can be done only from the command line.
-> NOTE: Everything will be slowly moved to the admin panel.
+## Adding and activation of the system user
+- try to log in, if everything goes well, you'll see an "inactive account message"
+- run the command `./yii user/activate 'YOUR_GOOGLE_EMAIL'`
+- log in again
 
-- `./yii user/activate  ID - activation of the user account
-- `./yii - list of all commands
-- `./yii help monitoring/account` - displays help for the command
-
-See `./yii` for more commands.
-
-
-# Requirements
-- You need at least one, **WORKING proxy** for accounts and one for tags.
-- Works only for public accounts.
-- Unix system with root access (not tested on windows)
-- Web server (nginx, apache, etc.)
-- php >= 7.1
-- mysql >= 5.7
+## Next steps
+- add a few accounts and tags
+- enjoy the system 
+- write a review 
+- tell your friends about the system
+- star the project on github :)
 
 # Legal
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries.
@@ -68,47 +93,64 @@ This is an independent tool. **Use at your own risk.**
 ![image](https://user-images.githubusercontent.com/839118/37048055-0b5362f8-216d-11e8-9dab-a82304dd4353.png)
 ![image](https://user-images.githubusercontent.com/839118/37048109-3372280a-216d-11e8-988d-c825dfe2432c.png)
 
-## Account statistics
+## Account tracker
 
-- total number of “followed by”
-- total number of “follows”
-- total number of media
-- engangment rate (calculated for last 10 posts)
-- chart for last month’s data
-- daily change
-- monthly change
-- a public link to view statistics, e.g. for the client
-- tags linked to account
-- accounts linked to account
+-   Followers
+-   Followed
+-   Media count
+-   Engagement rate
+-   Daily change of all above *(with chart)*
+-   Multiple accounts compared on one screen
+-   Daily/monthly fluctuations in the number of followers *(with chart)*
+-   Accounts mentioned (with occurs counter)
+-   Tags used (with occurs counter)
+-   Locations used (with occurs counter) *`(cloud version)`*
+-   **Public url to account statistics view (e.g. for the client)**
+-   Access to historical data (if in the database, they are yours) *`(cloud version)`*
 
-## Tag statistics
+#### Tag tracker  
+*(based on top 9 posts)*
 
-- total number of media
-- total number of likes from top 9 posts
-- min likes from top 9 posts
-- max likes from top 9 posts
-- total number of comments from top 9 posts
-- min comments from top 9 posts
-- max comments from top 9 posts
+-   Media count
+-   Number of likes (total, min, max)
+-   Number of comments (total, min, max)
+-   Multiple tags compared on one screen
+-   Accounts highlighted (with occurs counter) *`(cloud version)`*
+-   Tags used (with occurs counter) *`(cloud version)`*
+-   Locations used (with occurs counter) *`(cloud version)`*
+-   Access to historical data (if in the database, they are yours) *`(cloud version)`*
 
 # FAQ
 Why did I build it?
 
-Because I need something that I can quickly change for my needs.
+- Because I need something that I can quickly change for my needs.
 
 Why is it free?
 
-Because I realized that I like building tools more than using them :)
+- Because I realized that I like building tools more than using them :)
 
 Is it safe for usage?
 
-You never known, but I’m using this for few months now without any issue.
+- You never known, but I’m using this for few months now without any issue.
+
+Do I need to enter my Instagram login and password?
+
+- No, the system is based on publicly available data, so you do not have to provide any sensitive data.
+
+Will the system harm my accounts?
+
+- No, everyone can monitor public accounts.
+
+Why did you build two versions?
+
+- I needed a system to monitor accounts (now it's several thousands), but I enjoy software development more than accounts maintenance, which is why the free version was created. The cloud version was created as a response to all users problems with the installation and maintenance of the free version.
 
 What do I expect from this share?
 
-New ideas would be great, feel free to create issue and PR. :)
+- New ideas would be great, feel free to create issue and PR. :)
 
-# PREMIUM SUPPORT
+
+# Free Version PREMIUM SUPPORT
 
 If you do not know how to get into the installation, I can do it for you. As part of the support, I offer:
 - installation of a www server
@@ -117,4 +159,13 @@ If you do not know how to get into the installation, I can do it for you. As par
 - free, good ssl certificate (letsencrypt)
 - script modifications, according to requirements
 - other software integration 
+
+# Troubleshooting
+**Error: redirect_uri_mismatch**
+
+https://github.com/yiisoft/yii2-authclient/issues/241
+
+**'SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes**
+
+You probably have a low database version, make sure your system meets the [requirements](#before-you-start)
 
