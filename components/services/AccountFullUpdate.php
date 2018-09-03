@@ -78,9 +78,7 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
         foreach ($idents as $ident) {
             try {
                 $accountData = $scraper->fetchOne($ident);
-                echo $ident . "\n";
                 if ($this->account->instagram_id && $accountData->id != $this->account->instagram_id) {
-                    echo 'id się nie zgadza' . "\n";
                     continue;
                 }
             } catch (ClientException $exception) {
