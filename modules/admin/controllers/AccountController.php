@@ -19,6 +19,7 @@ use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii2tech\csvgrid\CsvGrid;
 
 /**
  * AccountController implements the CRUD actions for Account model.
@@ -167,6 +168,21 @@ class AccountController extends Controller
             ],
         ]);
 
+        if (Yii::$app->request->get('export')) {
+            $csv = new CsvGrid([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    'followed_by',
+                    'follows',
+                    'media',
+                    'er',
+                    'created_at',
+                ],
+            ]);
+
+            return $csv->export()->send(sprintf('%s_stats_%s.csv', mb_strtolower($model->username), date('Y-m-d')));
+        }
+
         return $this->render('stats', [
             'model' => $model,
             'dataProvider' => $dataProvider,
@@ -197,6 +213,18 @@ class AccountController extends Controller
             'occurs' => SORT_DESC,
             'name' => SORT_ASC,
         ];
+
+        if (Yii::$app->request->get('export')) {
+            $csv = new CsvGrid([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    'name',
+                    'occurs',
+                ],
+            ]);
+
+            return $csv->export()->send(sprintf('%s_media-tags_%s.csv', mb_strtolower($model->username), date('Y-m-d')));
+        }
 
 
         return $this->render('media-tags', [
@@ -230,6 +258,17 @@ class AccountController extends Controller
             'username' => SORT_ASC,
         ];
 
+        if (Yii::$app->request->get('export')) {
+            $csv = new CsvGrid([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    'username',
+                    'occurs',
+                ],
+            ]);
+
+            return $csv->export()->send(sprintf('%s_media-accounts_%s.csv', mb_strtolower($model->username), date('Y-m-d')));
+        }
 
         return $this->render('media-accounts', [
             'model' => $model,

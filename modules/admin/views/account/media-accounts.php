@@ -26,6 +26,9 @@ $formatter = Yii::$app->formatter;
             <div class="nav-tabs-custom">
                 <?= $this->render('_tabs', ['model' => $model]) ?>
                 <div class="tab-content">
+                    <p>
+                        <?= \yii\helpers\Html::a('CSV Export', \yii\helpers\Url::current(['export' => 1])) ?>
+                    </p>
                     <?= \yii\grid\GridView::widget([
                         'dataProvider' => $dataProvider,
                         'columns' => [
