@@ -48,14 +48,16 @@ class TagFullUpdate implements ServiceInterface
                 'tag' => $this->tag,
             ]);
             $updater->stats($tagData);
+            $tagManager->markAsValid($this->tag);
+
         } catch (ClientException $exception) {
             $tagManager->updateInvalidation($this->tag, TagInvalidationType::NOT_FOUND);
-//        } catch (RequestException $exception) {
-//            $tagManager->updateInvalidation($this->tag, null);
-//        } finally {
-//            if (isset($proxy)) {
-//                $proxyManager->release($proxy);
-//            }
+        } catch (RequestException $exception) {
+            $tagManager->updateInvalidation($this->tag, null);
+        } finally {
+            if (isset($proxy)) {
+                $proxyManager->release($proxy);
+            }
         }
     }
 }
