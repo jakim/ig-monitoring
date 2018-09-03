@@ -36,6 +36,7 @@ class AccountUpdater extends Component
     public function details(Account $account): \app\models\Account
     {
         $this->account->username = $account->username;
+        $this->account->instagram_id = (string)$account->id;
         $this->account->profile_pic_url = $account->profilePicUrl;
         $this->account->full_name = $account->fullName;
         $this->account->biography = $account->biography;
