@@ -25,6 +25,7 @@ $config = [
         ],
     ],
     'components' => [
+        'queue' => require __DIR__ . '/queue.php',
         'formatter' => \app\components\Formatter::class,
         'authClientCollection' => require __DIR__ . '/authClientCollection.php',
         'request' => [

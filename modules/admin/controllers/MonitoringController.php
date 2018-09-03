@@ -9,6 +9,7 @@ namespace app\modules\admin\controllers;
 
 
 use app\components\AccountManager;
+use app\components\JobFactory;
 use app\components\stats\AccountDailyDiff;
 use app\components\stats\AccountMonthlyDiff;
 use app\components\stats\TagDailyDiff;
@@ -78,10 +79,15 @@ class MonitoringController extends Controller
 
             $tagManager = \Yii::createObject(TagManager::class);
 
+            /** @var \yii\queue\Queue $queue */
+            $queue = \Yii::$app->queue;
+
             foreach ($names as $name) {
                 $tag = $tagManager->monitor($name, $form->proxy_id, $form->proxy_tag_id);
                 if (!$tag->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
+                    $job = JobFactory::createTagUpdate($tag);
+                    $queue->push($job);
                 } else {
                     \Yii::error('Validation error: ' . json_encode($tag->errors), __METHOD__);
                     \Yii::$app->session->setFlash('error', "ERR! {$name}");
@@ -104,11 +110,18 @@ class MonitoringController extends Controller
 
             $accountManager = \Yii::createObject(AccountManager::class);
 
+            /** @var \yii\queue\Queue $queue */
+            $queue = \Yii::$app->queue;
+
             foreach ($usernames as $username) {
                 $account = $accountManager->monitor($username, $form->proxy_id, $form->proxy_tag_id);
                 $account->disabled = 0;
                 if (!$account->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
+
+                    $job = JobFactory::createAccountUpdate($account);
+                    $queue->push($job);
+
                     $tags = array_filter((array)$form->tags);
                     if ($tags) {
                         $tagManager = \Yii::createObject(TagManager::class);
