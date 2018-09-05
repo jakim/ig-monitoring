@@ -43,61 +43,56 @@ class MonitoringController extends Controller
         ];
     }
 
-    public function actionDeleteTag($id)
+    public function actionAccounts()
     {
-        $model = Tag::findOne($id);
-        $model->monitoring = 0;
-        if ($model->save()) {
-            \Yii::$app->session->setFlash('success', 'OK!');
+        $searchModel = new AccountSearch();
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['account.monitoring' => 1]);
 
-            return Url::to(['monitoring/tags']);
-        } else {
-            \Yii::$app->session->setFlash('error', 'ERROR!');
-        }
+        $dailyDiff = \Yii::createObject([
+            'class' => AccountDailyDiff::class,
+            'models' => $dataProvider->models,
+        ]);
+        $dailyDiff->initLastDiff();
+
+        $monthlyDiff = \Yii::createObject([
+            'class' => AccountMonthlyDiff::class,
+            'models' => $dataProvider->models,
+        ]);
+        $monthlyDiff->initLastDiff();
+
+        return $this->render('accounts', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'dailyDiff' => $dailyDiff,
+            'monthlyDiff' => $monthlyDiff,
+        ]);
     }
 
-    public function actionDeleteAccount($id)
+    public function actionTags()
     {
-        $model = Account::findOne($id);
-        $model->monitoring = 0;
-        if ($model->save()) {
-            \Yii::$app->session->setFlash('success', 'OK!');
+        $searchModel = new TagSearch();
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['tag.monitoring' => 1]);
 
-            return Url::to(['monitoring/accounts']);
-        } else {
-            \Yii::$app->session->setFlash('error', 'ERROR!');
-        }
-    }
+        $dailyDiff = \Yii::createObject([
+            'class' => TagDailyDiff::class,
+            'models' => $dataProvider->models,
+        ]);
+        $dailyDiff->initLastDiff();
 
-    public function actionCreateTag()
-    {
-        $form = new MonitoringForm();
-        $form->setScenario(TrackerType::TAG);
+        $monthlyDiff = \Yii::createObject([
+            'class' => TagMonthlyDiff::class,
+            'models' => $dataProvider->models,
+        ]);
+        $monthlyDiff->initLastDiff();
 
-        if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
-            $names = StringHelper::explode($form->names, ',', true, true);
-
-            $tagManager = \Yii::createObject(TagManager::class);
-
-            /** @var \yii\queue\Queue $queue */
-            $queue = \Yii::$app->queue;
-
-            foreach ($names as $name) {
-                $tag = $tagManager->monitor($name, $form->proxy_id, $form->proxy_tag_id);
-                if (!$tag->hasErrors()) {
-                    \Yii::$app->session->setFlash('success', 'OK!');
-                    $job = JobFactory::createTagUpdate($tag);
-                    $queue->push($job);
-                } else {
-                    \Yii::error('Validation error: ' . json_encode($tag->errors), __METHOD__);
-                    \Yii::$app->session->setFlash('error', "ERR! {$name}");
-                    break;
-                }
-
-            }
-        }
-
-        return $this->redirect(['monitoring/tags', 'sort' => '-created_at']);
+        return $this->render('tags', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'dailyDiff' => $dailyDiff,
+            'monthlyDiff' => $monthlyDiff,
+        ]);
     }
 
     public function actionCreateAccount()
@@ -106,7 +101,7 @@ class MonitoringController extends Controller
         $form->setScenario(TrackerType::ACCOUNT);
 
         if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
-            $usernames = StringHelper::explode($form->names, ',', true, true);
+            $usernames = $this->normalizeTrackers($form->names);
 
             $accountManager = \Yii::createObject(AccountManager::class);
 
@@ -139,55 +134,72 @@ class MonitoringController extends Controller
         return $this->redirect(['monitoring/accounts', 'sort' => '-created_at']);
     }
 
-    public function actionTags()
+    public function actionCreateTag()
     {
-        $searchModel = new TagSearch();
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['tag.monitoring' => 1]);
+        $form = new MonitoringForm();
+        $form->setScenario(TrackerType::TAG);
 
-        $dailyDiff = \Yii::createObject([
-            'class' => TagDailyDiff::class,
-            'models' => $dataProvider->models,
-        ]);
-        $dailyDiff->initLastDiff();
+        if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
+            $names = $this->normalizeTrackers($form->names);
 
-        $monthlyDiff = \Yii::createObject([
-            'class' => TagMonthlyDiff::class,
-            'models' => $dataProvider->models,
-        ]);
-        $monthlyDiff->initLastDiff();
+            $tagManager = \Yii::createObject(TagManager::class);
 
-        return $this->render('tags', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'dailyDiff' => $dailyDiff,
-            'monthlyDiff' => $monthlyDiff,
-        ]);
+            /** @var \yii\queue\Queue $queue */
+            $queue = \Yii::$app->queue;
+
+            foreach ($names as $name) {
+                $tag = $tagManager->monitor($name, $form->proxy_id, $form->proxy_tag_id);
+                if (!$tag->hasErrors()) {
+                    \Yii::$app->session->setFlash('success', 'OK!');
+                    $job = JobFactory::createTagUpdate($tag);
+                    $queue->push($job);
+                } else {
+                    \Yii::error('Validation error: ' . json_encode($tag->errors), __METHOD__);
+                    \Yii::$app->session->setFlash('error', "ERR! {$name}");
+                    break;
+                }
+
+            }
+        }
+
+        return $this->redirect(['monitoring/tags', 'sort' => '-created_at']);
     }
 
-    public function actionAccounts()
+    public function actionDeleteAccount($id)
     {
-        $searchModel = new AccountSearch();
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['account.monitoring' => 1]);
+        $model = Account::findOne($id);
+        $model->monitoring = 0;
+        if ($model->save()) {
+            \Yii::$app->session->setFlash('success', 'OK!');
 
-        $dailyDiff = \Yii::createObject([
-            'class' => AccountDailyDiff::class,
-            'models' => $dataProvider->models,
-        ]);
-        $dailyDiff->initLastDiff();
+            return Url::to(['monitoring/accounts']);
+        } else {
+            \Yii::$app->session->setFlash('error', 'ERROR!');
+        }
+    }
 
-        $monthlyDiff = \Yii::createObject([
-            'class' => AccountMonthlyDiff::class,
-            'models' => $dataProvider->models,
-        ]);
-        $monthlyDiff->initLastDiff();
+    public function actionDeleteTag($id)
+    {
+        $model = Tag::findOne($id);
+        $model->monitoring = 0;
+        if ($model->save()) {
+            \Yii::$app->session->setFlash('success', 'OK!');
 
-        return $this->render('accounts', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'dailyDiff' => $dailyDiff,
-            'monthlyDiff' => $monthlyDiff,
-        ]);
+            return Url::to(['monitoring/tags']);
+        } else {
+            \Yii::$app->session->setFlash('error', 'ERROR!');
+        }
+    }
+
+    /**
+     * @param string $trackers
+     * @return array
+     */
+    private function normalizeTrackers(string $trackers): array
+    {
+        $trackers = StringHelper::explode($trackers, ',', true, true);
+        $trackers = array_unique($trackers);
+
+        return $trackers;
     }
 }

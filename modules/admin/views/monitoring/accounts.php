@@ -4,6 +4,7 @@ use jakim\ig\Url;
 use app\modules\admin\components\grid\StatsColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\modules\admin\widgets\CreateMonitoringModal;
 
 /**
  * @var yii\web\View $this
@@ -28,6 +29,16 @@ $formatter = Yii::$app->formatter;
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
+                'emptyText' => sprintf('<p class="lead">This is a screen where you can compare metrics for multiple accounts.</p>%s',
+                    CreateMonitoringModal::widget([
+                        'modalToggleButton' => [
+                            'label' => 'Add first account',
+                            'class' => 'btn btn-lg btn-success',
+                        ],
+                    ])),
+                'emptyTextOptions' => [
+                    'class' => 'text-center empty',
+                ],
                 'columns' => [
                     ['class' => \yii\grid\SerialColumn::class],
                     [
@@ -100,8 +111,10 @@ $formatter = Yii::$app->formatter;
                 ],
             ]); ?>
 
-            <?= \app\modules\admin\widgets\CreateMonitoringModal::widget() ?>
-            <?= \app\modules\admin\widgets\favorites\AddToModal::widget() ?>
+            <?php if ($dataProvider->totalCount): ?>
+                <?= CreateMonitoringModal::widget() ?>
+                <?= \app\modules\admin\widgets\favorites\AddToModal::widget() ?>
+            <?php endif; ?>
         </div>
     </div>
 

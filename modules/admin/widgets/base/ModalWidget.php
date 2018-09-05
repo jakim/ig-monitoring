@@ -31,12 +31,15 @@ abstract class ModalWidget extends Widget
     protected function renderModal()
     {
         Modal::begin([
-            'header' => $this->modalHeader,
+            'header' => "<h4 class=\"modal-title\">{$this->modalHeader}</h4>",
             'toggleButton' => ArrayHelper::merge([
                 'tag' => 'a',
                 'label' => 'Modal',
                 'class' => 'btn btn-sm btn-success',
             ], $this->modalToggleButton),
+            'options' => [
+                'class' => 'text-left fade'
+            ],
         ]);
 
         $this->renderModalContent();

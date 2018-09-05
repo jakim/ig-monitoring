@@ -39,7 +39,6 @@ class CreateMonitoringModal extends ModalWidget
     {
         echo $this->render('create-monitoring', [
             'formAction' => ["monitoring/create-{$this->trackerType}"],
-            'title' => $this->title ?: Inflector::pluralize($this->trackerType),
             'model' => $this->form,
             'tags' => $this->getTagPairs(),
             'proxies' => $this->getProxyPairs(),

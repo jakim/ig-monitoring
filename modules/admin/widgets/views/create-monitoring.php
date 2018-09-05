@@ -23,32 +23,26 @@ $form = ActiveForm::begin([
     'action' => $formAction,
 ]);
 ?>
-    <div class="panel panel-primary">
-        <div class="panel-heading text-capitalize"><?= Html::encode($title) ?></div>
-        <div class="panel-body">
-            <?= $form->field($model, 'names')
-                ->textInput(['maxlength' => true, 'placeholder' => true])
-                ->label(false);
-            ?>
+<?= $form->field($model, 'names')
+    ->textInput(['maxlength' => true, 'placeholder' => true])
+    ->label(false);
+?>
 
-            <?php
-            if ($tags !== false) {
-                echo $form->field($model, 'tags')->widget(Select2::class, [
-                    'options' => [
-                        'id' => "tags_{$form->getId()}",
-                        'multiple' => true,
-                        'placeholder' => 'Select tags...',
-                    ],
-                    'pluginOptions' => [
-                        'tags' => true,
-                    ],
-                    'data' => $tags,
-                ])->label(false);
-            }
-            ?>
-        </div>
-    </div>
-
+<?php
+if ($tags !== false) {
+    echo $form->field($model, 'tags')->widget(Select2::class, [
+        'options' => [
+            'id' => "tags_{$form->getId()}",
+            'multiple' => true,
+            'placeholder' => 'Select tags...',
+        ],
+        'pluginOptions' => [
+            'tags' => true,
+        ],
+        'data' => $tags,
+    ])->label(false);
+}
+?>
 
     <div class="panel panel-default">
         <div class="panel-heading">Proxy settings</div>
