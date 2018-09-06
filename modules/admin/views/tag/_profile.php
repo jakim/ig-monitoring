@@ -1,6 +1,8 @@
 <?php
 
 use yii\helpers\Html;
+use app\modules\admin\widgets\InvalidTagAlert;
+use app\modules\admin\widgets\OnOffMonitoringButton;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Tag */
@@ -10,6 +12,13 @@ $formatter = Yii::$app->formatter;
 $lastTagStats = $model->lastTagStats;
 
 ?>
+
+<?php if (!$model->is_valid): ?>
+    <?= InvalidTagAlert::widget([
+        'model' => $model,
+    ]) ?>
+<?php endif; ?>
+
 <div class="box box-primary">
 
     <div class="box-body box-profile">
@@ -67,7 +76,7 @@ $lastTagStats = $model->lastTagStats;
                 </li>
             </ul>
         <?php endif; ?>
-        <?= \app\modules\admin\widgets\OnOffMonitoringButton::widget([
+        <?= OnOffMonitoringButton::widget([
             'model' => $model,
         ]) ?>
     </div>

@@ -2,6 +2,12 @@
 
 use jakim\ig\Url;
 use yii\helpers\Html;
+use app\modules\admin\widgets\InvalidAccountAlert;
+use app\modules\admin\widgets\OnOffMonitoringButton;
+use app\modules\admin\widgets\favorites\ProfileButton;
+use app\modules\admin\widgets\TagsSideWidget;
+use app\modules\admin\widgets\NotesSideWidget;
+
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Account */
@@ -10,8 +16,14 @@ $formatter = Yii::$app->formatter;
 $lastAccountStats = $model->lastAccountStats;
 
 ?>
+<?php if (!$model->is_valid): ?>
+    <?= InvalidAccountAlert::widget([
+        'model' => $model,
+    ]) ?>
+<?php endif; ?>
 
 <div class="box box-primary">
+
 
     <div class="box-body box-profile">
         <?php if ($model->profile_pic_url): ?>
@@ -61,11 +73,11 @@ $lastAccountStats = $model->lastAccountStats;
                 </li>
             </ul>
         <?php endif; ?>
-        <?= \app\modules\admin\widgets\OnOffMonitoringButton::widget([
+        <?= OnOffMonitoringButton::widget([
             'model' => $model,
         ]) ?>
 
-        <?= \app\modules\admin\widgets\favorites\ProfileButton::widget([
+        <?= ProfileButton::widget([
             'model' => $model,
         ]) ?>
         <?= Html::a('<span class="fa fa-external-link"></span> Public url', ['/preview/account', 'uid' => $model->uid], ['class' => 'btn btn-default btn-block btn-sm', 'target' => '_blank']) ?>
@@ -97,11 +109,11 @@ $lastAccountStats = $model->lastAccountStats;
             <hr>
         <?php endif; ?>
 
-        <?= \app\modules\admin\widgets\TagsSideWidget::widget([
+        <?= TagsSideWidget::widget([
             'model' => $model,
         ]); ?>
         <hr>
-        <?= \app\modules\admin\widgets\NotesSideWidget::widget([
+        <?= NotesSideWidget::widget([
             'model' => $model,
         ]); ?>
     </div>
