@@ -5,6 +5,7 @@ use app\modules\admin\components\grid\StatsColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use app\modules\admin\widgets\CreateMonitoringModal;
+use app\modules\admin\widgets\favorites\AddToModal;
 
 /**
  * @var yii\web\View $this
@@ -112,8 +113,10 @@ $formatter = Yii::$app->formatter;
             ]); ?>
 
             <?php if ($dataProvider->totalCount): ?>
-                <?= CreateMonitoringModal::widget() ?>
-                <?= \app\modules\admin\widgets\favorites\AddToModal::widget() ?>
+                <?= CreateMonitoringModal::widget([
+                    'modalToggleButton' => ['label' => 'Add accounts'],
+                ]) ?>
+                <?= AddToModal::widget() ?>
             <?php endif; ?>
         </div>
     </div>

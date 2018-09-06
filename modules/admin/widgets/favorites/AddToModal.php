@@ -18,7 +18,7 @@ class AddToModal extends ModalWidget
 {
     public $modalHeader = 'Add to favorites';
     public $modalToggleButton = [
-        'label' => '<span class="fa fa-star text-yellow"></span> Add to favorites',
+        'label' => '<span class="fa fa-star text-yellow"></span> Add list to favorites',
         'class' => 'btn btn-sm btn-default',
     ];
 

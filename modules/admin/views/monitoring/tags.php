@@ -128,6 +128,7 @@ $this->params['breadcrumbs'][] = 'Tags';
             <?php if ($dataProvider->totalCount): ?>
                 <?= CreateMonitoringModal::widget([
                     'trackerType' => TrackerType::TAG,
+                    'modalToggleButton' => ['label' => 'Add tags'],
                 ]) ?>
             <?php endif; ?>
         </div>
