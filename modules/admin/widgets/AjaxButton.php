@@ -81,7 +81,9 @@ JS;
 jQuery('#{$this->getId()}').click(function(e){
     e.preventDefault();
     if ({$this->confirm}){
-        if(confirm("{$this->confirmMessage}")){$r}
+        if(confirm("{$this->confirmMessage}")){
+            $r
+        }
     }else{
         $r
     } 
