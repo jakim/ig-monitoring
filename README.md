@@ -1,9 +1,11 @@
-# IG Monitoring - Cloud Beta version - early access
+# IG Monitoring Cloud - early access
 
-Let me introduce you to a beta version of a system I'm currently working on.
+Let me introduce you to a cloud version of a system I'm currently working on.
 Perhaps it will answer your needs. That will be more featured version of the system you know from GitHub, with more extensive tag analytics and account analytics expanded with locations. Additionally it'll have various permission levels, so you can create an account for a Client with stats available there. And that's just for a starter :)
 
-## [Get your early access here](https://pbeta.igmonitoring.com/)
+## [Get your early access here](https://app.igmonitoring.com/)
+
+[Version comparison](https://igmonitoring.com)
 
 # IG Monitoring - Free version
 
@@ -16,6 +18,8 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 [FAQ](#faq)
 
 [PREMIUM SUPPORT](#free-version-premium-support)
+
+[Version comparison](https://igmonitoring.com)
 
 # Version
 BETA stage.  **Use at your own risk.**
