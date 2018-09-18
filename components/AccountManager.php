@@ -104,12 +104,11 @@ class AccountManager extends Component
     {
         $this->saveUsernames($usernames);
 
-        $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
-        $rows = array_map(function ($id) use ($media, $createdAt) {
+        $rows = array_map(function ($id) use ($media) {
             return [
                 $media->id,
                 $id,
-                $createdAt,
+                $media->taken_at,
             ];
         }, Account::find()
             ->andWhere(['username' => $usernames])
