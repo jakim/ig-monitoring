@@ -199,9 +199,9 @@ class AccountController extends Controller
                     'tag.*',
                     'count(tag.id) as occurs',
                 ])
-                ->innerJoinWith(['media' => function (Query $q) use ($model) {
-                    $q->andWhere(['media.account_id' => $model->id]);
-                }])
+                ->innerJoin('media_tag', 'tag.id=media_tag.tag_id')
+                ->innerJoin('media', 'media_tag.media_id=media.id')
+                ->andWhere(['media.account_id' => $model->id])
                 ->groupBy('tag.id'),
         ]);
 
@@ -243,9 +243,9 @@ class AccountController extends Controller
                     'account.*',
                     'count(account.id) as occurs',
                 ])
-                ->innerJoinWith(['mediaAccounts.media' => function (Query $q) use ($model) {
-                    $q->andWhere(['media.account_id' => $model->id]);
-                }])
+                ->innerJoin('media_account', 'account.id=media_account.account_id')
+                ->innerJoin('media', 'media_account.media_id=media.id')
+                ->andWhere(['media.account_id' => $model->id])
                 ->groupBy('account.id'),
         ]);
 
