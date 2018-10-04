@@ -5,7 +5,7 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 ## [Get your early access here](https://app.igmonitoring.com/)
 
-[Version comparison](https://igmonitoring.com)
+[Versions comparison](https://igmonitoring.com)
 
 # IG Monitoring - Free version
 
@@ -19,7 +19,7 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 [PREMIUM SUPPORT](#free-version-premium-support)
 
-[Version comparison](https://igmonitoring.com)
+[Versions comparison](https://igmonitoring.com)
 
 # Version
 BETA stage.  **Use at your own risk.**
