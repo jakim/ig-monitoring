@@ -27,6 +27,8 @@ class AccountDaily extends Component
         'followed_by',
         'follows',
         'er',
+        'avg_likes',
+        'avg_comments',
     ];
 
     protected $cache = [];

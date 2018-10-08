@@ -84,7 +84,7 @@ class DiffChart extends Widget
             [
                 'id' => 'followed_by',
                 'type' => 'linear',
-                'position' => 'right',
+                'position' => 'left',
                 'ticks' => [
                     'callback' => $ticksStocks,
                 ],

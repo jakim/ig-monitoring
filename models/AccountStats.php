@@ -16,6 +16,8 @@ use yii\helpers\ArrayHelper;
  * @property int $media
  * @property string $er [decimal(4,2)]
  * @property string $created_at
+ * @property string $avg_likes [decimal(19,4)]
+ * @property string $avg_comments [decimal(19,4)]
  *
  * @property Account $account
  */
@@ -57,7 +59,7 @@ class AccountStats extends \yii\db\ActiveRecord
         return [
             [['account_id'], 'required'],
             [['account_id', 'followed_by', 'follows', 'media'], 'integer'],
-            [['er'], 'number'],
+            [['er', 'avg_likes', 'avg_comments'], 'number'],
             [['created_at'], 'safe'],
             [['account_id'], 'exist', 'skipOnError' => true, 'targetClass' => Account::class, 'targetAttribute' => ['account_id' => 'id']],
         ];

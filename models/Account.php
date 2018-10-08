@@ -31,6 +31,12 @@ use yii\helpers\ArrayHelper;
  * @property int $invalidation_type_id [int(11)]
  * @property int $invalidation_count [int(11)]
  * @property string $update_stats_after [datetime]
+ * @property int $followed_by [int(11)]
+ * @property int $follows [int(11)]
+ * @property string $er [decimal(19,4)]
+ * @property string $avg_likes [decimal(19,4)]
+ * @property string $avg_comments [decimal(19,4)]
+ * @property string $stats_updated_at [datetime]
  *
  * @property string $usernamePrefixed
  * @property string $displayName
@@ -94,8 +100,9 @@ class Account extends \yii\db\ActiveRecord
     {
         return [
             [['username'], 'required'],
-            [['updated_at', 'created_at', 'accounts_default_tags'], 'safe'],
-            [['proxy_id', 'proxy_tag_id', 'occurs'], 'integer'],
+            [['updated_at', 'created_at', 'accounts_default_tags', 'stats_updated_at'], 'safe'],
+            [['proxy_id', 'proxy_tag_id', 'occurs', 'followed_by', 'follows', 'media'], 'integer'],
+            [['er', 'avg_likes', 'avg_comments'], 'number'],
             ['accounts_monitoring_level', 'integer', 'min' => 0],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', '!uid'], 'string', 'max' => 255],
             [['monitoring', 'disabled', 'is_valid'], 'boolean'],

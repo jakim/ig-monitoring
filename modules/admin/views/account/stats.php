@@ -34,6 +34,14 @@ $lastAccountStats = $model->lastAccountStats;
                                 'attribute' => 'er',
                                 'format' => ['percent', 2],
                             ],
+                            [
+                                'attribute' => 'avg_likes',
+                                'format' => ['decimal', 1],
+                            ],
+                            [
+                                'attribute' => 'avg_comments',
+                                'format' => ['decimal', 1],
+                            ],
                             'created_at:dateTime',
                         ],
                     ]) ?>

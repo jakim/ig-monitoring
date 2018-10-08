@@ -102,10 +102,15 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
             'account' => $this->account,
         ]);
 
-        $updater->details($accountData);
-
-        $stats = $updater->stats($accountData);
-        $updater->er($stats, $posts);
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $updater->details($accountData);
+            $updater->stats($accountData, $posts);
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            throw  $exception;
+        }
 
         $mediaManager = \Yii::createObject(MediaManager::class);
         $mediaManager->saveForAccount($this->account, $posts);

@@ -21,75 +21,27 @@ class ProgressChart extends Widget
     ];
 
     public $attributes = [
-        'er',
-        'followed_by',
-        'follows',
         'media',
+        'follows',
+        'followed_by',
+        'er',
+        'avg_likes',
+        'avg_comments',
     ];
 
     public $colors = [
-        '#00a65a',
-        '#3c8dbc',
-        '#605ca8',
         '#ff851b',
+        '#605ca8',
+        '#3c8dbc',
+        '#00a65a',
+        '#39CCCC',
+        '#D81B60',
     ];
 
     public $stats = [];
 
-    protected function yAxes()
-    {
-        $ticksStocks = new JsExpression('function(value, index, values) {if (Math.floor(value) === value) {return value;}}');
-        $arr = [];
-        foreach ($this->attributes as $attribute) {
-            $arr[] = [
-                'id' => $attribute,
-                'type' => 'linear',
-                'position' => 'right',
-                'ticks' => [
-                    'callback' => $ticksStocks,
-                ],
-            ];
-        }
-
-        return $arr;
-    }
-
-    protected function labels()
-    {
-        $formatter = \Yii::$app->formatter;
-
-        return array_map([$formatter, 'asDate'], array_keys($this->stats));
-    }
-
-    protected function datasets()
-    {
-        $stats = array_values($this->stats);
-        $model = new AccountStats();
-        $arr = [];
-        foreach ($this->attributes as $attribute) {
-            $color = array_shift($this->colors);
-            $data = ArrayHelper::getColumn($stats, $attribute);
-            if ($attribute == 'er') {
-                $data = array_map(function($item) {
-                    return number_format($item * 100, 2);
-                }, $data);
-            }
-            $arr[] = [
-                'label' => $model->getAttributeLabel($attribute),
-                'yAxisID' => $attribute,
-                'data' => $data,
-                'fill' => false,
-                'backgroundColor' => $color,
-                'borderColor' => $color,
-            ];
-        }
-
-        return $arr;
-    }
-
     public function run()
     {
-
         return ChartJs::widget([
             'type' => 'line',
             'options' => $this->options,
@@ -108,5 +60,64 @@ class ProgressChart extends Widget
                 'datasets' => $this->datasets(),
             ],
         ]);
+    }
+
+    protected function labels()
+    {
+        $formatter = \Yii::$app->formatter;
+
+        return array_map([$formatter, 'asDate'], array_keys($this->stats));
+    }
+
+    protected function datasets()
+    {
+        $stats = array_values($this->stats);
+        $model = new AccountStats();
+        $arr = [];
+        foreach ($this->attributes as $attribute) {
+            $color = array_shift($this->colors);
+            $data = ArrayHelper::getColumn($stats, $attribute);
+            if ($attribute == 'er') {
+                $data = array_map(function ($item) {
+                    return number_format($item * 100, 2);
+                }, $data);
+            }
+            $arr[] = [
+                'label' => $model->getAttributeLabel($attribute),
+                'yAxisID' => $attribute,
+                'data' => $data,
+                'fill' => false,
+                'backgroundColor' => $color,
+                'borderColor' => $color,
+            ];
+        }
+
+        return $arr;
+    }
+
+    protected function yAxes()
+    {
+        $ticksStocks = new JsExpression('function(value, index, values) {if (Math.floor(value) === value) {return value;}}');
+        $attributes = array_chunk($this->attributes, 3);
+        $arr = [];
+        $this->prepareYAxes(array_reverse($attributes['0']), $ticksStocks, $arr, 'left');
+        $this->prepareYAxes($attributes['1'], $ticksStocks, $arr, 'right');
+
+        return $arr;
+    }
+
+    private function prepareYAxes($attributes, $ticksStocks, &$arr, $position = 'left')
+    {
+        foreach ($attributes as $attribute) {
+            $arr[] = [
+                'id' => $attribute,
+                'display' => false,
+                'type' => 'linear',
+                'position' => $position,
+                'ticks' => [
+                    'callback' => $ticksStocks,
+                ],
+            ];
+        }
     }
 }
