@@ -114,9 +114,20 @@ $user = Yii::$app->user->identity;
     </div>
 
     <footer class="main-footer">
-        <strong>
-            <?= \app\modules\admin\widgets\PoweredBy::widget() ?>
-        </strong>
+        <div class="row">
+            <div class="col-lg-6">
+                <strong>
+                    <?= \app\modules\admin\widgets\PoweredBy::widget() ?>
+                </strong>
+            </div>
+            <div class="col-lg-6 text-right">
+                <ul class="list-inline">
+                    <li>
+                        <span class="fa fa-twitter-square"></span> <?= Html::a('@igMonitoring', 'https://twitter.com/IgMonitoring', ['target' => '_blank']) ?>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </footer>
 </div>
 
