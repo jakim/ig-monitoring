@@ -76,6 +76,8 @@ class AccountUpdater extends Component
             return $accountStats;
         }
         $this->saveModel($this->account);
+
+        return $accountStats;
     }
 
     protected function createHistory()
