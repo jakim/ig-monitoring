@@ -51,22 +51,8 @@ class AccountSearch extends Account
         $query = Account::find()
             ->select([
                 'account.*',
-                'account_stats.followed_by as as_followed_by',
-                'account_stats.follows as as_follows',
-                'account_stats.media as as_media',
-                'account_stats.er as as_er',
-                'account_stats.created_at as as_created_at',
                 new Expression('GROUP_CONCAT(tag.name SEPARATOR \', \') as s_tags'),
             ])
-            ->leftJoin([
-                'as_max' => AccountStats::find()
-                    ->select([
-                        new Expression('MAX(id) as id'),
-                        'account_id',
-                    ])
-                    ->groupBy('account_id'),
-            ], 'account.id=as_max.account_id')
-            ->leftJoin(AccountStats::tableName(), 'account_stats.id=as_max.id')
             ->leftJoin(AccountTag::tableName(), 'account.id=account_tag.account_id AND account_tag.user_id=' . $userId)
             ->leftJoin(Tag::tableName(), 'account_tag.tag_id=tag.id')
             ->groupBy('account.id');
@@ -87,27 +73,6 @@ class AccountSearch extends Account
         $dataProvider->sort->attributes['username'] = [
             'asc' => ['name' => SORT_ASC, 'username' => SORT_ASC],
             'desc' => ['name' => SORT_DESC, 'username' => SORT_DESC],
-        ];
-
-        $dataProvider->sort->attributes['as_followed_by'] = [
-            'asc' => ['as_followed_by' => SORT_ASC],
-            'desc' => ['as_followed_by' => SORT_DESC],
-        ];
-        $dataProvider->sort->attributes['as_follows'] = [
-            'asc' => ['as_follows' => SORT_ASC],
-            'desc' => ['as_follows' => SORT_DESC],
-        ];
-        $dataProvider->sort->attributes['as_media'] = [
-            'asc' => ['as_media' => SORT_ASC],
-            'desc' => ['as_media' => SORT_DESC],
-        ];
-        $dataProvider->sort->attributes['as_er'] = [
-            'asc' => ['as_er' => SORT_ASC],
-            'desc' => ['as_er' => SORT_DESC],
-        ];
-        $dataProvider->sort->attributes['as_created_at'] = [
-            'asc' => ['as_created_at' => SORT_ASC],
-            'desc' => ['as_created_at' => SORT_DESC],
         ];
 
         $this->load($params);

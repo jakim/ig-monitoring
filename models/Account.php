@@ -132,6 +132,7 @@ class Account extends \yii\db\ActiveRecord
             'proxy_id' => 'Proxy ID',
             'proxy_tag_id' => 'Proxy Tag ID',
             'accounts_monitoring_level' => 'Accounts Monitoring Level',
+            'er' => 'Engagement',
         ];
     }
 

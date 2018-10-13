@@ -68,29 +68,25 @@ $formatter = Yii::$app->formatter;
                     ],
                     [
                         'class' => StatsColumn::class,
-                        'attribute' => 'as_followed_by',
-                        'statsAttribute' => 'followed_by',
+                        'attribute' => 'followed_by',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                     ],
                     [
                         'class' => StatsColumn::class,
-                        'attribute' => 'as_follows',
-                        'statsAttribute' => 'follows',
+                        'attribute' => 'follows',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                     ],
                     [
                         'class' => StatsColumn::class,
-                        'attribute' => 'as_media',
-                        'statsAttribute' => 'media',
+                        'attribute' => 'media',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                     ],
                     [
                         'class' => StatsColumn::class,
-                        'attribute' => 'as_er',
-                        'statsAttribute' => 'er',
+                        'attribute' => 'er',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                         'numberFormat' => [
@@ -101,7 +97,7 @@ $formatter = Yii::$app->formatter;
                     ],
                     's_tags',
                     [
-                        'attribute' => 'as_created_at',
+                        'attribute' => 'stats_updated_at',
                         'label' => 'Updated At',
                         'format' => 'date',
                     ],

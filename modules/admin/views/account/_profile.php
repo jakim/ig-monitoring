@@ -13,7 +13,6 @@ use app\modules\admin\widgets\NotesSideWidget;
 /* @var $model app\models\Account */
 
 $formatter = Yii::$app->formatter;
-$lastAccountStats = $model->lastAccountStats;
 
 ?>
 <?php if (!$model->is_valid): ?>
@@ -39,36 +38,36 @@ $lastAccountStats = $model->lastAccountStats;
             <?php endif; ?>
             <?= Html::encode($model->full_name) ?>
         </p>
-        <?php if ($lastAccountStats): ?>
+        <?php if ($model->stats_updated_at): ?>
             <ul class="list-group list-group-unbordered">
                 <li class="list-group-item">
-                    <b><?= $lastAccountStats->getAttributeLabel('followed_by') ?></b>
+                    <b><?= $model->getAttributeLabel('followed_by') ?></b>
                     <a class="pull-right">
-                        <?= $formatter->asInteger($lastAccountStats->followed_by) ?>
+                        <?= $formatter->asInteger($model->followed_by) ?>
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <b><?= $lastAccountStats->getAttributeLabel('follows') ?></b>
+                    <b><?= $model->getAttributeLabel('follows') ?></b>
                     <a class="pull-right">
-                        <?= $formatter->asInteger($lastAccountStats->follows) ?>
+                        <?= $formatter->asInteger($model->follows) ?>
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <b><?= $lastAccountStats->getAttributeLabel('media') ?></b>
+                    <b><?= $model->getAttributeLabel('media') ?></b>
                     <a class="pull-right">
-                        <?= $formatter->asInteger($lastAccountStats->media) ?>
+                        <?= $formatter->asInteger($model->media) ?>
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <b><?= $lastAccountStats->getAttributeLabel('er') ?></b>
+                    <b><?= $model->getAttributeLabel('er') ?></b>
                     <a class="pull-right">
-                        <?= $formatter->asPercent($lastAccountStats->er, 2) ?>
+                        <?= $formatter->asPercent($model->er, 2) ?>
                     </a>
                 </li>
                 <li class="list-group-item">
                     <b><?= $model->getAttributeLabel('updated_at') ?></b>
                     <a class="pull-right">
-                        <?= $formatter->asDatetime($lastAccountStats->created_at) ?>
+                        <?= $formatter->asDatetime($model->stats_updated_at) ?>
                     </a>
                 </li>
             </ul>
