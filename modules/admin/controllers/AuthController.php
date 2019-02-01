@@ -63,7 +63,7 @@ class AuthController extends Controller
     {
         $attributes = $client->getUserAttributes();
         $googleId = ArrayHelper::getValue($attributes, 'id');
-        $email = ArrayHelper::getValue($attributes, 'emails.0.value');
+        $email = ArrayHelper::getValue($attributes, 'email');
         $username = explode('@', $email)['0'];
 
         $user = User::find()
@@ -80,7 +80,7 @@ class AuthController extends Controller
                 'username' => $username,
             ]);
             if ($user->save()) {
-                $imageUrl = ArrayHelper::getValue($attributes, 'image.url');
+                $imageUrl = ArrayHelper::getValue($attributes, 'picture');
                 $this->updateImage($imageUrl, $username, $user);
             }
         }
