@@ -1,5 +1,7 @@
 <?php
 
+use pahanini\log\ConsoleTarget;
+
 date_default_timezone_set('UTC');
 
 $params = require __DIR__ . '/params.php';
@@ -39,7 +41,7 @@ $config = [
                     'logVars' => [],
                 ],
                 [
-                    'class' => \pahanini\log\ConsoleTarget::class,
+                    'class' => ConsoleTarget::class,
                     'levels' => ['error', 'warning', 'info'],
                     'categories' => [
                         'app\components\AccountManager*',
@@ -59,13 +61,6 @@ $config = [
             'migrationNamespaces' => [
                 'yii\queue\db\migrations',
             ],
-        ],
-        'fixture' => [ // Fixture generation command line.
-            'class' => \yii\faker\FixtureController::class,
-            'templatePath' => 'tests/fixtures/templates',
-            'fixtureDataPath' => 'tests/fixtures/data',
-            'namespace' => 'app\tests\fixtures',
-            'count' => 10,
         ],
     ],
 ];
