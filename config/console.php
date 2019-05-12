@@ -71,6 +71,13 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
     ];
+    $config['modules']['fixture'] = [ // Fixture generation command line.
+      'class' => \yii\faker\FixtureController::class,
+      'templatePath' => 'tests/fixtures/templates',
+      'fixtureDataPath' => 'tests/fixtures/data',
+      'namespace' => 'app\tests\fixtures',
+      'count' => 10,
+    ];
 }
 
 return $config;

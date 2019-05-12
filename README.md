@@ -1,11 +1,11 @@
-# IG Monitoring Cloud - early access
+# IG Monitoring Cloud
 
 Let me introduce you to a cloud version of a system I'm currently working on.
 Perhaps it will answer your needs. That will be more featured version of the system you know from GitHub, with more extensive tag analytics and account analytics expanded with locations. Additionally it'll have various permission levels, so you can create an account for a Client with stats available there. And that's just for a starter :)
 
-## [Get your early access here](https://app.igmonitoring.com/)
+## [Get your access here](https://igmonitoring.com/)
 
-[Versions comparison](https://igmonitoring.com)
+[Versions comparison](https://igmonitoring.com/versions-comparison)
 
 # IG Monitoring - Free version
 
@@ -19,7 +19,7 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 [PREMIUM SUPPORT](#free-version-premium-support)
 
-[Versions comparison](https://igmonitoring.com)
+[Versions comparison](https://igmonitoring.com/versions-comparison)
 
 # Version
 BETA stage.  **Use at your own risk.**
@@ -54,8 +54,8 @@ You need a server (vps will be ok) with linux, root access and configured LEMP, 
 - run `chmod 0777 web/assets`
 - run `chmod 0777 web/uploads`
 - copy `config/db.dist` => `config/db.php` and enter the access data to the created database
-- run `./yii migrate` (tables in the database should be created)
-- run `./yii admin/dictionaries` 
+- run `php yii migrate` (tables in the database should be created)
+- run `php yii admin/dictionaries` 
 
 ## Configure google sign-in
 - go to: https://console.developers.google.com and create a new project
@@ -72,11 +72,11 @@ You need a server (vps will be ok) with linux, root access and configured LEMP, 
     * `numprocs` => `2` is enough (I recommend twice less than the number of proxy and a number equal to the number of processor cores/threads)
     * I suggest `stdout_logfile` to be set to the project directory, ie `PROJECT_FULL_PATH/runtime/logs/supervisor.log`
 - run `supervisord`
-- add [cron hourly](https://crontab.guru/every-hour) for `/PROJECT_FULL_PATH/yii stats/update-accounts` and `/PROJECT_FULL_PATH/yii stats/update-tags`
+- add [cron hourly](https://crontab.guru/every-hour) for `php /PROJECT_FULL_PATH/yii stats/update-accounts` and `php /PROJECT_FULL_PATH/yii stats/update-tags`
 
 ## Adding and activation of the system user
 - try to log in, if everything goes well, you'll see an "inactive account message"
-- run the command `./yii user/activate 'YOUR_GOOGLE_EMAIL'`
+- run the command `php yii user/activate 'YOUR_GOOGLE_EMAIL'`
 - log in again
 
 ## Next steps
