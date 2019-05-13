@@ -19,19 +19,9 @@ use yii\behaviors\TimestampBehavior;
  * @property string $reservation_uid
  *
  * @property string $curlString
- *
- * @property Tag[] $tags
  */
 class Proxy extends \yii\db\ActiveRecord
 {
-
-    public static function usedTags()
-    {
-        return Tag::find()
-            ->innerJoin('proxy_tag', 'tag.id=proxy_tag.tag_id')
-            ->orderBy('name ASC')
-            ->all();
-    }
 
     public function getCurlString()
     {
@@ -88,14 +78,6 @@ class Proxy extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTags()
-    {
-        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->viaTable('proxy_tag', ['proxy_id' => 'id']);
     }
 
     /**

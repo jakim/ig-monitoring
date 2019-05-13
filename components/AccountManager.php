@@ -24,7 +24,7 @@ class AccountManager extends Component
 {
     use FindOrCreate, BatchInsertCommand;
 
-    public function startMonitoring($account, $proxyId = null, $proxyTagId = null): Account
+    public function startMonitoring($account, $proxyId = null): Account
     {
         if (is_string($account)) {
             /** @var Account $account */
@@ -36,7 +36,7 @@ class AccountManager extends Component
             'account' => $account,
         ]);
         $accountUpdater
-            ->setMonitoring($proxyId, $proxyTagId)
+            ->setMonitoring($proxyId)
             ->setIsValid()
             ->save();
 
@@ -61,7 +61,7 @@ class AccountManager extends Component
                 }
             }
 
-            $this->startMonitoring($account, $parent->proxy_id, $parent->proxy_tag_id);
+            $this->startMonitoring($account, $parent->proxy_id);
 
             $tags = empty($parent->accounts_default_tags) ? $parent->tags : StringHelper::explode($parent->accounts_default_tags, ',', true, true);
             $tagManager = \Yii::createObject(TagManager::class);

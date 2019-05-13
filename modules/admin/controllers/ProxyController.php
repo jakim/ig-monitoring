@@ -134,7 +134,6 @@ class ProxyController extends Controller
         return \app\models\Tag::find()
             ->indexBy('name')
             ->select('name')
-            ->innerJoin('proxy_tag', 'tag.id=proxy_tag.tag_id')
             ->column();
     }
 }

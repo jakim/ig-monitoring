@@ -18,7 +18,6 @@ use yii\helpers\ArrayHelper;
  * @property string $created_at
  * @property int $monitoring
  * @property int $proxy_id
- * @property int $proxy_tag_id
  * @property bool $is_valid
  * @property int $invalidation_type_id
  * @property int $invalidation_count
@@ -87,7 +86,6 @@ class Tag extends \yii\db\ActiveRecord
             [['name'], 'unique'],
             [['invalidation_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => TagInvalidationType::class, 'targetAttribute' => ['invalidation_type_id' => 'id']],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
-            [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
         ];
     }
 
@@ -104,7 +102,6 @@ class Tag extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'monitoring' => 'Monitoring',
             'proxy_id' => 'Proxy ID',
-            'proxy_tag_id' => 'Proxy Tag ID',
             'is_valid' => 'Is Valid',
             'invalidation_type_id' => 'Invalidation Type ID',
             'invalidation_count' => 'Invalidation Count',
@@ -148,14 +145,6 @@ class Tag extends \yii\db\ActiveRecord
     public function getProxy()
     {
         return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProxyTag()
-    {
-        return $this->hasOne(Tag::class, ['id' => 'proxy_tag_id']);
     }
 
     /**

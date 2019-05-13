@@ -34,11 +34,10 @@ class TagUpdater extends Component
         return $this;
     }
 
-    public function setMonitoring($proxyId = null, $proxyTagId = null)
+    public function setMonitoring($proxyId = null)
     {
         $this->tag->monitoring = 1;
         $this->tag->proxy_id = $proxyId;
-        $this->tag->proxy_tag_id = $proxyTagId;
 
         return $this;
     }

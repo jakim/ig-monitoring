@@ -16,8 +16,8 @@ class ProxySearch extends Proxy
     public function rules()
     {
         return [
-            [['id', 'port'], 'integer'],
-            [['ip', 'username', 'password', 'active', 'tagString'], 'safe'],
+            [['port'], 'integer'],
+            [['ip', 'username', 'password', 'active'], 'safe'],
         ];
     }
 

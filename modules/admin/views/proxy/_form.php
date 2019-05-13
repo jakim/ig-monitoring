@@ -22,17 +22,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'active')->checkbox() ?>
 
-    <?= $form->field($model, 'tagString')->widget(\kartik\select2\Select2::class, [
-        'options' => [
-            'multiple' => true,
-            'placeholder' => 'Select tags...',
-        ],
-        'pluginOptions' => [
-            'tags' => true,
-        ],
-        'data' => $selectData,
-    ]) ?>
-
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

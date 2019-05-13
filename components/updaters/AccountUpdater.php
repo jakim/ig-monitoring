@@ -64,11 +64,10 @@ class AccountUpdater extends Component
         return $this;
     }
 
-    public function setMonitoring($proxyId = null, $proxyTagId = null)
+    public function setMonitoring($proxyId = null)
     {
         $this->account->monitoring = 1;
         $this->account->proxy_id = $proxyId;
-        $this->account->proxy_tag_id = $proxyTagId;
 
         return $this;
     }

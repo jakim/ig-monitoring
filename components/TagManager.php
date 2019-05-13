@@ -65,13 +65,12 @@ class TagManager extends Component
         $tag->save();
     }
 
-    public function monitor(string $name, $proxyId = null, $proxyTagId = null): Tag
+    public function monitor(string $name, $proxyId = null): Tag
     {
         /** @var Tag $tag */
         $tag = $this->findOrCreate(['name' => $name], Tag::class);
 
         $tag->proxy_id = $proxyId;
-        $tag->proxy_tag_id = $proxyTagId;
         $tag->monitoring = 1;
         $tag->disabled = 0;
 

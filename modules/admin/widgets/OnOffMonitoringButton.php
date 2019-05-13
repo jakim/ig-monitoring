@@ -63,8 +63,6 @@ class OnOffMonitoringButton extends Widget
             'scenario' => $this->trackerType,
             'names' => ArrayHelper::getValue($this->model, $this->trackerType == TrackerType::ACCOUNT ? 'username' : 'name'),
             'proxy_id' => $this->model->proxy_id,
-            'proxy_tag_id' => $this->model->proxy_tag_id,
-
             'tags' => $this->trackerType == TrackerType::ACCOUNT ? ArrayHelper::getColumn($this->model->tags, 'name') : null,
         ]);
 

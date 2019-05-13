@@ -71,7 +71,6 @@ $formatter = Yii::$app->formatter;
                                                 'names' => $account->username,
                                                 'tags' => ArrayHelper::getColumn($model->tags, 'name'),
                                                 'proxy_id' => $model->proxy_id,
-                                                'proxy_tag_id' => $model->proxy_tag_id,
                                             ]),
                                             'btnCssClass' => 'btn btn-xs',
                                             'offAjaxOptions' => [

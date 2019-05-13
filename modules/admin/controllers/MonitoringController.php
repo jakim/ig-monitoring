@@ -109,7 +109,7 @@ class MonitoringController extends Controller
             $queue = \Yii::$app->queue;
 
             foreach ($usernames as $username) {
-                $account = $accountManager->startMonitoring($username, $form->proxy_id, $form->proxy_tag_id);
+                $account = $accountManager->startMonitoring($username, $form->proxy_id);
                 $account->disabled = 0;
                 if (!$account->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
@@ -148,7 +148,7 @@ class MonitoringController extends Controller
             $queue = \Yii::$app->queue;
 
             foreach ($names as $name) {
-                $tag = $tagManager->monitor($name, $form->proxy_id, $form->proxy_tag_id);
+                $tag = $tagManager->monitor($name, $form->proxy_id);
                 if (!$tag->hasErrors()) {
                     \Yii::$app->session->setFlash('success', 'OK!');
                     $job = JobFactory::createTagUpdate($tag);

@@ -30,13 +30,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                 ],
                 'port',
-                [
-                    'attribute' => 'tagString',
-                    'value' => function(Proxy $model) {
-                        return implode(', ', ArrayHelper::getColumn($model->tags, 'name'));
-                    },
-
-                ],
                 'created_at:date',
 
                 [

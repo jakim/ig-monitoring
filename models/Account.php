@@ -23,7 +23,6 @@ use yii\helpers\ArrayHelper;
  * @property string $created_at
  * @property bool $monitoring
  * @property int $proxy_id
- * @property int $proxy_tag_id
  * @property bool $disabled
  * @property int $accounts_monitoring_level
  * @property string $accounts_default_tags
@@ -49,7 +48,6 @@ use yii\helpers\ArrayHelper;
  *
  * @property AccountInvalidationType $invalidationType
  * @property Proxy $proxy
- * @property Tag $proxyTag
  * @property AccountNote[] $accountNotes
  * @property AccountStats[] $accountStats
  * @property AccountTag[] $accountTags
@@ -105,14 +103,13 @@ class Account extends \yii\db\ActiveRecord
         return [
             [['username'], 'required'],
             [['updated_at', 'created_at', 'accounts_default_tags', 'stats_updated_at', 'last_post_taken_at'], 'safe'],
-            [['proxy_id', 'proxy_tag_id', 'occurs', 'followed_by', 'follows', 'media'], 'integer'],
+            [['proxy_id', 'occurs', 'followed_by', 'follows', 'media'], 'integer'],
             [['er', 'avg_likes', 'avg_comments'], 'number'],
             ['accounts_monitoring_level', 'integer', 'min' => 0],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', '!uid', 'business_category'], 'string', 'max' => 255],
             [['monitoring', 'disabled', 'is_valid', 'is_valid', 'is_business'], 'boolean'],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
-            [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],
         ];
     }
 
@@ -134,7 +131,6 @@ class Account extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'monitoring' => 'Monitoring',
             'proxy_id' => 'Proxy ID',
-            'proxy_tag_id' => 'Proxy Tag ID',
             'accounts_monitoring_level' => 'Accounts Monitoring Level',
             'er' => 'Engagement',
         ];
@@ -163,14 +159,6 @@ class Account extends \yii\db\ActiveRecord
     public function getProxy()
     {
         return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProxyTag()
-    {
-        return $this->hasOne(Tag::class, ['id' => 'proxy_tag_id']);
     }
 
     /**
