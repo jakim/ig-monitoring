@@ -2,7 +2,6 @@
 
 namespace app\modules\admin\controllers;
 
-use app\components\AccountManager;
 use app\components\stats\AccountDaily;
 use app\components\stats\AccountDailyDiff;
 use app\components\stats\AccountMonthlyDiff;
@@ -16,10 +15,9 @@ use app\modules\admin\models\AccountStats;
 use Carbon\Carbon;
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\db\Query;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii2tech\csvgrid\CsvGrid;
 
 /**
@@ -159,7 +157,7 @@ class AccountController extends Controller
         $tags = Yii::$app->request->post('account_tags', []);
 
         $manager = Yii::createObject(TagManager::class);
-        $manager->setForAccount($model, $tags, Yii::$app->user->id);
+        $manager->saveForAccount($model, $tags, Yii::$app->user->id);
 
         return $this->redirect(['account/dashboard', 'id' => $id]);
     }

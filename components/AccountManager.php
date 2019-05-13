@@ -16,6 +16,7 @@ use app\models\AccountTag;
 use app\models\Media;
 use app\models\MediaAccount;
 use DateTime;
+use function is_string;
 use Yii;
 use yii\base\Component;
 use yii\helpers\StringHelper;
@@ -46,7 +47,7 @@ class AccountManager extends Component
     public function monitorRelatedAccounts(Account $parent, array $accounts)
     {
         foreach ($accounts as $account) {
-            if (\is_string($account)) {
+            if (is_string($account)) {
                 /** @var Account $account */
                 $account = $this->findOrCreate(['username' => $account], Account::class);
                 if ($account->disabled) {
@@ -64,8 +65,8 @@ class AccountManager extends Component
             $this->startMonitoring($account, $parent->proxy_id);
 
             $tags = empty($parent->accounts_default_tags) ? $parent->tags : StringHelper::explode($parent->accounts_default_tags, ',', true, true);
-            $tagManager = \Yii::createObject(TagManager::class);
-            $tagManager->saveForAccount($account, $tags);
+            $tagManager = Yii::createObject(TagManager::class);
+            $tagManager->addToAccount($account, $tags);
         }
     }
 

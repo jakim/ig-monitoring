@@ -8,6 +8,7 @@
 namespace app\components;
 
 
+use app\components\traits\BatchInsertCommand;
 use app\components\traits\FindOrCreate;
 use app\models\Account;
 use app\models\AccountTag;
@@ -15,57 +16,17 @@ use app\models\Media;
 use app\models\MediaTag;
 use app\models\Tag;
 use app\models\User;
+use DateTime;
+use function is_string;
 use yii\base\Component;
-use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 
 class TagManager extends Component
 {
-    use FindOrCreate;
+    use FindOrCreate, BatchInsertCommand;
 
-    /**
-     * @param \app\models\Tag $tag
-     * @param int $nextUpdateInterval In hours from now.
-     */
-    public function markAsValid(Tag $tag, int $nextUpdateInterval = 24)
-    {
-        $tag->invalidation_count = 0;
-        $tag->is_valid = 1;
-        $tag->invalidation_type_id = null;
-
-        $this->setDateOfNextStatsUpdate($tag, $nextUpdateInterval);
-    }
-
-    /**
-     * @param \app\models\Tag $tag
-     * @param int|null $invalidationType
-     */
-    public function updateInvalidation(Tag $tag, ?int $invalidationType)
-    {
-        $tag->invalidation_count = (int)$tag->invalidation_count + 1;
-        $tag->is_valid = 0;
-        $tag->invalidation_type_id = $invalidationType;
-        $interval = 1;
-        for ($i = 1; $i <= $tag->invalidation_count; $i++) {
-            $interval *= $i;
-        }
-        $this->setDateOfNextStatsUpdate($tag, $interval);
-    }
-
-    /**
-     * @param \app\models\Tag $tag
-     * @param int $interval In hours from now.
-     */
-    public function setDateOfNextStatsUpdate(Tag $tag, int $interval = 24)
-    {
-        $tag->update_stats_after = new Expression('DATE_ADD(NOW(), INTERVAL :interval HOUR)', [
-            'interval' => $interval,
-        ]);
-        $tag->save();
-    }
-
-    public function monitor(string $name, $proxyId = null): Tag
+    public function startMonitoring(string $name, $proxyId = null): Tag
     {
         /** @var Tag $tag */
         $tag = $this->findOrCreate(['name' => $name], Tag::class);
@@ -79,7 +40,7 @@ class TagManager extends Component
         return $tag;
     }
 
-    public function saveForMedia(Media $media, array $tags)
+    public function addToMedia(Media $media, array $tags)
     {
         $this->saveTags($tags);
 
@@ -93,27 +54,8 @@ class TagManager extends Component
             ->andWhere(['name' => $tags])
             ->column());
 
-        $sql = \Yii::$app->db->queryBuilder
-            ->batchInsert(MediaTag::tableName(), ['media_id', 'tag_id', 'created_at'], $rows);
-        $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
-        \Yii::$app->db->createCommand($sql)
+        $this->batchInsertIgnoreCommand(MediaTag::tableName(), ['media_id', 'tag_id', 'created_at'], $rows)
             ->execute();
-    }
-
-    /**
-     * It deletes the previous ones and sets new ones.
-     *
-     * @param \app\models\Account $account
-     * @param array|Tag[] $tags
-     * @param int|null $userId
-     * @throws \yii\db\Exception
-     */
-    public function setForAccount(Account $account, array $tags, ?int $userId = null)
-    {
-        $this->deleteAccountTags($account, $userId);
-        if ($tags) {
-            $this->saveForAccount($account, $tags, $userId);
-        }
     }
 
     /**
@@ -124,10 +66,10 @@ class TagManager extends Component
      * @param int|null $userId
      * @throws \yii\db\Exception
      */
-    public function saveForAccount(Account $account, array $tags, ?int $userId = null)
+    public function addToAccount(Account $account, array $tags, ?int $userId = null)
     {
         $rows = [];
-        $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
+        $createdAt = (new DateTime())->format('Y-m-d H:i:s');
         $userIds = $this->getUserIds($userId);
         $tagIds = $this->getTagIds($tags);
         foreach ($userIds as $userId) {
@@ -142,11 +84,24 @@ class TagManager extends Component
             $rows = ArrayHelper::merge($rows, $tmp);
         }
 
-        $sql = \Yii::$app->db->queryBuilder
-            ->batchInsert(AccountTag::tableName(), ['account_id', 'tag_id', 'user_id', 'created_at'], $rows);
-        $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
-        \Yii::$app->db->createCommand($sql)
+        $this->batchInsertIgnoreCommand(AccountTag::tableName(), ['account_id', 'tag_id', 'user_id', 'created_at'], $rows)
             ->execute();
+    }
+
+    /**
+     * It deletes the previous ones and sets new ones.
+     *
+     * @param \app\models\Account $account
+     * @param array|Tag[] $tags
+     * @param int|null $userId
+     * @throws \yii\db\Exception
+     */
+    public function saveForAccount(Account $account, array $tags, ?int $userId = null)
+    {
+        $this->deleteAccountTags($account, $userId);
+        if ($tags) {
+            $this->addToAccount($account, $tags, $userId);
+        }
     }
 
     /**
@@ -155,7 +110,7 @@ class TagManager extends Component
      */
     public function saveTags(array $tags)
     {
-        $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
+        $createdAt = (new DateTime())->format('Y-m-d H:i:s');
         $rows = array_map(function ($tag) use ($createdAt) {
             return [
                 $tag,
@@ -165,10 +120,7 @@ class TagManager extends Component
             ];
         }, $tags);
 
-        $sql = \Yii::$app->db->getQueryBuilder()
-            ->batchInsert(Tag::tableName(), ['name', 'slug', 'updated_at', 'created_at'], $rows);
-        $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
-        \Yii::$app->db->createCommand($sql)
+        $this->batchInsertIgnoreCommand(Tag::tableName(), ['name', 'slug', 'updated_at', 'created_at'], $rows)
             ->execute();
     }
 
@@ -179,7 +131,7 @@ class TagManager extends Component
      */
     private function getTagIds(array $tags): array
     {
-        if (\is_string($tags['0'])) {
+        if (is_string($tags['0'])) {
             $this->saveTags($tags);
         } else {
             $tags = ArrayHelper::getColumn($tags, 'name');

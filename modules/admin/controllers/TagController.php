@@ -2,14 +2,14 @@
 
 namespace app\modules\admin\controllers;
 
-use app\components\TagManager;
+use app\components\updaters\TagUpdater;
 use app\models\TagStats;
 use app\modules\admin\models\Tag;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * TagController implements the CRUD actions for Tag model.
@@ -49,8 +49,14 @@ class TagController extends Controller
                 $model->monitoring = 0;
                 $model->save();
             } elseif ($model->is_valid) {
-                $accountManager = Yii::createObject(TagManager::class);
-                $accountManager->markAsValid($model, 1); // save model
+                $tagUpdater = Yii::createObject([
+                    'class' => TagUpdater::class,
+                    'tag' => $model,
+                ]);
+                $tagUpdater
+                    ->setIsValid()
+                    ->setNextStatsUpdate(null)
+                    ->save();
             } else {
                 $model->save();
             }

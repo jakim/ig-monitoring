@@ -18,9 +18,10 @@ use app\components\TagManager;
 use app\dictionaries\TrackerType;
 use app\models\Account;
 use app\models\Tag;
-use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\models\AccountSearch;
+use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\models\TagSearch;
+use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
@@ -46,16 +47,16 @@ class MonitoringController extends Controller
     public function actionAccounts()
     {
         $searchModel = new AccountSearch();
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['account.monitoring' => 1]);
 
-        $dailyDiff = \Yii::createObject([
+        $dailyDiff = Yii::createObject([
             'class' => AccountDailyDiff::class,
             'models' => $dataProvider->models,
         ]);
         $dailyDiff->initLastDiff();
 
-        $monthlyDiff = \Yii::createObject([
+        $monthlyDiff = Yii::createObject([
             'class' => AccountMonthlyDiff::class,
             'models' => $dataProvider->models,
         ]);
@@ -72,16 +73,16 @@ class MonitoringController extends Controller
     public function actionTags()
     {
         $searchModel = new TagSearch();
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['tag.monitoring' => 1]);
 
-        $dailyDiff = \Yii::createObject([
+        $dailyDiff = Yii::createObject([
             'class' => TagDailyDiff::class,
             'models' => $dataProvider->models,
         ]);
         $dailyDiff->initLastDiff();
 
-        $monthlyDiff = \Yii::createObject([
+        $monthlyDiff = Yii::createObject([
             'class' => TagMonthlyDiff::class,
             'models' => $dataProvider->models,
         ]);
@@ -100,31 +101,31 @@ class MonitoringController extends Controller
         $form = new MonitoringForm();
         $form->setScenario(TrackerType::ACCOUNT);
 
-        if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             $usernames = $this->normalizeTrackers($form->names);
 
-            $accountManager = \Yii::createObject(AccountManager::class);
+            $accountManager = Yii::createObject(AccountManager::class);
 
             /** @var \yii\queue\Queue $queue */
-            $queue = \Yii::$app->queue;
+            $queue = Yii::$app->queue;
 
             foreach ($usernames as $username) {
                 $account = $accountManager->startMonitoring($username, $form->proxy_id);
                 $account->disabled = 0;
                 if (!$account->hasErrors()) {
-                    \Yii::$app->session->setFlash('success', 'OK!');
+                    Yii::$app->session->setFlash('success', 'OK!');
 
                     $job = JobFactory::createAccountUpdate($account);
                     $queue->push($job);
 
                     $tags = array_filter((array)$form->tags);
                     if ($tags) {
-                        $tagManager = \Yii::createObject(TagManager::class);
-                        $tagManager->saveForAccount($account, $tags, \Yii::$app->user->id);
+                        $tagManager = Yii::createObject(TagManager::class);
+                        $tagManager->addToAccount($account, $tags, Yii::$app->user->id);
                     }
                 } else {
-                    \Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
-                    \Yii::$app->session->setFlash('error', "ERR! {$username}");
+                    Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
+                    Yii::$app->session->setFlash('error', "ERR! {$username}");
                     break;
                 }
 
@@ -139,23 +140,23 @@ class MonitoringController extends Controller
         $form = new MonitoringForm();
         $form->setScenario(TrackerType::TAG);
 
-        if ($form->load(\Yii::$app->request->post()) && $form->validate()) {
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             $names = $this->normalizeTrackers($form->names);
 
-            $tagManager = \Yii::createObject(TagManager::class);
+            $tagManager = Yii::createObject(TagManager::class);
 
             /** @var \yii\queue\Queue $queue */
-            $queue = \Yii::$app->queue;
+            $queue = Yii::$app->queue;
 
             foreach ($names as $name) {
-                $tag = $tagManager->monitor($name, $form->proxy_id);
+                $tag = $tagManager->startMonitoring($name, $form->proxy_id);
                 if (!$tag->hasErrors()) {
-                    \Yii::$app->session->setFlash('success', 'OK!');
+                    Yii::$app->session->setFlash('success', 'OK!');
                     $job = JobFactory::createTagUpdate($tag);
                     $queue->push($job);
                 } else {
-                    \Yii::error('Validation error: ' . json_encode($tag->errors), __METHOD__);
-                    \Yii::$app->session->setFlash('error', "ERR! {$name}");
+                    Yii::error('Validation error: ' . json_encode($tag->errors), __METHOD__);
+                    Yii::$app->session->setFlash('error', "ERR! {$name}");
                     break;
                 }
 
@@ -170,11 +171,11 @@ class MonitoringController extends Controller
         $model = Account::findOne($id);
         $model->monitoring = 0;
         if ($model->save()) {
-            \Yii::$app->session->setFlash('success', 'OK!');
+            Yii::$app->session->setFlash('success', 'OK!');
 
             return Url::to(['monitoring/accounts']);
         } else {
-            \Yii::$app->session->setFlash('error', 'ERROR!');
+            Yii::$app->session->setFlash('error', 'ERROR!');
         }
     }
 
@@ -183,11 +184,11 @@ class MonitoringController extends Controller
         $model = Tag::findOne($id);
         $model->monitoring = 0;
         if ($model->save()) {
-            \Yii::$app->session->setFlash('success', 'OK!');
+            Yii::$app->session->setFlash('success', 'OK!');
 
             return Url::to(['monitoring/tags']);
         } else {
-            \Yii::$app->session->setFlash('error', 'ERROR!');
+            Yii::$app->session->setFlash('error', 'ERROR!');
         }
     }
 

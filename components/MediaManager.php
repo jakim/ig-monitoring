@@ -13,6 +13,7 @@ use app\components\updaters\MediaUpdater;
 use app\models\Account;
 use app\models\Media;
 use jakim\ig\Text;
+use Yii;
 use yii\base\Component;
 
 class MediaManager extends Component
@@ -38,7 +39,7 @@ class MediaManager extends Component
                 'shortcode' => $post->shortcode,
             ], Media::class);
             /** @var \app\components\updaters\MediaUpdater $updater */
-            $updater = \Yii::createObject([
+            $updater = Yii::createObject([
                 'class' => MediaUpdater::class,
                 'media' => $media,
             ]);
@@ -57,8 +58,8 @@ class MediaManager extends Component
 
         $tags = (array) Text::getTags($media->caption);
         if ($tags) {
-            $manager = \Yii::createObject(TagManager::class);
-            $manager->saveForMedia($media, $tags);
+            $manager = Yii::createObject(TagManager::class);
+            $manager->addToMedia($media, $tags);
         }
 
         $usernames = (array) Text::getUsernames($media->caption);
@@ -66,7 +67,7 @@ class MediaManager extends Component
             // ignore owner of media
             ArrayHelper::removeValue($usernames, $account->username);
 
-            $manager = \Yii::createObject(AccountManager::class);
+            $manager = Yii::createObject(AccountManager::class);
             $manager->addToMedia($media, $usernames);
 
             if ($account && $account->accounts_monitoring_level > 0) {
