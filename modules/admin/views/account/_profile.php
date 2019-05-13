@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use app\modules\admin\widgets\InvalidAccountAlert;
 use app\modules\admin\widgets\OnOffMonitoringButton;
 use app\modules\admin\widgets\favorites\ProfileButton;
-use app\modules\admin\widgets\TagsSideWidget;
+use app\modules\admin\widgets\CategoriesWidget;
 use app\modules\admin\widgets\NotesSideWidget;
 
 
@@ -108,7 +108,7 @@ $formatter = Yii::$app->formatter;
             <hr>
         <?php endif; ?>
 
-        <?= TagsSideWidget::widget([
+        <?= CategoriesWidget::widget([
             'model' => $model,
         ]); ?>
         <hr>

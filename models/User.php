@@ -21,6 +21,8 @@ use yii\web\IdentityInterface;
  * @property string $updated_at
  * @property string $created_at
  * @property string $access_token
+ *
+ * @property AccountCategory[] $accountCategories
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
@@ -157,5 +159,13 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         // TODO: Implement validateAuthKey() method.
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAccountCategories()
+    {
+        return $this->hasMany(AccountCategory::class, ['user_id' => 'id']);
     }
 }

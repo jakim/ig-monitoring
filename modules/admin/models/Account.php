@@ -14,7 +14,7 @@ class Account extends \app\models\Account
 {
     const SCENARIO_UPDATE = 'update';
 
-    public $s_tags;
+    public $s_categories;
 
     public function scenarios()
     {
@@ -33,7 +33,7 @@ class Account extends \app\models\Account
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            's_tags' => 'Tags',
+            's_categories' => 'Categories',
             'is_valid' => 'Is Valid - an exclamation triangle in the list of accounts, is set automatically if the account is not reachable. Check this option if you are sure that this account is valid and want to try to refresh stats again.',
             'disabled' => 'Disabled - the account will disappear from the monitoring list and will be ignored even if it is automatically discovered.',
         ]);

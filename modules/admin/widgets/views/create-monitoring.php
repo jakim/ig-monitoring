@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
  * @var \app\modules\admin\models\MonitoringForm $model
  * @var array|string $formAction
  * @var string $title
- * @var array|false $tags
+ * @var array|false $categories
  * @var array $proxies
  */
 
@@ -28,17 +28,17 @@ $form = ActiveForm::begin([
 ?>
 
 <?php
-if ($tags !== false) {
-    echo $form->field($model, 'tags')->widget(Select2::class, [
+if ($categories !== false) {
+    echo $form->field($model, 'categories')->widget(Select2::class, [
         'options' => [
-            'id' => "tags_{$form->getId()}",
+            'id' => "categories_{$form->getId()}",
             'multiple' => true,
-            'placeholder' => 'Select tags...',
+            'placeholder' => 'Select categories...',
         ],
         'pluginOptions' => [
-            'tags' => true,
+            'categories' => true,
         ],
-        'data' => $tags,
+        'data' => $categories,
     ])->label(false);
 }
 ?>

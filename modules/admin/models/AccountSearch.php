@@ -3,8 +3,10 @@
 namespace app\modules\admin\models;
 
 use app\components\AccountManager;
+use app\models\AccountCategory;
 use app\models\AccountStats;
 use app\models\AccountTag;
+use app\models\Category;
 use app\models\Tag;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -23,7 +25,7 @@ class AccountSearch extends Account
     {
         return [
             [['id', 'monitoring', 'proxy_id'], 'integer'],
-            [['username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 's_tags'], 'safe'],
+            [['username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 's_categories'], 'safe'],
         ];
     }
 
@@ -51,10 +53,10 @@ class AccountSearch extends Account
         $query = Account::find()
             ->select([
                 'account.*',
-                new Expression('GROUP_CONCAT(tag.name SEPARATOR \', \') as s_tags'),
+                new Expression('GROUP_CONCAT(category.name SEPARATOR \', \') as s_categories'),
             ])
-            ->leftJoin(AccountTag::tableName(), 'account.id=account_tag.account_id AND account_tag.user_id=' . $userId)
-            ->leftJoin(Tag::tableName(), 'account_tag.tag_id=tag.id')
+            ->leftJoin(AccountCategory::tableName(), 'account.id=account_category.account_id AND account_category.user_id=' . $userId)
+            ->leftJoin(Category::tableName(), 'account_category.category_id=category.id')
             ->groupBy('account.id');
 
         // add conditions that should always apply here
@@ -93,9 +95,9 @@ class AccountSearch extends Account
             ['like', 'account.name', $this->username],
         ]);
 
-        if ($this->s_tags) {
+        if ($this->s_categories) {
             $manager = \Yii::createObject(AccountManager::class);
-            $accountIds = $manager->findByTags($this->s_tags, $userId);
+            $accountIds = $manager->findByCategories($this->s_categories, $userId);
 
             $query->andWhere(['account.id' => $accountIds]);
         }

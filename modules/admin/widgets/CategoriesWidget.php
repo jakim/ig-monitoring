@@ -9,6 +9,8 @@ namespace app\modules\admin\widgets;
 
 
 use app\components\ArrayHelper;
+use app\components\CategoryManager;
+use app\models\Account;
 use app\models\AccountTag;
 use app\modules\admin\models\Tag;
 use app\modules\admin\widgets\base\ProfileSideWidget;
@@ -16,9 +18,9 @@ use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
 
-class TagsSideWidget extends ProfileSideWidget
+class CategoriesWidget extends ProfileSideWidget
 {
-    public $header = 'Tags';
+    public $header = 'Categories';
     public $headerIcon = 'tags';
     public $modalToggleButton = [
         'label' => 'Update',
@@ -35,41 +37,40 @@ class TagsSideWidget extends ProfileSideWidget
     public $model;
 
     /**
-     * @var Tag[]
+     * @var \app\models\Category[]
      */
-    protected $modelTags = [];
+    protected $modelCategories = [];
 
     /**
-     * @var Tag[]
+     * @var \app\models\Category[]
      */
-    protected $allTags = [];
+    protected $categories = [];
 
     public function init()
     {
         parent::init();
-        $userId = (int)\Yii::$app->user->id;
-        $this->modelTags = $this->getTags($userId, $this->model->id);
-        $this->allTags = $this->getTags($userId);
-        $this->formAction = $this->formAction ?: ['tags', 'id' => $this->model->id];
+        $this->modalHeader = $this->header;
+        $this->formAction = $this->formAction ?: ['categories', 'id' => $this->model->id];
     }
 
-    private function getTags($userId, $accountId = null)
+    public function run()
     {
-        return Tag::find()
-            ->distinct()
-            ->innerJoin(AccountTag::tableName(), 'tag.id=account_tag.tag_id AND account_tag.user_id=' . $userId)
-            ->andFilterWhere(['account_tag.account_id' => $accountId])
-            ->orderBy('name ASC')
-            ->all();
+        $categoryManager = \Yii::createObject(CategoryManager::class);
+        /** @var \app\models\User $identity */
+        $identity = \Yii::$app->user->identity;
+
+        $this->categories = $categoryManager->getForUser($identity);
+        $this->modelCategories = $categoryManager->getForUserAccounts($identity, $this->model);
+        parent::run();
     }
 
     protected function renderBoxContent()
     {
         echo "<p>";
-        foreach ($this->modelTags as $tag) {
+        foreach ($this->modelCategories as $tag) {
             echo sprintf('<span class="label label-default">%s</span> ', Html::encode($tag->name));
         }
-        if (!$this->modelTags) {
+        if (!$this->modelCategories) {
             echo \Yii::$app->formatter->nullDisplay;
         }
         echo "</p>";
@@ -88,8 +89,8 @@ class TagsSideWidget extends ProfileSideWidget
             'pluginOptions' => [
                 'tags' => true,
             ],
-            'data' => array_combine(ArrayHelper::getColumn($this->allTags, 'name'), ArrayHelper::getColumn($this->allTags, 'name')),
-            'value' => ArrayHelper::getColumn($this->modelTags, 'name'),
+            'data' => array_combine(ArrayHelper::getColumn($this->categories, 'name'), ArrayHelper::getColumn($this->categories, 'name')),
+            'value' => ArrayHelper::getColumn($this->modelCategories, 'name'),
         ]);
         echo "</div>";
 

@@ -69,7 +69,7 @@ $formatter = Yii::$app->formatter;
                                             'form' => new MonitoringForm([
 //                                                'scenario' => 'account',
                                                 'names' => $account->username,
-                                                'tags' => ArrayHelper::getColumn($model->tags, 'name'),
+                                                'categories' => ArrayHelper::getColumn($model->tags, 'name'),
                                                 'proxy_id' => $model->proxy_id,
                                             ]),
                                             'btnCssClass' => 'btn btn-xs',

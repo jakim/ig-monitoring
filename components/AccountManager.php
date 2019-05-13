@@ -12,14 +12,14 @@ use app\components\traits\BatchInsertCommand;
 use app\components\traits\FindOrCreate;
 use app\components\updaters\AccountUpdater;
 use app\models\Account;
-use app\models\AccountTag;
+use app\models\AccountCategory;
 use app\models\Media;
 use app\models\MediaAccount;
 use DateTime;
-use function is_string;
 use Yii;
 use yii\base\Component;
 use yii\helpers\StringHelper;
+use function is_string;
 
 class AccountManager extends Component
 {
@@ -44,6 +44,12 @@ class AccountManager extends Component
         return $account;
     }
 
+    /**
+     * @param \app\models\Account $parent
+     * @param array $accounts
+     *
+     * @deprecated
+     */
     public function monitorRelatedAccounts(Account $parent, array $accounts)
     {
         foreach ($accounts as $account) {
@@ -63,10 +69,6 @@ class AccountManager extends Component
             }
 
             $this->startMonitoring($account, $parent->proxy_id);
-
-            $tags = empty($parent->accounts_default_tags) ? $parent->tags : StringHelper::explode($parent->accounts_default_tags, ',', true, true);
-            $tagManager = Yii::createObject(TagManager::class);
-            $tagManager->addToAccount($account, $tags);
         }
     }
 
@@ -110,25 +112,25 @@ class AccountManager extends Component
     }
 
     /**
-     * @param string|string[] $tags
+     * @param string|string[] $categories
      * @param null|int $userId
      * @return array|int[]
      */
-    public function findByTags($tags, $userId = null): array
+    public function findByCategories($categories, $userId = null): array
     {
-        if (is_string($tags)) {
-            $tags = StringHelper::explode($tags, ',', true, true);
-            $tags = array_unique($tags);
+        if (is_string($categories)) {
+            $categories = StringHelper::explode($categories, ',', true, true);
+            $categories = array_unique($categories);
         }
 
         $ids = [];
-        foreach ($tags as $tag) {
-            $ids[] = AccountTag::find()
+        foreach ($categories as $category) {
+            $ids[] = AccountCategory::find()
                 ->distinct()
                 ->select('account_id')
-                ->innerJoinWith('tag')
+                ->innerJoinWith('category')
                 ->andFilterWhere(['user_id' => $userId])
-                ->andFilterWhere(['like', 'tag.name', $tag])
+                ->andFilterWhere(['like', 'category.name', $category])
                 ->column();
         }
 

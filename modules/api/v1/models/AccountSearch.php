@@ -30,7 +30,7 @@ class AccountSearch extends Model
 
         if ($tags) {
             $manager = \Yii::createObject(AccountManager::class);
-            $accountIds = $manager->findByTags($tags, \Yii::$app->user->id);
+            $accountIds = $manager->findByCategories($tags, \Yii::$app->user->id);
 
             $query->andWhere(['account.id' => $accountIds]);
         }

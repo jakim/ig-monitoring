@@ -15,14 +15,14 @@ use yii\helpers\ArrayHelper;
 class MonitoringForm extends Model
 {
     public $names;
-    public $tags;
+    public $categories;
     public $proxy_id;
 
     public function rules()
     {
         return [
             ['names', 'required'],
-            [['names', 'tags', 'proxy_id'], 'safe'],
+            [['names', 'categories', 'proxy_id'], 'safe'],
         ];
     }
 
@@ -31,7 +31,7 @@ class MonitoringForm extends Model
         return [
             TrackerType::ACCOUNT => [
                 'names',
-                'tags', 'proxy_id'
+                'categories', 'proxy_id'
             ],
             TrackerType::TAG => [
                 'names',

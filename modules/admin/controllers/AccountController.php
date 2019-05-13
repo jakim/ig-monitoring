@@ -2,10 +2,10 @@
 
 namespace app\modules\admin\controllers;
 
+use app\components\CategoryManager;
 use app\components\stats\AccountDaily;
 use app\components\stats\AccountDailyDiff;
 use app\components\stats\AccountMonthlyDiff;
-use app\components\TagManager;
 use app\components\updaters\AccountUpdater;
 use app\models\AccountNote;
 use app\models\Media;
@@ -37,7 +37,7 @@ class AccountController extends Controller
                     'delete' => ['POST'],
                     'delete-stats' => ['POST'],
                     'delete-associated' => ['POST'],
-                    'tags' => ['POST'],
+                    'categories' => ['POST'],
                     'update-note' => ['POST'],
                 ],
             ],
@@ -151,13 +151,15 @@ class AccountController extends Controller
         return $this->redirect(['monitoring/accounts']);
     }
 
-    public function actionTags($id)
+    public function actionCategories($id)
     {
+        /** @var \app\models\User $identity */
+        $identity = Yii::$app->user->identity;
         $model = $this->findModel($id);
         $tags = Yii::$app->request->post('account_tags', []);
 
-        $manager = Yii::createObject(TagManager::class);
-        $manager->saveForAccount($model, $tags, Yii::$app->user->id);
+        $manager = Yii::createObject(CategoryManager::class);
+        $manager->saveForAccount($model, $tags, $identity);
 
         return $this->redirect(['account/dashboard', 'id' => $id]);
     }

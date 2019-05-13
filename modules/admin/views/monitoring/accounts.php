@@ -95,7 +95,7 @@ $formatter = Yii::$app->formatter;
                             ['sign' => false],
                         ],
                     ],
-                    's_tags',
+                    's_categories',
                     [
                         'attribute' => 'stats_updated_at',
                         'label' => 'Updated At',

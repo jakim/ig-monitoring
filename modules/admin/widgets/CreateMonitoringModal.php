@@ -9,8 +9,8 @@ namespace app\modules\admin\widgets;
 
 
 use app\components\ArrayHelper;
+use app\components\CategoryManager;
 use app\dictionaries\TrackerType;
-use app\models\Account;
 use app\models\Proxy;
 use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\widgets\base\ModalWidget;
@@ -24,7 +24,7 @@ class CreateMonitoringModal extends ModalWidget
     public $modalHeader = 'Create monitoring';
     public $modalToggleButton = ['label' => 'Create'];
 
-    protected static $tags;
+    protected static $categories;
     protected static $proxies;
 
     public function run()
@@ -38,15 +38,22 @@ class CreateMonitoringModal extends ModalWidget
         echo $this->render('create-monitoring', [
             'formAction' => ["monitoring/create-{$this->trackerType}"],
             'model' => $this->form,
-            'tags' => $this->getTagPairs(),
+            'categories' => $this->getCategories(),
             'proxies' => $this->getProxyPairs(),
         ]);
     }
 
-    protected function getTagPairs()
+    protected function getCategories()
     {
         if ($this->trackerType == TrackerType::ACCOUNT) {
-            return static::$tags = static::$tags ?? ArrayHelper::map(Account::usedTags(), 'name', 'name');
+            if (!isset(static::$categories)) {
+                $categoryManager = \Yii::createObject(CategoryManager::class);
+                /** @var \app\models\User $identity */
+                $identity = \Yii::$app->user->identity;
+                static::$categories = ArrayHelper::map($categoryManager->getForUser($identity), 'name', 'name');
+            }
+
+            return static::$categories;
         }
 
         return false;

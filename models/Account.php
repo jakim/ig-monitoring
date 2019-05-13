@@ -60,15 +60,6 @@ class Account extends \yii\db\ActiveRecord
 {
     public $occurs;
 
-    public static function usedTags()
-    {
-        return Tag::find()
-            ->distinct()
-            ->innerJoin('account_tag', 'tag.id=account_tag.tag_id')
-            ->orderBy('tag.slug ASC')
-            ->all();
-    }
-
     public function behaviors()
     {
         return ArrayHelper::merge(parent::behaviors(), [

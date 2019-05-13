@@ -9,6 +9,7 @@ namespace app\modules\admin\controllers;
 
 
 use app\components\AccountManager;
+use app\components\CategoryManager;
 use app\components\JobFactory;
 use app\components\stats\AccountDailyDiff;
 use app\components\stats\AccountMonthlyDiff;
@@ -118,10 +119,12 @@ class MonitoringController extends Controller
                     $job = JobFactory::createAccountUpdate($account);
                     $queue->push($job);
 
-                    $tags = array_filter((array)$form->tags);
-                    if ($tags) {
-                        $tagManager = Yii::createObject(TagManager::class);
-                        $tagManager->addToAccount($account, $tags, Yii::$app->user->id);
+                    $categories = array_filter((array)$form->categories);
+                    if ($categories) {
+                        /** @var \app\models\User $identity */
+                        $identity = Yii::$app->user->identity;
+                        $categoryManager = \Yii::createObject(CategoryManager::class);
+                        $categoryManager->addToAccount($account, $categories, $identity);
                     }
                 } else {
                     Yii::error('Validation error: ' . json_encode($account->errors), __METHOD__);
