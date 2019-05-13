@@ -17,8 +17,6 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 [FAQ](#faq)
 
-[PREMIUM SUPPORT](#free-version-premium-support)
-
 [Versions comparison](https://igmonitoring.com/versions-comparison)
 
 # Version
@@ -153,17 +151,6 @@ Why did you build two versions?
 What do I expect from this share?
 
 - New ideas would be great, feel free to create issue and PR. :)
-
-
-# Free Version PREMIUM SUPPORT
-
-If you do not know how to get into the installation, I can do it for you. As part of the support, I offer:
-- installation of a www server
-- database installation
-- script configuration
-- free, good ssl certificate (letsencrypt)
-- script modifications, according to requirements
-- other software integration 
 
 # Troubleshooting
 **Error: redirect_uri_mismatch**
