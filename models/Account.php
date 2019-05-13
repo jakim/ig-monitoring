@@ -24,8 +24,6 @@ use yii\helpers\ArrayHelper;
  * @property bool $monitoring
  * @property int $proxy_id
  * @property bool $disabled
- * @property int $accounts_monitoring_level
- * @property string $accounts_default_tags
  * @property bool $is_valid [tinyint(1)]
  * @property int $invalidation_type_id [int(11)]
  * @property int $invalidation_count [int(11)]
@@ -93,10 +91,9 @@ class Account extends \yii\db\ActiveRecord
     {
         return [
             [['username'], 'required'],
-            [['updated_at', 'created_at', 'accounts_default_tags', 'stats_updated_at', 'last_post_taken_at'], 'safe'],
+            [['updated_at', 'created_at', 'stats_updated_at', 'last_post_taken_at'], 'safe'],
             [['proxy_id', 'occurs', 'followed_by', 'follows', 'media'], 'integer'],
             [['er', 'avg_likes', 'avg_comments'], 'number'],
-            ['accounts_monitoring_level', 'integer', 'min' => 0],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', '!uid', 'business_category'], 'string', 'max' => 255],
             [['monitoring', 'disabled', 'is_valid', 'is_valid', 'is_business'], 'boolean'],
             [['username'], 'unique'],
@@ -122,7 +119,6 @@ class Account extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'monitoring' => 'Monitoring',
             'proxy_id' => 'Proxy ID',
-            'accounts_monitoring_level' => 'Accounts Monitoring Level',
             'er' => 'Engagement',
         ];
     }
@@ -131,8 +127,6 @@ class Account extends \yii\db\ActiveRecord
     {
         return [
             'name' => 'The name displayed in the lists, if empty, the \'username\' will be used.',
-            'accounts_monitoring_level' => 'Automatically monitors discovered accounts. Be careful.',
-            'accounts_default_tags' => 'Automatically tag discovered accounts. If not set, parent tags will be used.',
         ];
     }
 

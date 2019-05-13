@@ -44,34 +44,6 @@ class AccountManager extends Component
         return $account;
     }
 
-    /**
-     * @param \app\models\Account $parent
-     * @param array $accounts
-     *
-     * @deprecated
-     */
-    public function monitorRelatedAccounts(Account $parent, array $accounts)
-    {
-        foreach ($accounts as $account) {
-            if (is_string($account)) {
-                /** @var Account $account */
-                $account = $this->findOrCreate(['username' => $account], Account::class);
-                if ($account->disabled) {
-                    continue;
-                }
-            }
-            //calculation monitoring level
-            if ($parent->accounts_monitoring_level > 1) {
-                $level = $parent->accounts_monitoring_level - 1;
-                if ($level > $account->accounts_monitoring_level) {
-                    $account->accounts_monitoring_level = $level;
-                }
-            }
-
-            $this->startMonitoring($account, $parent->proxy_id);
-        }
-    }
-
     public function addToMedia(Media $media, array $usernames)
     {
         $this->saveUsernames($usernames);

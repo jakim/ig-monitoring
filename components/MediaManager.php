@@ -69,10 +69,6 @@ class MediaManager extends Component
 
             $manager = Yii::createObject(AccountManager::class);
             $manager->addToMedia($media, $usernames);
-
-            if ($account && $account->accounts_monitoring_level > 0) {
-                $manager->monitorRelatedAccounts($account, $usernames);
-            }
         }
 
         return true;

@@ -56,9 +56,6 @@ $formatter = Yii::$app->formatter;
                                     $model->invalidation_count
                                 );
                             }
-                            if ($model->accounts_monitoring_level) {
-                                $html[] = sprintf('<span class="fa fa-magic text-muted pull-right" title="monitoring level: %s"></span>', $model->accounts_monitoring_level);
-                            }
                             if ($model->disabled) {
                                 $html[] = '<span class="fa fa-exclamation-triangle text-danger pull-right" title="Not found."></span>';
                             }
