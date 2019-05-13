@@ -12,8 +12,7 @@ use app\components\http\Client;
 use app\components\http\ProxyManager;
 use app\components\instagram\TagScraper;
 use app\components\services\contracts\ServiceInterface;
-use app\components\TagManager;
-use app\components\TagUpdater;
+use app\components\updaters\TagUpdater;
 use app\dictionaries\TagInvalidationType;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -28,7 +27,10 @@ class TagFullUpdate implements ServiceInterface
     public function run()
     {
         $proxyManager = \Yii::createObject(ProxyManager::class);
-        $tagManager = \Yii::createObject(TagManager::class);
+        $tagUpdater = \Yii::createObject([
+            'class' => TagUpdater::class,
+            'tag' => $this->tag,
+        ]);
 
         try {
             $proxy = $proxyManager->reserve($this->tag);
@@ -43,17 +45,22 @@ class TagFullUpdate implements ServiceInterface
             $proxyManager->release($proxy);
             unset($proxy);
 
-            $updater = \Yii::createObject([
-                'class' => TagUpdater::class,
-                'tag' => $this->tag,
-            ]);
-            $updater->stats($tagData);
-            $tagManager->markAsValid($this->tag);
+            $tagUpdater
+                ->setIsValid()
+                ->setStats($tagData)
+                ->setNextStatsUpdate()
+                ->save();
 
         } catch (ClientException $exception) {
-            $tagManager->updateInvalidation($this->tag, TagInvalidationType::NOT_FOUND);
+            $tagUpdater
+                ->setIsInvalid(TagInvalidationType::NOT_FOUND)
+                ->setNextStatsUpdate(true)
+                ->save();
         } catch (RequestException $exception) {
-            $tagManager->updateInvalidation($this->tag, null);
+            $tagUpdater
+                ->setIsInvalid()
+                ->setNextStatsUpdate(true)
+                ->save();
         } finally {
             if (isset($proxy)) {
                 $proxyManager->release($proxy);

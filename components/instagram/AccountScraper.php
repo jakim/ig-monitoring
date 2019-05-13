@@ -36,6 +36,9 @@ class AccountScraper extends Scraper implements AccountScraperInterface
         $model->follows = $account->follows;
         $model->media = $account->media;
         $model->isPrivate = $account->isPrivate;
+        $model->isVerified = $account->isVerified;
+        $model->isBusiness = $account->isBusiness;
+        $model->businessCategory = $account->businessCategory;
 
         return $model;
     }

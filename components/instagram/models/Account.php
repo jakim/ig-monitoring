@@ -20,4 +20,7 @@ class Account
     public $follows;
     public $media;
     public $isPrivate;
+    public $isVerified;
+    public $isBusiness;
+    public $businessCategory;
 }

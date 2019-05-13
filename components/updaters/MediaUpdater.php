@@ -5,18 +5,19 @@
  * Date: 12.06.2018
  */
 
-namespace app\components;
+namespace app\components\updaters;
 
 
 use app\components\instagram\models\Post;
+use app\components\traits\SaveModelTrait;
 use app\models\Media;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\db\ActiveRecord;
-use yii\web\ServerErrorHttpException;
 
 class MediaUpdater extends Component
 {
+    use SaveModelTrait;
+
     /**
      * @var \app\models\Media
      */
@@ -30,27 +31,26 @@ class MediaUpdater extends Component
         }
     }
 
-    public function details(Post $post): Media
+    public function setDetails(Post $post)
     {
         $this->media->instagram_id = $post->id;
         $this->media->shortcode = $post->shortcode;
         $this->media->is_video = $post->isVideo;
         $this->media->caption = $post->caption;
-        $this->media->taken_at = (new \DateTime('@' . $post->takenAt))->format('Y-m-d H:i:s');
+        $this->media->taken_at = $this->getNormalizedTakenAt($post);
         $this->media->likes = $post->likes;
         $this->media->comments = $post->comments;
 
-        $this->saveModel($this->media);
-
-        return $this->media;
+        return $this;
     }
 
-    private function saveModel(ActiveRecord $model)
+    public function save()
     {
-        if (!$model->save()) {
-            throw new ServerErrorHttpException(sprintf('Validation: %s', json_encode($model->errors)));
-        }
+        $this->saveModel($this->media);
+    }
 
-        return true;
+    protected function getNormalizedTakenAt(Post $post): string
+    {
+        return (new \DateTime('@' . $post->takenAt))->format('Y-m-d H:i:s');
     }
 }

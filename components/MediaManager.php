@@ -9,6 +9,7 @@ namespace app\components;
 
 
 use app\components\traits\FindOrCreate;
+use app\components\updaters\MediaUpdater;
 use app\models\Account;
 use app\models\Media;
 use jakim\ig\Text;
@@ -28,7 +29,7 @@ class MediaManager extends Component
      * @param \app\components\instagram\models\Post[]
      * @throws \yii\base\InvalidConfigException
      */
-    public function saveForAccount(Account $account, array $posts)
+    public function addToAccount(Account $account, array $posts)
     {
         foreach ($posts as $post) {
             /** @var Media $media */
@@ -36,12 +37,13 @@ class MediaManager extends Component
                 'account_id' => $account->id,
                 'shortcode' => $post->shortcode,
             ], Media::class);
-            /** @var \app\components\MediaUpdater $updater */
+            /** @var \app\components\updaters\MediaUpdater $updater */
             $updater = \Yii::createObject([
                 'class' => MediaUpdater::class,
                 'media' => $media,
             ]);
-            $updater->details($post);
+            $updater->setDetails($post)
+                ->save();
 
             $this->saveRelatedData($media, $account);
         }
@@ -65,7 +67,7 @@ class MediaManager extends Component
             ArrayHelper::removeValue($usernames, $account->username);
 
             $manager = \Yii::createObject(AccountManager::class);
-            $manager->saveForMedia($media, $usernames);
+            $manager->addToMedia($media, $usernames);
 
             if ($account && $account->accounts_monitoring_level > 0) {
                 $manager->monitorRelatedAccounts($account, $usernames);

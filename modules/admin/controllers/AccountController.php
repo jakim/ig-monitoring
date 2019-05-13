@@ -7,6 +7,7 @@ use app\components\stats\AccountDaily;
 use app\components\stats\AccountDailyDiff;
 use app\components\stats\AccountMonthlyDiff;
 use app\components\TagManager;
+use app\components\updaters\AccountUpdater;
 use app\models\AccountNote;
 use app\models\Media;
 use app\models\Tag;
@@ -111,8 +112,14 @@ class AccountController extends Controller
                 $model->monitoring = 0;
                 $model->save();
             } elseif ($model->is_valid) {
-                $accountManager = Yii::createObject(AccountManager::class);
-                $accountManager->markAsValid($model, 1); // save model
+                $accountUpdater = Yii::createObject([
+                    'class' => AccountUpdater::class,
+                    'account' => $model,
+                ]);
+                $accountUpdater
+                    ->setIsValid()
+                    ->setNextStatsUpdate(null)
+                    ->save();
             } else {
                 $model->save();
             }

@@ -37,6 +37,10 @@ use yii\helpers\ArrayHelper;
  * @property string $avg_likes [decimal(19,4)]
  * @property string $avg_comments [decimal(19,4)]
  * @property string $stats_updated_at [datetime]
+ * @property bool $is_verified [tinyint(1)]
+ * @property bool $is_business [tinyint(1)]
+ * @property string $business_category [varchar(255)]
+ * @property string $last_post_taken_at [datetime]
  *
  * @property string $usernamePrefixed
  * @property string $displayName
@@ -100,12 +104,12 @@ class Account extends \yii\db\ActiveRecord
     {
         return [
             [['username'], 'required'],
-            [['updated_at', 'created_at', 'accounts_default_tags', 'stats_updated_at'], 'safe'],
+            [['updated_at', 'created_at', 'accounts_default_tags', 'stats_updated_at', 'last_post_taken_at'], 'safe'],
             [['proxy_id', 'proxy_tag_id', 'occurs', 'followed_by', 'follows', 'media'], 'integer'],
             [['er', 'avg_likes', 'avg_comments'], 'number'],
             ['accounts_monitoring_level', 'integer', 'min' => 0],
-            [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', '!uid'], 'string', 'max' => 255],
-            [['monitoring', 'disabled', 'is_valid'], 'boolean'],
+            [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', '!uid', 'business_category'], 'string', 'max' => 255],
+            [['monitoring', 'disabled', 'is_valid', 'is_valid', 'is_business'], 'boolean'],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
             [['proxy_tag_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tag::class, 'targetAttribute' => ['proxy_tag_id' => 'id']],

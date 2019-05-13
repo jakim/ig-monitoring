@@ -8,17 +8,17 @@
 namespace app\components\services;
 
 
-use app\components\AccountManager;
-use app\components\AccountUpdater;
 use app\components\http\Client;
 use app\components\http\ProxyManager;
 use app\components\instagram\AccountScraper;
 use app\components\instagram\models\Account;
 use app\components\MediaManager;
 use app\components\services\contracts\ServiceInterface;
+use app\components\updaters\AccountUpdater;
 use app\dictionaries\AccountInvalidationType;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use Yii;
 use yii\base\BaseObject;
 use yii\web\NotFoundHttpException;
 
@@ -31,14 +31,17 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
 
     public function run()
     {
-        $proxyManager = \Yii::createObject(ProxyManager::class);
-        $accountManager = \Yii::createObject(AccountManager::class);
+        $proxyManager = Yii::createObject(ProxyManager::class);
+        $accountUpdater = Yii::createObject([
+            'class' => AccountUpdater::class,
+            'account' => $this->account,
+        ]);
 
         try {
             $proxy = $proxyManager->reserve($this->account);
             $httpClient = Client::factory($proxy, [], 3600);
 
-            $scraper = \Yii::createObject(AccountScraper::class, [
+            $scraper = Yii::createObject(AccountScraper::class, [
                 $httpClient,
             ]);
 
@@ -50,16 +53,34 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
 
 
             if ($accountData->isPrivate) {
-                $accountManager->updateInvalidation($this->account, AccountInvalidationType::IS_PRIVATE);
+                $accountUpdater
+                    ->setIsInValid(AccountInvalidationType::IS_PRIVATE)
+                    ->setNextStatsUpdate(true)
+                    ->save();
             } else {
-                $this->updateAccount($accountData, $posts);
-                $accountManager->markAsValid($this->account);
+                $accountUpdater
+                    ->setDetails($accountData)
+                    ->setIdents($accountData)
+                    ->setIsValid()
+                    ->setStats($accountData, $posts)
+                    ->setNextStatsUpdate()
+                    ->save();
+
+                $mediaManager = Yii::createObject(MediaManager::class);
+                $mediaManager->addToAccount($this->account, $posts);
+
             }
 
         } catch (NotFoundHttpException $exception) {
-            $accountManager->updateInvalidation($this->account, AccountInvalidationType::NOT_FOUND);
+            $accountUpdater
+                ->setIsInValid(AccountInvalidationType::NOT_FOUND)
+                ->setNextStatsUpdate(true)
+                ->save();
         } catch (RequestException $exception) {
-            $accountManager->updateInvalidation($this->account, null);
+            $accountUpdater
+                ->setIsInValid()
+                ->setNextStatsUpdate(true)
+                ->save();
         } finally {
             if (isset($proxy)) {
                 $proxyManager->release($proxy);
@@ -82,7 +103,7 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
                     continue;
                 }
             } catch (ClientException $exception) {
-                \Yii::error($exception->getMessage(), __METHOD__);
+                Yii::error($exception->getMessage(), __METHOD__);
                 continue;
             }
             break;
@@ -95,24 +116,4 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
         return $accountData;
     }
 
-    private function updateAccount($accountData, $posts): void
-    {
-        $updater = \Yii::createObject([
-            'class' => AccountUpdater::class,
-            'account' => $this->account,
-        ]);
-
-        $transaction = \Yii::$app->db->beginTransaction();
-        try {
-            $updater->details($accountData);
-            $updater->stats($accountData, $posts);
-            $transaction->commit();
-        } catch (\Throwable $exception) {
-            $transaction->rollBack();
-            throw  $exception;
-        }
-
-        $mediaManager = \Yii::createObject(MediaManager::class);
-        $mediaManager->saveForAccount($this->account, $posts);
-    }
 }

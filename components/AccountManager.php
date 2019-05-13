@@ -8,54 +8,39 @@
 namespace app\components;
 
 
+use app\components\traits\BatchInsertCommand;
 use app\components\traits\FindOrCreate;
+use app\components\updaters\AccountUpdater;
 use app\models\Account;
 use app\models\AccountTag;
 use app\models\Media;
 use app\models\MediaAccount;
+use DateTime;
+use Yii;
 use yii\base\Component;
-use yii\db\Expression;
 use yii\helpers\StringHelper;
 
 class AccountManager extends Component
 {
-    use FindOrCreate;
+    use FindOrCreate, BatchInsertCommand;
 
-    /**
-     * @param \app\models\Account $account
-     * @param int $nextUpdateInterval In hours from now.
-     */
-    public function markAsValid(Account $account, int $nextUpdateInterval = 24)
+    public function startMonitoring($account, $proxyId = null, $proxyTagId = null): Account
     {
-        $account->invalidation_count = 0;
-        $account->is_valid = 1;
-        $account->invalidation_type_id = null;
-
-        $this->setDateOfNextStatsUpdate($account, $nextUpdateInterval);
-    }
-
-    public function updateInvalidation(Account $account, ?int $invalidationType)
-    {
-        $account->invalidation_count = (int)$account->invalidation_count + 1;
-        $account->is_valid = 0;
-        $account->invalidation_type_id = $invalidationType;
-        $interval = 1;
-        for ($i = 1; $i <= $account->invalidation_count; $i++) {
-            $interval *= $i;
+        if (is_string($account)) {
+            /** @var Account $account */
+            $account = $this->findOrCreate(['username' => $account], Account::class);
         }
-        $this->setDateOfNextStatsUpdate($account, $interval);
-    }
 
-    /**
-     * @param \app\models\Account $account
-     * @param int $interval In hours from now.
-     */
-    public function setDateOfNextStatsUpdate(Account $account, int $interval = 24)
-    {
-        $account->update_stats_after = new Expression('DATE_ADD(NOW(), INTERVAL :interval HOUR)', [
-            'interval' => $interval,
+        $accountUpdater = Yii::createObject([
+            'class' => AccountUpdater::class,
+            'account' => $account,
         ]);
-        $account->save();
+        $accountUpdater
+            ->setMonitoring($proxyId, $proxyTagId)
+            ->setIsValid()
+            ->save();
+
+        return $account;
     }
 
     public function monitorRelatedAccounts(Account $parent, array $accounts)
@@ -76,7 +61,7 @@ class AccountManager extends Component
                 }
             }
 
-            $this->monitor($account, $parent->proxy_id, $parent->proxy_tag_id);
+            $this->startMonitoring($account, $parent->proxy_id, $parent->proxy_tag_id);
 
             $tags = empty($parent->accounts_default_tags) ? $parent->tags : StringHelper::explode($parent->accounts_default_tags, ',', true, true);
             $tagManager = \Yii::createObject(TagManager::class);
@@ -84,25 +69,13 @@ class AccountManager extends Component
         }
     }
 
-    public function monitor($account, $proxyId = null, $proxyTagId = null): Account
-    {
-        if (\is_string($account)) {
-            /** @var Account $account */
-            $account = $this->findOrCreate(['username' => $account], Account::class);
-        }
-
-        $account->proxy_id = $proxyId;
-        $account->proxy_tag_id = $proxyTagId;
-        $account->monitoring = 1;
-
-        $account->save();
-
-        return $account;
-    }
-
-    public function saveForMedia(Media $media, array $usernames)
+    public function addToMedia(Media $media, array $usernames)
     {
         $this->saveUsernames($usernames);
+
+        $accounts = Account::find()
+            ->andWhere(['username' => $usernames])
+            ->column();
 
         $rows = array_map(function ($id) use ($media) {
             return [
@@ -110,14 +83,9 @@ class AccountManager extends Component
                 $id,
                 $media->taken_at,
             ];
-        }, Account::find()
-            ->andWhere(['username' => $usernames])
-            ->column());
+        }, $accounts);
 
-        $sql = \Yii::$app->db->queryBuilder
-            ->batchInsert(MediaAccount::tableName(), ['media_id', 'account_id', 'created_at'], $rows);
-        $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
-        \Yii::$app->db->createCommand($sql)
+        $this->batchInsertIgnoreCommand(MediaAccount::tableName(), ['media_id', 'account_id', 'created_at'], $rows)
             ->execute();
     }
 
@@ -127,7 +95,7 @@ class AccountManager extends Component
      */
     public function saveUsernames(array $usernames)
     {
-        $createdAt = (new \DateTime())->format('Y-m-d H:i:s');
+        $createdAt = (new DateTime())->format('Y-m-d H:i:s');
         $rows = array_map(function ($username) use ($createdAt) {
             return [
                 $username,
@@ -136,10 +104,7 @@ class AccountManager extends Component
             ];
         }, $usernames);
 
-        $sql = \Yii::$app->db->getQueryBuilder()
-            ->batchInsert(Account::tableName(), ['username', 'updated_at', 'created_at'], $rows);
-        $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
-        \Yii::$app->db->createCommand($sql)
+        $this->batchInsertIgnoreCommand(Account::tableName(), ['username', 'updated_at', 'created_at'], $rows)
             ->execute();
     }
 

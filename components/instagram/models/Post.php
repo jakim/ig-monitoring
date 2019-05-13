@@ -18,4 +18,11 @@ class Post
     public $takenAt;
     public $likes;
     public $comments;
+
+    // related
+    /**
+     * @var \app\components\instagram\models\Account
+     */
+    public $account;
+
 }

@@ -24,6 +24,13 @@ use yii\helpers\ArrayHelper;
  * @property int $invalidation_count
  * @property string $update_stats_after
  * @property bool $disabled
+ * @property int $likes [int(11)]
+ * @property int $min_likes [int(11)]
+ * @property int $max_likes [int(11)]
+ * @property int $comments [int(11)]
+ * @property int $min_comments [int(11)]
+ * @property int $max_comments [int(11)]
+ * @property string $stats_updated_at [datetime]
  *
  * @property string $namePrefixed
  *
@@ -73,9 +80,9 @@ class Tag extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['monitoring', 'proxy_id', 'occurs', 'invalidation_type_id', 'invalidation_count'], 'integer'],
+            [['monitoring', 'proxy_id', 'occurs', 'invalidation_type_id', 'invalidation_count', 'media', 'likes', 'min_likes', 'max_likes', 'comments', 'min_comments', 'max_comments'], 'integer'],
             [['is_valid', 'disabled'], 'boolean'],
-            [['updated_at', 'created_at', 'update_stats_after'], 'safe'],
+            [['updated_at', 'created_at', 'update_stats_after', 'stats_updated_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['name'], 'unique'],
             [['invalidation_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => TagInvalidationType::class, 'targetAttribute' => ['invalidation_type_id' => 'id']],
