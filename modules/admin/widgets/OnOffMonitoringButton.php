@@ -61,9 +61,9 @@ class OnOffMonitoringButton extends Widget
 
         $form = $this->form ?: new MonitoringForm([
             'scenario' => $this->trackerType,
-            'names' => ArrayHelper::getValue($this->model, $this->trackerType == TrackerType::ACCOUNT ? 'username' : 'name'),
+            'names' => $this->getIdent(),
             'proxy_id' => $this->model->proxy_id,
-            'categories' => $this->trackerType == TrackerType::ACCOUNT ? ArrayHelper::getColumn($this->model->tags, 'name') : null,
+            'categories' => $this->trackerType == TrackerType::ACCOUNT ? ArrayHelper::getColumn($this->model->categories, 'name') : null,
         ]);
 
         return CreateMonitoringModal::widget([
@@ -74,5 +74,20 @@ class OnOffMonitoringButton extends Widget
                 'label' => $this->startBtnLabel,
             ],
         ]);
+    }
+
+    protected function getIdent(): string
+    {
+        switch ($this->trackerType) {
+            case TrackerType::ACCOUNT:
+                $ident = 'username';
+                break;
+            case TrackerType::TAG:
+            default:
+                $ident = 'name';
+                break;
+        }
+
+        return ArrayHelper::getValue($this->model, $ident);
     }
 }

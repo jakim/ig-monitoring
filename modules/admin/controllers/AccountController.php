@@ -277,9 +277,15 @@ class AccountController extends Controller
             return $csv->export()->send(sprintf('%s_media-accounts_%s.csv', mb_strtolower($model->username), date('Y-m-d')));
         }
 
+        /** @var \app\models\User $identity */
+        $identity = Yii::$app->user->identity;
+        $categoryManager = Yii::createObject(CategoryManager::class);
+        $categories = $categoryManager->getForUserAccounts($identity, $model);
+
         return $this->render('media-accounts', [
             'model' => $model,
             'dataProvider' => $dataProvider,
+            'categories' => $categories,
         ]);
     }
 

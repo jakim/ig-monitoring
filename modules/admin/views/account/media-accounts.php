@@ -2,13 +2,18 @@
 
 use app\components\ArrayHelper;
 use app\models\Account;
+use app\models\Category;
 use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\widgets\OnOffMonitoringButton;
 use jakim\ig\Url;
+use yii\grid\GridView;
+use yii\grid\SerialColumn;
 use yii\helpers\Html;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Account */
+/* @var $categories app\models\Category[] */
 
 $this->title = "{$model->usernamePrefixed} :: Media Accounts";
 $this->params['breadcrumbs'][] = ['label' => 'Monitoring', 'url' => ['monitoring/accounts']];
@@ -27,12 +32,12 @@ $formatter = Yii::$app->formatter;
                     <?= $this->render('_tabs', ['model' => $model]) ?>
                     <div class="tab-content">
                         <p>
-                            <?= \yii\helpers\Html::a('CSV Export', \yii\helpers\Url::current(['export' => 1])) ?>
+                            <?= Html::a('CSV Export', \yii\helpers\Url::current(['export' => 1])) ?>
                         </p>
-                        <?= \yii\grid\GridView::widget([
+                        <?= GridView::widget([
                             'dataProvider' => $dataProvider,
                             'columns' => [
-                                ['class' => \yii\grid\SerialColumn::class],
+                                ['class' => SerialColumn::class],
                                 [
                                     'attribute' => 'username',
                                     'format' => 'raw',
@@ -63,18 +68,18 @@ $formatter = Yii::$app->formatter;
                                 'occurs',
                                 [
                                     'format' => 'raw',
-                                    'value' => function (Account $account) use ($model) {
+                                    'value' => function (Account $account) use ($model, $categories) {
                                         return OnOffMonitoringButton::widget([
                                             'model' => $account,
                                             'form' => new MonitoringForm([
 //                                                'scenario' => 'account',
                                                 'names' => $account->username,
-                                                'categories' => ArrayHelper::getColumn($model->tags, 'name'),
+                                                'categories' => ArrayHelper::getColumn($categories, 'name'),
                                                 'proxy_id' => $model->proxy_id,
                                             ]),
                                             'btnCssClass' => 'btn btn-xs',
                                             'offAjaxOptions' => [
-                                                'success' => new \yii\web\JsExpression('function(){location.reload();}'),
+                                                'success' => new JsExpression('function(){location.reload();}'),
                                             ],
                                         ]);
                                     },

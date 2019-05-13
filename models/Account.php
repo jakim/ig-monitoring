@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\UidAttributeBehavior;
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -46,15 +47,15 @@ use yii\helpers\ArrayHelper;
  *
  * @property AccountInvalidationType $invalidationType
  * @property Proxy $proxy
+ * @property AccountCategory[] $accountCategories
+ * @property Category[] $categories
  * @property AccountNote[] $accountNotes
  * @property AccountStats[] $accountStats
- * @property AccountTag[] $accountTags
- * @property Tag[] $tags
  * @property Media[] $media
  * @property MediaAccount[] $mediaAccounts
  * @property \app\models\Account[] $accounts
  */
-class Account extends \yii\db\ActiveRecord
+class Account extends ActiveRecord
 {
     public $occurs;
 
@@ -149,6 +150,22 @@ class Account extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAccountCategories()
+    {
+        return $this->hasMany(AccountCategory::class, ['account_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategories()
+    {
+        return $this->hasMany(Category::class, ['id' => 'category_id'])->viaTable('account_category', ['account_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAccountNotes()
     {
         return $this->hasMany(AccountNote::class, ['account_id' => 'id']);
@@ -170,22 +187,6 @@ class Account extends \yii\db\ActiveRecord
         return $this->hasOne(AccountStats::class, ['account_id' => 'id'])
             ->orderBy('account_stats.id DESC')
             ->limit(1);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAccountTags()
-    {
-        return $this->hasMany(AccountTag::class, ['account_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTags()
-    {
-        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->via('accountTags');
     }
 
     /**
