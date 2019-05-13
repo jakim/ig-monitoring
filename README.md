@@ -22,7 +22,8 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 [Versions comparison](https://igmonitoring.com/versions-comparison)
 
 # Version
-BETA stage.  **Use at your own risk.**
+A relatively stable development version, before beta1 changes.
+**Use at your own risk.**
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/9bbae6907e6cbf039950/maintainability)](https://codeclimate.com/github/jakim/ig-monitoring/maintainability)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jakim/ig-monitoring/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jakim/ig-monitoring/?branch=master)
