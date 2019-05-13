@@ -2,10 +2,8 @@
 
 namespace app\modules\admin\models;
 
-use app\models\ProxyTag;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use yii\helpers\Inflector;
 
 /**
  * ProxySearch represents the model behind the search form of `app\models\Proxy`.
@@ -66,15 +64,6 @@ class ProxySearch extends Proxy
             ->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'password', $this->password])
             ->andFilterWhere(['active' => $this->active]);
-
-        if ($this->tagString) {
-            $proxyIds = ProxyTag::find()
-                ->select('proxy_tag.proxy_id')
-                ->innerJoinWith('tag')
-                ->andFilterWhere(['like', 'tag.slug', Inflector::slug($this->tagString)])
-                ->column();
-            $query->andWhere(['id' => $proxyIds]);
-        }
 
         return $dataProvider;
     }

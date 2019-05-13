@@ -14,7 +14,6 @@ use app\models\Account;
 use app\models\Proxy;
 use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\widgets\base\ModalWidget;
-use yii\helpers\Inflector;
 
 class CreateMonitoringModal extends ModalWidget
 {
@@ -27,7 +26,6 @@ class CreateMonitoringModal extends ModalWidget
 
     protected static $tags;
     protected static $proxies;
-    protected static $proxyTags;
 
     public function run()
     {
@@ -42,7 +40,6 @@ class CreateMonitoringModal extends ModalWidget
             'model' => $this->form,
             'tags' => $this->getTagPairs(),
             'proxies' => $this->getProxyPairs(),
-            'proxyTags' => $this->getProxyTagPairs(),
         ]);
     }
 
@@ -60,21 +57,9 @@ class CreateMonitoringModal extends ModalWidget
      */
     protected function getProxyPairs(): array
     {
-        static::$proxies = static::$proxies ?? Proxy::find()->joinWith('tags')->active()->all();
+        static::$proxies = static::$proxies ?? Proxy::find()->active()->all();
 
-        return ArrayHelper::map(static::$proxies, 'id', function (Proxy $model) {
-            $tags = ArrayHelper::getColumn($model->tags, 'name');
-
-            return $model->ip . ($tags ? ' # ' . implode(',', $tags) : '');
-        });
-    }
-
-    /**
-     * @return array
-     */
-    protected function getProxyTagPairs(): array
-    {
-        return static::$proxyTags = static::$proxyTags ?? ArrayHelper::map(Proxy::usedTags(), 'id', 'name');
+        return ArrayHelper::map(static::$proxies, 'id', 'ip');
     }
 
 }

@@ -9,7 +9,6 @@ namespace app\components\http;
 
 
 use app\models\Proxy;
-use app\models\ProxyTag;
 use yii\base\Component;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -67,12 +66,6 @@ class ProxyManager extends Component
 
         if ($model->proxy_id) {
             $andWhere[] = ['id' => $model->proxy_id];
-        } elseif ($model->proxy_tag_id) {
-            $proxyIds = ProxyTag::find()
-                ->select('proxy_id')
-                ->andWhere(['tag_id' => $model->proxy_tag_id])
-                ->column();
-            $andWhere[] = ['id' => $proxyIds];
         }
 
         return $andWhere;

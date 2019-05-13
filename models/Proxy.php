@@ -3,7 +3,6 @@
 namespace app\models;
 
 use app\components\ArrayHelper;
-use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -21,7 +20,6 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property string $curlString
  *
- * @property ProxyTag[] $proxyTags
  * @property Tag[] $tags
  */
 class Proxy extends \yii\db\ActiveRecord
@@ -90,14 +88,6 @@ class Proxy extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProxyTags()
-    {
-        return $this->hasMany(ProxyTag::class, ['proxy_id' => 'id']);
     }
 
     /**

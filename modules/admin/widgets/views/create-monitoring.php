@@ -16,7 +16,6 @@ use yii\widgets\ActiveForm;
  * @var string $title
  * @var array|false $tags
  * @var array $proxies
- * @var array $proxyTags
  */
 
 $form = ActiveForm::begin([
@@ -52,17 +51,6 @@ if ($tags !== false) {
                 'options' => [
                     'id' => "proxy_id_{$form->getId()}",
                     'placeholder' => 'Select dedicated proxy...',
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                ],
-            ])->label(false) ?>
-            <div class="form-group-sm">or</div>
-            <?= $form->field($model, 'proxy_tag_id')->widget(Select2::class, [
-                'data' => $proxyTags,
-                'options' => [
-                    'id' => "proxy_tag_id_{$form->getId()}",
-                    'placeholder' => 'Select proxy tag...',
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,

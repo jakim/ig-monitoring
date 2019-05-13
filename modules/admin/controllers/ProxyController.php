@@ -3,15 +3,14 @@
 namespace app\modules\admin\controllers;
 
 use app\components\ArrayHelper;
-use app\models\ProxyTag;
 use app\modules\admin\models\Proxy;
+use app\modules\admin\models\ProxySearch;
 use app\modules\admin\models\Tag;
 use Yii;
-use app\modules\admin\models\ProxySearch;
+use yii\filters\VerbFilter;
 use yii\helpers\Inflector;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ProxyController implements the CRUD actions for Proxy model.
@@ -62,10 +61,6 @@ class ProxyController extends Controller
         $model->loadDefaultValues();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if ($model->tagString) {
-                $this->saveTags($model);
-            }
-
             return $this->redirect(['proxy/index']);
         }
 
@@ -88,15 +83,8 @@ class ProxyController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            ProxyTag::deleteAll(['proxy_id' => $model->id]);
-            if ($model->tagString) {
-                $this->saveTags($model);
-            }
-
             return $this->redirect(['proxy/index']);
         }
-
-        $model->tagString = ArrayHelper::getColumn($model->getTags()->all(), 'name');
 
         return $this->render('update', [
             'model' => $model,
@@ -136,19 +124,6 @@ class ProxyController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    protected function saveTags(Proxy $model): void
-    {
-        foreach ($model->tagString as $name) {
-            $tag = Tag::findOne(['slug' => Inflector::slug($name)]);
-            if ($tag === null) {
-                $tag = new Tag(['name' => $name]);
-            }
-            if ($tag->save()) {
-                $model->link('tags', $tag);
-            }
-        }
     }
 
     /**
