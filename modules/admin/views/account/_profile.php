@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\admin\widgets\AccountProfileBox;
 use jakim\ig\Url;
 use yii\helpers\Html;
 use app\modules\admin\widgets\InvalidAccountAlert;
@@ -25,19 +26,9 @@ $formatter = Yii::$app->formatter;
 
 
     <div class="box-body box-profile">
-        <?php if ($model->profile_pic_url): ?>
-            <?= Html::img($model->profile_pic_url, ['class' => 'profile-user-img img-responsive img-circle']) ?>
-        <?php endif; ?>
-        <h3 class="profile-username text-center">
-            <?= Html::encode($model->displayName) ?>
-            <?= Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']) ?>
-        </h3>
-        <p class="text-muted text-center">
-            <?php if ($model->name): ?>
-                <?= Html::encode($model->usernamePrefixed) ?><br>
-            <?php endif; ?>
-            <?= Html::encode($model->full_name) ?>
-        </p>
+        <?= AccountProfileBox::widget([
+            'model' => $model,
+        ]) ?>
         <?php if ($model->stats_updated_at): ?>
             <ul class="list-group list-group-unbordered">
                 <li class="list-group-item">
@@ -65,11 +56,19 @@ $formatter = Yii::$app->formatter;
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <b><?= $model->getAttributeLabel('updated_at') ?></b>
+                    <b><?= $model->getAttributeLabel('stats_updated_at') ?></b>
                     <a class="pull-right">
-                        <?= $formatter->asDatetime($model->stats_updated_at) ?>
+                        <?= $formatter->asDate($model->stats_updated_at) ?>
                     </a>
                 </li>
+                <?php if ($model->last_post_taken_at): ?>
+                    <li class="list-group-item">
+                        <b><?= $model->getAttributeLabel('last_post_taken_at') ?></b>
+                        <a class="pull-right">
+                            <?= $formatter->asDate($model->last_post_taken_at) ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
             </ul>
         <?php endif; ?>
         <?= OnOffMonitoringButton::widget([

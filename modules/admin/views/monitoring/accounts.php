@@ -1,11 +1,11 @@
 <?php
 
-use jakim\ig\Url;
+use app\modules\admin\components\grid\AccountColumn;
 use app\modules\admin\components\grid\StatsColumn;
-use yii\helpers\Html;
-use yii\grid\GridView;
 use app\modules\admin\widgets\CreateMonitoringModal;
 use app\modules\admin\widgets\favorites\AddToModal;
+use yii\grid\GridView;
+use yii\grid\SerialColumn;
 
 /**
  * @var yii\web\View $this
@@ -41,27 +41,12 @@ $formatter = Yii::$app->formatter;
                     'class' => 'text-center empty',
                 ],
                 'columns' => [
-                    ['class' => \yii\grid\SerialColumn::class],
+                    ['class' => SerialColumn::class],
                     [
+                        'class' => AccountColumn::class,
                         'attribute' => 'username',
-                        'content' => function (\app\models\Account $model) {
-                            $html = [];
-                            $html[] = Html::a($model->displayName, ['account/dashboard', 'id' => $model->id]);
-                            $html[] = Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
-
-                            if (!$model->is_valid) {
-                                $html[] = sprintf(
-                                    '<span class="fa fa-exclamation-triangle text-danger pull-right" data-toggle="tooltip" data-placement="top"  title="%s, attempts: %s"></span>',
-                                    \app\dictionaries\AccountInvalidationType::getLabel($model->invalidation_type_id, 'Unknown reason'),
-                                    $model->invalidation_count
-                                );
-                            }
-                            if ($model->disabled) {
-                                $html[] = '<span class="fa fa-exclamation-triangle text-danger pull-right" title="Not found."></span>';
-                            }
-
-                            return implode(" \n", $html);
-                        },
+                        'displayDashboardLink' => true,
+                        'visible' => true,
                     ],
                     [
                         'class' => StatsColumn::class,
