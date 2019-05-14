@@ -1,5 +1,9 @@
 <?php
 
+use app\components\Formatter;
+use app\models\User;
+use app\modules\admin\Module;
+
 date_default_timezone_set('UTC');
 
 $params = require __DIR__ . '/params.php';
@@ -18,15 +22,12 @@ $config = [
     'defaultRoute' => '/admin/monitoring/accounts',
     'modules' => [
         'admin' => [
-            'class' => \app\modules\admin\Module::class,
-        ],
-        'v1' => [
-            'class' => \app\modules\api\v1\Module::class,
+            'class' => Module::class,
         ],
     ],
     'components' => [
         'queue' => require __DIR__ . '/queue.php',
-        'formatter' => \app\components\Formatter::class,
+        'formatter' => Formatter::class,
         'authClientCollection' => require __DIR__ . '/authClientCollection.php',
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -34,7 +35,7 @@ $config = [
         ],
         'cache' => require __DIR__ . '/cache.php',
         'user' => [
-            'identityClass' => \app\models\User::class,
+            'identityClass' => User::class,
             'loginUrl' => ['/admin/auth/login'],
         ],
         'errorHandler' => [
@@ -63,12 +64,6 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                // api
-                [
-                    'class' => \yii\rest\UrlRule::class,
-                    'controller' => ['v1/account'],
-                    'only' => ['create', 'index'],
-                ],
             ],
         ],
     ],
