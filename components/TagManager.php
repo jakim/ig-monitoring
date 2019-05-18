@@ -8,8 +8,8 @@
 namespace app\components;
 
 
-use app\components\traits\BatchInsertCommand;
-use app\components\traits\FindOrCreate;
+use app\components\traits\BatchInsertCommandTrait;
+use app\components\traits\FindOrCreateTrait;
 use app\components\updaters\TagUpdater;
 use app\models\Media;
 use app\models\MediaTag;
@@ -20,7 +20,7 @@ use yii\helpers\Inflector;
 
 class TagManager extends Component
 {
-    use FindOrCreate, BatchInsertCommand;
+    use FindOrCreateTrait, BatchInsertCommandTrait;
 
     public function startMonitoring(string $name, $proxyId = null): Tag
     {

@@ -1,7 +1,7 @@
 <?php
 
 use app\dictionaries\TagInvalidationType;
-use app\modules\admin\components\grid\StatsColumn;
+use app\modules\admin\components\grid\OldStatsColumn;
 use jakim\ig\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -65,49 +65,49 @@ $this->params['breadcrumbs'][] = 'Tags';
                         },
                     ],
                     [
-                        'class' => StatsColumn::class,
+                        'class' => OldStatsColumn::class,
                         'statsAttribute' => 'media',
                         'attribute' => 'ts_media',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                     ],
                     [
-                        'class' => StatsColumn::class,
+                        'class' => OldStatsColumn::class,
                         'statsAttribute' => 'likes',
                         'attribute' => 'ts_likes',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                     ],
                     [
-                        'class' => StatsColumn::class,
+                        'class' => OldStatsColumn::class,
                         'statsAttribute' => 'comments',
                         'attribute' => 'ts_comments',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                     ],
                     [
-                        'class' => StatsColumn::class,
+                        'class' => OldStatsColumn::class,
                         'statsAttribute' => 'min_likes',
                         'attribute' => 'ts_min_likes',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                     ],
                     [
-                        'class' => StatsColumn::class,
+                        'class' => OldStatsColumn::class,
                         'statsAttribute' => 'max_likes',
                         'attribute' => 'ts_max_likes',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                     ],
                     [
-                        'class' => StatsColumn::class,
+                        'class' => OldStatsColumn::class,
                         'statsAttribute' => 'min_comments',
                         'attribute' => 'ts_min_comments',
                         'dailyDiff' => $dailyDiff,
                         'monthlyDiff' => $monthlyDiff,
                     ],
                     [
-                        'class' => StatsColumn::class,
+                        'class' => OldStatsColumn::class,
                         'statsAttribute' => 'max_comments',
                         'attribute' => 'ts_max_comments',
                         'dailyDiff' => $dailyDiff,

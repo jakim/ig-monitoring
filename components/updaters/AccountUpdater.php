@@ -9,9 +9,9 @@ namespace app\components\updaters;
 
 
 use app\components\instagram\models\Account;
-use app\components\traits\NextUpdateCalculator;
+use app\components\traits\NextUpdateCalculatorTrait;
 use app\components\traits\SaveModelTrait;
-use app\components\traits\SetAccount;
+use app\components\traits\SetAccountTrait;
 use app\models\AccountStats;
 use DateTime;
 use Throwable;
@@ -22,7 +22,7 @@ use function count;
 
 class AccountUpdater extends Component
 {
-    use SaveModelTrait, SetAccount, NextUpdateCalculator;
+    use SaveModelTrait, SetAccountTrait, NextUpdateCalculatorTrait;
 
     private $postStats;
 

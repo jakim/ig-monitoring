@@ -8,7 +8,7 @@
 namespace app\components;
 
 
-use app\components\traits\FindOrCreate;
+use app\components\traits\FindOrCreateTrait;
 use app\components\updaters\MediaUpdater;
 use app\models\Account;
 use app\models\Media;
@@ -18,7 +18,7 @@ use yii\base\Component;
 
 class MediaManager extends Component
 {
-    use FindOrCreate;
+    use FindOrCreateTrait;
 
     /**
      * @var \app\models\Account

@@ -10,7 +10,7 @@ namespace app\components\traits;
 
 use yii\db\ActiveRecord;
 
-trait FindOrCreate
+trait FindOrCreateTrait
 {
     public function findOrCreate(array $conditions, string $class): ActiveRecord
     {

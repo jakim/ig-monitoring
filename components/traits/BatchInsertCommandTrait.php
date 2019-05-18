@@ -9,7 +9,7 @@ namespace app\components\traits;
 
 
 
-trait BatchInsertCommand
+trait BatchInsertCommandTrait
 {
     /**
      * @param string $table

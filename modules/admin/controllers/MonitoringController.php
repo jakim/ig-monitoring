@@ -11,8 +11,7 @@ namespace app\modules\admin\controllers;
 use app\components\AccountManager;
 use app\components\CategoryManager;
 use app\components\JobFactory;
-use app\components\stats\AccountDailyDiff;
-use app\components\stats\AccountMonthlyDiff;
+use app\components\stats\diffs\MultiAccountsDiff;
 use app\components\stats\TagDailyDiff;
 use app\components\stats\TagMonthlyDiff;
 use app\components\TagManager;
@@ -22,6 +21,7 @@ use app\models\Tag;
 use app\modules\admin\models\AccountSearch;
 use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\models\TagSearch;
+use Carbon\Carbon;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\StringHelper;
@@ -51,17 +51,28 @@ class MonitoringController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['account.monitoring' => 1]);
 
-        $dailyDiff = Yii::createObject([
-            'class' => AccountDailyDiff::class,
-            'models' => $dataProvider->models,
-        ]);
-        $dailyDiff->initLastDiff();
+        $statsAttributes = [
+            'followed_by',
+            'follows',
+            'media',
+            'er',
+        ];
 
-        $monthlyDiff = Yii::createObject([
-            'class' => AccountMonthlyDiff::class,
-            'models' => $dataProvider->models,
+        $dailyDiff = \Yii::createObject([
+            'class' => MultiAccountsDiff::class,
+            'accounts' => $dataProvider->models,
+            'from' => Carbon::yesterday()->subDay(),
+            'to' => Carbon::yesterday(),
+            'statsAttributes' => $statsAttributes,
         ]);
-        $monthlyDiff->initLastDiff();
+
+        $monthlyDiff = \Yii::createObject([
+            'class' => MultiAccountsDiff::class,
+            'accounts' => $dataProvider->models,
+            'from' => Carbon::yesterday()->subMonth()->endOfMonth(),
+            'to' => Carbon::yesterday(),
+            'statsAttributes' => $statsAttributes,
+        ]);
 
         return $this->render('accounts', [
             'searchModel' => $searchModel,

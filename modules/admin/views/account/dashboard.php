@@ -1,5 +1,15 @@
 <?php
 
+use app\components\stats\diffs\AccountDiff;
+use app\components\visualizations\dataproviders\AccountChangesDataProvider;
+use app\components\visualizations\dataproviders\AccountTrendsDataProvider;
+use app\components\visualizations\widgets\ChangeRowWidget;
+use app\components\visualizations\widgets\ChartWidget;
+use app\dictionaries\ChartType;
+use app\dictionaries\Grouping;
+use app\modules\admin\widgets\NoStatsDataAlert;
+use Carbon\Carbon;
+
 /**
  * @var $this yii\web\View
  * @var $model app\models\Account
@@ -17,6 +27,8 @@ $this->params['breadcrumbs'][] = 'Dashboard';
 
 /** @var \app\components\Formatter $formatter */
 $formatter = Yii::$app->formatter;
+
+
 ?>
 <div class="account-view">
     <div class="row">
@@ -28,46 +40,91 @@ $formatter = Yii::$app->formatter;
                 <?= $this->render('_tabs', ['model' => $model]) ?>
                 <div class="tab-content">
 
-                    <?= \app\modules\admin\widgets\NoStatsDataAlert::widget(['model' => $model]) ?>
+                    <?= NoStatsDataAlert::widget(['model' => $model]) ?>
 
-                    <?php if ($lastDailyChange): ?>
-                        <?= $this->render('_change-row', [
-                            'header' => 'Daily change',
-                            'change' => $lastDailyChange,
-                        ]); ?>
-                    <?php endif; ?>
+                    <?= ChangeRowWidget::widget([
+                        'account' => $model,
+                        'statsAttributes' => [
+                            'er' => ['percent', 2],
+                            'followed_by' => 'integer',
+                            'follows' => 'integer',
+                            'media' => 'integer',
+                        ],
+                        'header' => 'Daily change',
+                        'diff' => [
+                            'class' => AccountDiff::class,
+                            'from' => Carbon::now()->subDays(2),
+                            'to' => Carbon::yesterday(),
+                        ],
+                    ]) ?>
 
-                    <?php if ($lastMonthlyChange): ?>
-                        <?= $this->render('_change-row', [
-                            'header' => 'Monthly change',
-                            'change' => $lastMonthlyChange,
-                        ]); ?>
-                    <?php endif; ?>
+                    <?= ChangeRowWidget::widget([
+                        'account' => $model,
+                        'statsAttributes' => [
+                            'er' => ['percent', 2],
+                            'followed_by' => 'integer',
+                            'follows' => 'integer',
+                            'media' => 'integer',
+                        ],
+                        'header' => 'Monthly change',
+                        'diff' => [
+                            'class' => AccountDiff::class,
+                            'from' => Carbon::yesterday()->subMonth()->endOfMonth(),
+                            'to' => Carbon::yesterday(),
+                        ],
+                    ]) ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <?= ChartWidget::widget([
+                        'model' => $model,
+                        'aspectRatio' => 3,
+                        'type' => ChartType::LINE,
+                        'icon' => 'fa fa-line-chart',
+                        'title' => 'Trends',
+                        'dataProvider' => [
+                            'class' => AccountTrendsDataProvider::class,
+                        ],
+                        'from' => Carbon::now()->subMonth(),
+                        'to' => Carbon::yesterday(),
+                    ])
+                    ?>
 
-                    <?php if ($dailyStats): ?>
-                        <h2 class="page-header">
-                            Stats from the last month
-                        </h2>
-                        <?= \app\widgets\ProgressChart::widget(['stats' => $dailyStats]) ?>
-                    <?php endif; ?>
+                    <?=
+                    ChartWidget::widget([
+                        'model' => $model,
+                        'aspectRatio' => 3,
+                        'type' => ChartType::BAR,
+                        'title' => 'Daily change in the number of followers',
+                        'clientOptions' => [
+                            'legend' => false,
+                        ],
+                        'dataProvider' => [
+                            'class' => AccountChangesDataProvider::class,
+                        ],
+                        'from' => Carbon::now()->subMonth(),
+                        'to' => Carbon::yesterday(),
+                    ])
+                    ?>
 
-                    <?php if ($dailyChanges): ?>
-                        <br>
-                        <h2 class="page-header">
-                            Daily changes from the last month
-                            <small class="text-muted">Followed by</small>
-                        </h2>
-                        <?= \app\widgets\DiffChart::widget(['changes' => $dailyChanges]) ?>
-                    <?php endif; ?>
-
-                    <?php if ($monthlyChanges): ?>
-                        <br>
-                        <h2 class="page-header">
-                            Monthly changes from last year
-                            <small class="text-muted">Followed by</small>
-                        </h2>
-                        <?= \app\widgets\DiffChart::widget(['changes' => $monthlyChanges]) ?>
-                    <?php endif; ?>
+                    <?=
+                    ChartWidget::widget([
+                        'model' => $model,
+                        'aspectRatio' => 3,
+                        'type' => ChartType::BAR,
+                        'title' => 'Monthly change in the number of followers',
+                        'clientOptions' => [
+                            'legend' => false,
+                        ],
+                        'dataProvider' => [
+                            'class' => AccountChangesDataProvider::class,
+                            'grouping' => Grouping::MONTHLY,
+                        ],
+                        'from' => Carbon::now()->subYear(),
+                        'to' => Carbon::yesterday(),
+                    ])
+                    ?>
                 </div>
             </div>
         </div>

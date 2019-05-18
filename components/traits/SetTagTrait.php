@@ -11,14 +11,14 @@ namespace app\components\traits;
 use app\models\Tag;
 use yii\base\InvalidConfigException;
 
-trait SetTag
+trait SetTagTrait
 {
     /**
      * @var \app\models\Tag
      */
     public $tag;
 
-    public function throwExceptionIfTagIsEmpty()
+    protected function throwExceptionIfTagIsEmpty()
     {
         if (!$this->tag instanceof Tag) {
             throw new InvalidConfigException('Property \'tag\' must be set and be type of \'\app\models\Tag\'.');

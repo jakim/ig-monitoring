@@ -8,7 +8,7 @@
 namespace app\components;
 
 
-use app\components\traits\BatchInsertCommand;
+use app\components\traits\BatchInsertCommandTrait;
 use app\models\Account;
 use app\models\AccountCategory;
 use app\models\Category;
@@ -18,7 +18,7 @@ use yii\base\BaseObject;
 
 class CategoryManager extends BaseObject
 {
-    use BatchInsertCommand;
+    use BatchInsertCommandTrait;
 
     public function getForUser(User $user, bool $asInt = false)
     {

@@ -8,8 +8,8 @@
 namespace app\components;
 
 
-use app\components\traits\BatchInsertCommand;
-use app\components\traits\FindOrCreate;
+use app\components\traits\BatchInsertCommandTrait;
+use app\components\traits\FindOrCreateTrait;
 use app\components\updaters\AccountUpdater;
 use app\models\Account;
 use app\models\AccountCategory;
@@ -23,7 +23,7 @@ use function is_string;
 
 class AccountManager extends Component
 {
-    use FindOrCreate, BatchInsertCommand;
+    use FindOrCreateTrait, BatchInsertCommandTrait;
 
     public function startMonitoring($account, $proxyId = null): Account
     {

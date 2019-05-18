@@ -11,7 +11,7 @@ namespace app\components\traits;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 
-trait NextUpdateCalculator
+trait NextUpdateCalculatorTrait
 {
     /**
      * If true, then will be automatically calculate from invalidation_count.

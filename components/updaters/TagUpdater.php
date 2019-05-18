@@ -9,9 +9,9 @@ namespace app\components\updaters;
 
 
 use app\components\instagram\models\Tag;
-use app\components\traits\NextUpdateCalculator;
+use app\components\traits\NextUpdateCalculatorTrait;
 use app\components\traits\SaveModelTrait;
-use app\components\traits\SetTag;
+use app\components\traits\SetTagTrait;
 use app\models\TagStats;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -19,7 +19,7 @@ use yii\db\Expression;
 
 class TagUpdater extends Component
 {
-    use SaveModelTrait, SetTag, NextUpdateCalculator;
+    use SaveModelTrait, SetTagTrait, NextUpdateCalculatorTrait;
 
     public function init()
     {

@@ -17,14 +17,15 @@ class StatsColumn extends DataColumn
     public $numberFormat = 'integer';
     public $statsAttribute;
     public $headerOptions = ['class' => 'sort-numerical'];
+    public $visibleData = true;
 
     /**
-     * @var \app\components\stats\AccountDailyDiff
+     * @var \app\components\stats\diffs\MultiAccountsDiff
      */
     public $dailyDiff;
 
     /**
-     * @var \app\components\stats\AccountMonthlyDiff
+     * @var \app\components\stats\diffs\MultiAccountsDiff
      */
     public $monthlyDiff;
 
@@ -47,19 +48,32 @@ class StatsColumn extends DataColumn
         /** @var \app\components\Formatter $formatter */
         $formatter = $this->grid->formatter;
 
-        $lastChange = $this->dailyDiff->getLastDiff($model->id);
-        $lastChange = current($lastChange);
-        $lastChange = ArrayHelper::getValue($lastChange, $this->statsAttribute);
+        $value = [];
+        $value[] = $formatter->format($model->{$this->attribute}, $this->numberFormat);
 
-        $monthlyChanges = $this->monthlyDiff->getLastDiff($model->id);
-        $monthlyChange = current($monthlyChanges);
-        $monthlyChange = ArrayHelper::getValue($monthlyChange, $this->statsAttribute);
+        // daily change
+        $key = "{$this->attribute}_daily";
+        if ($this->visibleData === true || isset($this->visibleData[$key])) {
+            $dailyChange = $this->dailyDiff->getModel($model->id);
+            $dailyChange = ArrayHelper::getValue($dailyChange, $this->statsAttribute);
+            $value[] = is_numeric($dailyChange) ? $formatter->asChange($dailyChange, true, $this->numberFormat) : '-';
+        }
 
-        return sprintf(
-            "%s (%s/%s)",
-            $formatter->format($model->{$this->attribute}, $this->numberFormat),
-            is_numeric($lastChange) ? $formatter->asChange($lastChange, true, $this->numberFormat) : '-',
-            is_numeric($monthlyChange) ? $formatter->asChange($monthlyChange, true, $this->numberFormat) : '-'
-        );
+        // monthly change
+        $key = "{$this->attribute}_monthly";
+        if ($this->visibleData === true || isset($this->visibleData[$key])) {
+            $monthlyChange = $this->monthlyDiff->getModel($model->id);
+            $monthlyChange = ArrayHelper::getValue($monthlyChange, $this->statsAttribute);
+            $value[] = is_numeric($monthlyChange) ? $formatter->asChange($monthlyChange, true, $this->numberFormat) : '-';
+        }
+
+        $count = count($value);
+        if ($count == 3) {
+            return sprintf('%s (%s/%s)', $value['0'], $value['1'], $value['2']);
+        } elseif ($count == 2) {
+            return sprintf('%s (%s)', $value['0'], $value['1']);
+        }
+
+        return $value['0'];
     }
 }
