@@ -46,7 +46,9 @@ use yii\helpers\ArrayHelper;
 class Tag extends \yii\db\ActiveRecord
 {
     const SCENARIO_UPDATE = 'update';
+
     public $occurs;
+    public $ts_avg_likes;
 
     public function getNamePrefixed()
     {

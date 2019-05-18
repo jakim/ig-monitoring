@@ -3,18 +3,16 @@
 namespace app\modules\admin\controllers;
 
 use app\components\CategoryManager;
-use app\components\stats\AccountDaily;
-use app\components\stats\AccountDailyDiff;
-use app\components\stats\AccountMonthlyDiff;
+use app\components\JobFactory;
 use app\components\updaters\AccountUpdater;
 use app\models\AccountNote;
 use app\models\Media;
-use app\models\Tag;
 use app\modules\admin\models\Account;
+use app\modules\admin\models\account\MediaAccountSearch;
+use app\modules\admin\models\account\MediaTagSearch;
+use app\modules\admin\models\account\StatsSearch;
 use app\modules\admin\models\AccountStats;
-use Carbon\Carbon;
 use Yii;
-use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -39,45 +37,36 @@ class AccountController extends Controller
                     'delete-associated' => ['POST'],
                     'categories' => ['POST'],
                     'update-note' => ['POST'],
+                    'force-update' => ['POST'],
                 ],
             ],
         ];
+    }
+
+    public function actionForceUpdate($id)
+    {
+        $model = $this->findModel($id);
+        if (!$model->is_valid) {
+            $accountUpdater = Yii::createObject([
+                'class' => AccountUpdater::class,
+                'account' => $model,
+            ]);
+            $accountUpdater->setIsValid()
+                ->save();
+
+            $job = JobFactory::createAccountUpdate($model);
+            /** @var \yii\queue\Queue $queue */
+            $queue = Yii::$app->queue;
+            $queue->push($job);
+        }
     }
 
     public function actionDashboard($id)
     {
         $model = $this->findModel($id);
 
-        $dailyDiff = Yii::createObject([
-            'class' => AccountDailyDiff::class,
-            'models' => $model,
-        ]);
-        $dailyDiff->initDiff(Carbon::now()->subMonth());
-        $dailyChanges = $dailyDiff->getDiff($model->id);
-        $dailyDiff->initLastDiff();
-        $lastDailyChange = $dailyDiff->getLastDiff($model->id);
-
-
-        $monthlyDiff = Yii::createObject([
-            'class' => AccountMonthlyDiff::class,
-            'models' => $model,
-        ]);
-        $monthlyDiff->initDiff(Carbon::now()->subYear());
-        $monthlyChanges = $monthlyDiff->getDiff($model->id);
-        $monthlyDiff->initLastDiff();
-        $lastMonthlyChange = $monthlyDiff->getLastDiff($model->id);
-
-        $dailyStats = Yii::createObject(AccountDaily::class, [$model]);
-        $dailyStats->initData(Carbon::now()->subMonth());
-        $dailyStats = $dailyStats->get();
-
         return $this->render('dashboard', [
             'model' => $model,
-            'lastDailyChange' => current($lastDailyChange),
-            'lastMonthlyChange' => current($lastMonthlyChange),
-            'dailyStats' => $dailyStats,
-            'dailyChanges' => $dailyChanges,
-            'monthlyChanges' => $monthlyChanges,
         ]);
     }
 
@@ -168,12 +157,8 @@ class AccountController extends Controller
     {
         $model = $this->findModel($id);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $model->getAccountStats(),
-            'sort' => [
-                'defaultOrder' => ['created_at' => SORT_DESC],
-            ],
-        ]);
+        $searchModel = new StatsSearch();
+        $dataProvider = $searchModel->search($model);
 
         if (Yii::$app->request->get('export')) {
             $csv = new CsvGrid([
@@ -200,26 +185,8 @@ class AccountController extends Controller
     {
         $model = $this->findModel($id);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => Tag::find()
-                ->select([
-                    'tag.*',
-                    'count(tag.id) as occurs',
-                ])
-                ->innerJoin('media_tag', 'tag.id=media_tag.tag_id')
-                ->innerJoin('media', 'media_tag.media_id=media.id')
-                ->andWhere(['media.account_id' => $model->id])
-                ->groupBy('tag.id'),
-        ]);
-
-        $dataProvider->sort->attributes['occurs'] = [
-            'asc' => ['occurs' => SORT_ASC],
-            'desc' => ['occurs' => SORT_DESC],
-        ];
-        $dataProvider->sort->defaultOrder = [
-            'occurs' => SORT_DESC,
-            'name' => SORT_ASC,
-        ];
+        $searchModel = new MediaTagSearch();
+        $dataProvider = $searchModel->search($model);
 
         if (Yii::$app->request->get('export')) {
             $csv = new CsvGrid([
@@ -227,6 +194,7 @@ class AccountController extends Controller
                 'columns' => [
                     'name',
                     'occurs',
+                    'ts_avg_likes',
                 ],
             ]);
 
@@ -244,26 +212,8 @@ class AccountController extends Controller
     {
         $model = $this->findModel($id);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => Account::find()
-                ->select([
-                    'account.*',
-                    'count(account.id) as occurs',
-                ])
-                ->innerJoin('media_account', 'account.id=media_account.account_id')
-                ->innerJoin('media', 'media_account.media_id=media.id')
-                ->andWhere(['media.account_id' => $model->id])
-                ->groupBy('account.id'),
-        ]);
-
-        $dataProvider->sort->attributes['occurs'] = [
-            'asc' => ['occurs' => SORT_ASC],
-            'desc' => ['occurs' => SORT_DESC],
-        ];
-        $dataProvider->sort->defaultOrder = [
-            'occurs' => SORT_DESC,
-            'username' => SORT_ASC,
-        ];
+        $searchModel = new MediaAccountSearch();
+        $dataProvider = $searchModel->search($model);
 
         if (Yii::$app->request->get('export')) {
             $csv = new CsvGrid([
@@ -271,6 +221,8 @@ class AccountController extends Controller
                 'columns' => [
                     'username',
                     'occurs',
+                    'er',
+                    'followed_by',
                 ],
             ]);
 

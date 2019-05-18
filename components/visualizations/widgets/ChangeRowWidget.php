@@ -30,12 +30,23 @@ class ChangeRowWidget extends Widget
      */
     public $diff;
 
-    public function run()
+    /**
+     * @var \app\components\Formatter
+     */
+    protected $formatter;
+
+    public function init()
     {
+        parent::init();
         $this->diff = \Yii::createObject(ArrayHelper::merge($this->diff, [
             'account' => $this->account,
             'statsAttributes' => array_keys($this->statsAttributes),
         ]));
+        $this->formatter = \Yii::$app->formatter;
+    }
+
+    public function run()
+    {
         $this->renderHeader();
         $this->renderRow();
     }
@@ -55,6 +66,8 @@ class ChangeRowWidget extends Widget
     {
         echo '<h2 class="page-header">';
         echo Html::encode($this->header);
+        $subtitle = sprintf(' <small>%s - %s</small>', $this->formatter->asDate($this->diff->getFrom()->getTimestamp()), $this->formatter->asDate($this->diff->getTo()->getTimestamp()));
+        echo $subtitle;
 //        echo '<sup><span class="fa fa-question-circle-o text-muted"></span></sup>';
         echo '</h2>';
     }

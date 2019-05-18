@@ -14,7 +14,6 @@ use dosamigos\chartjs\ChartJs;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\web\JsExpression;
 
 class ChartWidget extends Widget
 {
@@ -47,6 +46,11 @@ class ChartWidget extends Widget
 
     public $labelFormat = 'date';
 
+    /**
+     * @var \app\components\Formatter
+     */
+    protected $formatter;
+
     public function init()
     {
         parent::init();
@@ -57,27 +61,11 @@ class ChartWidget extends Widget
             'from' => $this->from,
             'to' => $this->to,
         ]));
+        $this->formatter = \Yii::$app->formatter;
     }
 
     public function run()
     {
-//        // ukrywanie osi razem z legendą
-        $legend = [
-            'position' => 'bottom',
-            'onClick' => new JsExpression('function(e, item){
-                        var index = item.datasetIndex;
-                        var ci = this.chart;
-                        var meta = ci.getDatasetMeta(index);
-
-                        meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
-
-                        // hide yaxes with legend
-                        //ci.options.scales.yAxes[index].display = !meta.hidden;
-
-                        ci.update();
-                     }'),
-        ];
-
         $config = [
             'id' => $this->id,
             'type' => $this->type,
@@ -111,7 +99,11 @@ class ChartWidget extends Widget
     {
         echo '<div class="box-header with-border">';
         echo $this->icon ? "<span class='$this->icon'></span>" : '';
-        echo $this->title ? sprintf('<h3 class="box-title">%s</h3>', Html::encode($this->title)) : '';
+        echo $this->title ? sprintf('<h3 class="box-title">%s <small>%s - %s</small></h3>',
+            Html::encode($this->title),
+            $this->formatter->asDate($this->dataProvider->getFrom()->timestamp),
+            $this->formatter->asDate($this->dataProvider->getTo()->timestamp)
+        ) : '';
         echo '</div>';
     }
 }

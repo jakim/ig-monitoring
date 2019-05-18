@@ -1,13 +1,12 @@
 <?php
 
 use app\modules\admin\widgets\AccountProfileBox;
-use jakim\ig\Url;
-use yii\helpers\Html;
-use app\modules\admin\widgets\InvalidAccountAlert;
-use app\modules\admin\widgets\OnOffMonitoringButton;
-use app\modules\admin\widgets\favorites\ProfileButton;
 use app\modules\admin\widgets\CategoriesWidget;
+use app\modules\admin\widgets\favorites\ProfileButton;
+use app\modules\admin\widgets\InvalidAccountAlert;
 use app\modules\admin\widgets\NotesSideWidget;
+use app\modules\admin\widgets\OnOffMonitoringButton;
+use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
@@ -88,21 +87,21 @@ $formatter = Yii::$app->formatter;
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-        <?php if ($model->external_url): ?>
-            <strong><i class="fa fa-external-link margin-r-5"></i>
-                <?= $model->getAttributeLabel('external_url') ?>
-            </strong>
-            <p class="text-muted">
-                <?= Html::a($model->external_url, $model->external_url, ['target' => '_blank']) ?>
-            </p>
-            <hr>
-        <?php endif; ?>
         <?php if ($model->biography): ?>
             <strong><i class="fa fa-book margin-r-5"></i>
                 <?= $model->getAttributeLabel('biography') ?>
             </strong>
             <p class="text-muted">
                 <?= $formatter->asNtext($model->biography) ?>
+            </p>
+            <hr>
+        <?php endif; ?>
+        <?php if ($model->external_url): ?>
+            <strong><i class="fa fa-external-link margin-r-5"></i>
+                <?= $model->getAttributeLabel('external_url') ?>
+            </strong>
+            <p class="text-muted">
+                <?= Html::a($model->external_url, $model->external_url, ['target' => '_blank']) ?>
             </p>
             <hr>
         <?php endif; ?>

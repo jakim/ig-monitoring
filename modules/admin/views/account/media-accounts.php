@@ -2,13 +2,12 @@
 
 use app\components\ArrayHelper;
 use app\models\Account;
-use app\models\Category;
+use app\modules\admin\components\grid\AccountBasicStatColumn;
+use app\modules\admin\components\grid\AccountColumn;
 use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\widgets\OnOffMonitoringButton;
-use jakim\ig\Url;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
-use yii\helpers\Html;
 use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
@@ -31,39 +30,32 @@ $formatter = Yii::$app->formatter;
                 <div class="nav-tabs-custom">
                     <?= $this->render('_tabs', ['model' => $model]) ?>
                     <div class="tab-content">
-                        <p>
-                            <?= Html::a('CSV Export', \yii\helpers\Url::current(['export' => 1])) ?>
-                        </p>
+
+                        <?= $this->render('_tools-header', [
+                            'model' => $model,
+                            'routes' => [
+                                'table' => '/admin/account/media-accounts',
+                                'download' => ['/admin/account/media-accounts', 'export' => 1],
+                            ],
+                        ]) ?>
+
                         <?= GridView::widget([
                             'dataProvider' => $dataProvider,
                             'columns' => [
                                 ['class' => SerialColumn::class],
                                 [
+                                    'class' => AccountColumn::class,
                                     'attribute' => 'username',
-                                    'format' => 'raw',
-                                    'value' => function (Account $model, $key, $index, $column) {
-                                        if ($model->monitoring) {
-                                            $value = Html::a($model->usernamePrefixed, ['account/dashboard', 'id' => $model->id]);
-                                        } else {
-                                            $value = $model->{$column->attribute};
-                                        }
-
-                                        return $value . ' ' . Html::a('<span class="fa fa-external-link text-sm"></span>', Url::account($model->username), ['target' => '_blank']);
-                                    },
                                 ],
                                 [
+                                    'class' => AccountBasicStatColumn::class,
                                     'attribute' => 'er',
-                                    'format' => 'raw',
-                                    'value' => function (Account $model) use ($formatter) {
-                                        if ($model->er) {
-                                            return sprintf('<span data-toggle="tooltip" data-placement="top" title="updated at: %s">%s</span>',
-                                                $formatter->asDate($model->stats_updated_at),
-                                                $formatter->asPercent($model->er)
-                                            );
-                                        }
-
-                                        return '';
-                                    },
+                                    'dataFormat' => ['percent', 2],
+                                ],
+                                [
+                                    'class' => AccountBasicStatColumn::class,
+                                    'attribute' => 'followed_by',
+                                    'dataFormat' => 'integer',
                                 ],
                                 'occurs',
                                 [
@@ -72,7 +64,6 @@ $formatter = Yii::$app->formatter;
                                         return OnOffMonitoringButton::widget([
                                             'model' => $account,
                                             'form' => new MonitoringForm([
-//                                                'scenario' => 'account',
                                                 'names' => $account->username,
                                                 'categories' => ArrayHelper::getColumn($categories, 'name'),
                                                 'proxy_id' => $model->proxy_id,

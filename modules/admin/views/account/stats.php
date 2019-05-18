@@ -1,5 +1,8 @@
 <?php
 
+use yii\grid\GridView;
+use yii\grid\SerialColumn;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\Account */
 
@@ -10,6 +13,7 @@ $this->params['breadcrumbs'][] = 'Statistics';
 
 $formatter = Yii::$app->formatter;
 $lastAccountStats = $model->lastAccountStats;
+
 ?>
 <div class="account-view">
     <div class="row">
@@ -20,13 +24,17 @@ $lastAccountStats = $model->lastAccountStats;
             <div class="nav-tabs-custom">
                 <?= $this->render('_tabs', ['model' => $model]) ?>
                 <div class="tab-content">
-                    <p>
-                        <?= \yii\helpers\Html::a('CSV Export', \yii\helpers\Url::current(['export' => 1])) ?>
-                    </p>
-                    <?= \yii\grid\GridView::widget([
+                    <?= $this->render('_tools-header', [
+                        'model' => $model,
+                        'routes' => [
+                            'table' => '/admin/account/stats',
+                            'download' => ['/admin/account/stats', 'export' => 1],
+                        ],
+                    ]) ?>
+                    <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'columns' => [
-                            ['class' => \yii\grid\SerialColumn::class],
+                            ['class' => SerialColumn::class],
                             'followed_by:integer',
                             'follows:integer',
                             'media:integer',
@@ -42,7 +50,7 @@ $lastAccountStats = $model->lastAccountStats;
                                 'attribute' => 'avg_comments',
                                 'format' => ['decimal', 1],
                             ],
-                            'created_at:dateTime',
+                            'created_at:date',
                         ],
                     ]) ?>
                 </div>

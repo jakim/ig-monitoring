@@ -29,6 +29,7 @@ class InvalidAccountAlert extends Widget
             'icon' => $icon,
             'header' => 'Invalid account',
             'lines' => $this->lines(),
+            'updateUrl' => ['account/force-update', 'id' => $this->model->id],
         ]);
     }
 

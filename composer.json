@@ -39,7 +39,8 @@
     "bower-asset/ladda": "^2.0",
     "bower-asset/spin": "^1.1",
     "denostr/yii2-bootstrap-social": "^1.0",
-    "yii2tech/csv-grid": "^1.0"
+    "yii2tech/csv-grid": "^1.0",
+    "kartik-v/yii2-date-range": "^1.6"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.0.0",
