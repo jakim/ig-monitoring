@@ -77,7 +77,6 @@ $formatter = Yii::$app->formatter;
         <?= ProfileButton::widget([
             'model' => $model,
         ]) ?>
-        <?= Html::a('<span class="fa fa-external-link"></span> Public url', ['/preview/account', 'uid' => $model->uid], ['class' => 'btn btn-default btn-block btn-sm', 'target' => '_blank']) ?>
     </div>
 </div>
 
