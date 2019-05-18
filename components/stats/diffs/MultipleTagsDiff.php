@@ -8,7 +8,7 @@
 namespace app\components\stats\diffs;
 
 
-use app\components\stats\base\BaseDiff;
+use app\components\stats\base\BaseMultiDiff;
 use app\components\stats\traits\FromToDateTrait;
 use app\components\stats\traits\StatsAttributesTrait;
 use app\components\traits\SetTagTrait;
@@ -17,7 +17,7 @@ use yii\base\InvalidConfigException;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
-class MultipleTagsDiff extends BaseDiff
+class MultipleTagsDiff extends BaseMultiDiff
 {
     use FromToDateTrait, SetTagTrait, StatsAttributesTrait;
 
@@ -44,37 +44,6 @@ class MultipleTagsDiff extends BaseDiff
         $this->tagIds = ArrayHelper::getColumn($this->tags, 'id');
         $this->throwExceptionIfFromToAreNotSet();
         $this->throwExceptionIfStatsAttributesIsNotSet();
-    }
-
-    protected function prepareData(): array
-    {
-        $models = [];
-
-        $dbTo = $this->to->copy()->endOfDay()->toDateTimeString();
-        $dbFrom = $this->from->copy()->endOfDay()->toDateTimeString();
-
-        $toStatsIds = $this->findStatsIds($dbTo);
-        $toModels = $this->findDataModels($toStatsIds);
-
-        // jesli znaleziona ostatnia data 'do' jest wczesniejsza niz od, to nie pomijaj modelu
-        $ignoredModels = array_filter($toModels, function ($toModel) use ($dbFrom) {
-            if (strtotime($toModel['created_at']) > strtotime($dbFrom)) {
-                return true;
-            }
-        });
-
-        $fromStatsIds = $this->findStatsIds($dbFrom, ArrayHelper::getColumn($ignoredModels, 'id'));
-        $fromModels = $this->findDataModels($fromStatsIds);
-
-        foreach ($toModels as $accountId => $toModel) {
-            $fromModel = ArrayHelper::getValue($fromModels, $accountId);
-            foreach ($this->statsAttributes as $statsAttribute) {
-                $value = ArrayHelper::getValue($toModel, $statsAttribute, 0) - ArrayHelper::getValue($fromModel, $statsAttribute, 0);
-                $models[$accountId][$statsAttribute] = $value;
-            }
-        }
-
-        return $models;
     }
 
     protected function findStatsIds(?string $date, array $ignoredStatsIds = [])
