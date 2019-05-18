@@ -23,6 +23,8 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 # Version
 BETA stage.  **Use at your own risk.**
+Branch master is not suitable for production applications. 
+Branch 0.9 is the most stable.
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/9bbae6907e6cbf039950/maintainability)](https://codeclimate.com/github/jakim/ig-monitoring/maintainability)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jakim/ig-monitoring/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jakim/ig-monitoring/?branch=master)
