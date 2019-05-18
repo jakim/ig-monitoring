@@ -9,6 +9,7 @@ namespace app\modules\admin\widgets;
 
 
 use app\dictionaries\AccountInvalidationType;
+use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 
@@ -35,7 +36,7 @@ class InvalidAccountAlert extends Widget
 
     protected function lines()
     {
-        $formatter = \Yii::$app->formatter;
+        $formatter = Yii::$app->formatter;
 
         return [
             sprintf('type: %s', ArrayHelper::getValue(AccountInvalidationType::labels(), $this->model->invalidation_type_id, 'Unknown reason')),

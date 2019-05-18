@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -27,7 +27,7 @@ use yii\helpers\ArrayHelper;
  * @property MediaTag[] $mediaTags
  * @property Tag[] $tags
  */
-class Media extends \yii\db\ActiveRecord
+class Media extends ActiveRecord
 {
     public function behaviors()
     {
@@ -100,6 +100,7 @@ class Media extends \yii\db\ActiveRecord
 
     /**
      * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public function getAccounts()
     {
@@ -117,6 +118,7 @@ class Media extends \yii\db\ActiveRecord
 
     /**
      * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public function getTags()
     {

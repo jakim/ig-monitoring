@@ -3,8 +3,10 @@
 use app\modules\admin\widgets\AjaxButton;
 use yii\helpers\Html;
 
-/* @var $ico string */
+/* @var $alert string */
+/* @var $icon string */
 /* @var $lines array */
+/* @var $updateUrl array */
 /* @var $this \yii\web\View */
 
 ?>
@@ -16,19 +18,17 @@ use yii\helpers\Html;
             <?= Html::encode($line) ?><br>
         <?php endforeach; ?>
     </p>
-    <?php if (isset($updateUrl)): ?>
-        <p>
-            <?= AjaxButton::widget([
-                'url' => $updateUrl,
-                'text' => 'force update',
-                'options' => [
-                    'class' => 'btn btn-link btn-xs',
-                    'style' => 'padding-left: 0',
-                    'data' => [
-                        'style' => 'zoom-out',
-                    ],
+    <p>
+        <?= AjaxButton::widget([
+            'url' => $updateUrl,
+            'text' => 'force update',
+            'options' => [
+                'class' => 'btn btn-link btn-xs',
+                'style' => 'padding-left: 0',
+                'data' => [
+                    'style' => 'zoom-out',
                 ],
-            ]) ?>
-        </p>
-    <?php endif; ?>
+            ],
+        ]) ?>
+    </p>
 </div>

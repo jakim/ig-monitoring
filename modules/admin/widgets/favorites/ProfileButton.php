@@ -8,11 +8,10 @@
 namespace app\modules\admin\widgets\favorites;
 
 
-use app\models\Account;
 use app\models\Favorite;
 use app\modules\admin\widgets\AjaxButton;
+use Yii;
 use yii\base\Widget;
-use yii\helpers\Html;
 use yii\helpers\Url;
 
 class ProfileButton extends Widget
@@ -27,7 +26,7 @@ class ProfileButton extends Widget
         $url = Url::to(['/admin/account/dashboard', 'id' => $this->model->id]);
 
         $model = Favorite::findOne([
-            'user_id' => \Yii::$app->user->id,
+            'user_id' => Yii::$app->user->id,
             'url' => $url,
         ]);
 

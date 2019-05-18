@@ -1,16 +1,20 @@
 <?php
 
+use kartik\select2\Select2;
+use yii\behaviors\TimestampBehavior;
+use yii\data\Pagination;
+
 return [
     'definitions' => [
-        \yii\behaviors\TimestampBehavior::class => [
+        TimestampBehavior::class => [
             'value' => function () {
                 return (new DateTime('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
             },
         ],
-        \kartik\select2\Select2::class => [
-            'theme' => \kartik\select2\Select2::THEME_DEFAULT,
+        Select2::class => [
+            'theme' => Select2::THEME_DEFAULT,
         ],
-        \yii\data\Pagination::class => [
+        Pagination::class => [
             'defaultPageSize' => 50,
             'pageSizeLimit' => [1, 1000],
         ],

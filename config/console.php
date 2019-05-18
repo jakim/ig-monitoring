@@ -1,6 +1,7 @@
 <?php
 
 use pahanini\log\ConsoleTarget;
+use yii\faker\FixtureController;
 
 date_default_timezone_set('UTC');
 
@@ -72,7 +73,7 @@ if (YII_ENV_DEV) {
         'class' => 'yii\gii\Module',
     ];
     $config['modules']['fixture'] = [ // Fixture generation command line.
-      'class' => \yii\faker\FixtureController::class,
+      'class' => FixtureController::class,
       'templatePath' => 'tests/fixtures/templates',
       'fixtureDataPath' => 'tests/fixtures/data',
       'namespace' => 'app\tests\fixtures',

@@ -1,5 +1,6 @@
 <?php
 
+use app\modules\admin\widgets\PoweredBy;
 use yii\helpers\Html;
 
 /* @var $this \yii\web\View */
@@ -31,7 +32,7 @@ dmstr\web\AdminLteAsset::register($this);
     </div>
     <div>
         <p class="margin text-center">
-            <?= \app\modules\admin\widgets\PoweredBy::widget() ?>
+            <?= PoweredBy::widget() ?>
         </p>
     </div>
 </div>

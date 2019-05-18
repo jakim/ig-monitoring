@@ -2,12 +2,14 @@
 
 namespace app\models;
 
+use yii\db\ActiveQuery;
+
 /**
  * This is the ActiveQuery class for [[Proxy]].
  *
  * @see Proxy
  */
-class ProxyQuery extends \yii\db\ActiveQuery
+class ProxyQuery extends ActiveQuery
 {
     public function active()
     {

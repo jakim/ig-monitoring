@@ -4,10 +4,8 @@ namespace app\modules\admin\models;
 
 use app\components\AccountManager;
 use app\models\AccountCategory;
-use app\models\AccountStats;
-use app\models\AccountTag;
 use app\models\Category;
-use app\models\Tag;
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
@@ -48,7 +46,7 @@ class AccountSearch extends Account
      */
     public function search($params)
     {
-        $userId = (int)\Yii::$app->user->id;
+        $userId = (int)Yii::$app->user->id;
 
         $query = Account::find()
             ->select([
@@ -96,7 +94,7 @@ class AccountSearch extends Account
         ]);
 
         if ($this->s_categories) {
-            $manager = \Yii::createObject(AccountManager::class);
+            $manager = Yii::createObject(AccountManager::class);
             $accountIds = $manager->findByCategories($this->s_categories, $userId);
 
             $query->andWhere(['account.id' => $accountIds]);

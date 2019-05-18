@@ -1,4 +1,7 @@
 <?php
+
+use yii\caching\FileCache;
+
 return [
-    'class' => \yii\caching\FileCache::class,
+    'class' => FileCache::class,
 ];

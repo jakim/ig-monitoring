@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
  * @property string $created_at
  * @property int $user_id [int(11)]
  */
-class Favorite extends \yii\db\ActiveRecord
+class Favorite extends ActiveRecord
 {
     public function behaviors()
     {

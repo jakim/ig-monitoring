@@ -14,8 +14,6 @@ use app\components\traits\SaveModelTrait;
 use app\components\traits\SetTagTrait;
 use app\models\TagStats;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
-use yii\db\Expression;
 
 class TagUpdater extends Component
 {

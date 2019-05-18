@@ -8,6 +8,7 @@
 namespace app\components;
 
 
+use Yii;
 use yii\behaviors\AttributeBehavior;
 use yii\db\BaseActiveRecord;
 
@@ -32,7 +33,7 @@ class UidAttributeBehavior extends AttributeBehavior
     protected function getValue($event)
     {
         do {
-            $uid = \Yii::$app->security->generateRandomString(64);
+            $uid = Yii::$app->security->generateRandomString(64);
             /** @var \yii\db\ActiveRecord $class */
             $class = get_class($this->owner);
             $uidExist = $class::find()

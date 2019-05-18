@@ -1,6 +1,11 @@
 <?php
 
+use app\modules\admin\widgets\favorites\SideMenu;
+use app\modules\admin\widgets\PoweredBy;
+use app\modules\admin\widgets\ProxyAlert;
+use app\widgets\Alert;
 use yii\helpers\Html;
+use yii\widgets\Breadcrumbs;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -77,7 +82,7 @@ $user = Yii::$app->user->identity;
                 ],
             ]) ?>
 
-            <?= \app\modules\admin\widgets\favorites\SideMenu::widget() ?>
+            <?= SideMenu::widget() ?>
 
             <?= dmstr\widgets\Menu::widget([
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
@@ -93,22 +98,22 @@ $user = Yii::$app->user->identity;
 
 
     <div class="content-wrapper">
-        <?= \app\modules\admin\widgets\ProxyAlert::widget() ?>
+        <?= ProxyAlert::widget() ?>
         <section class="content-header">
             <h1>
                 <?php
                 if ($this->title !== null) {
-                    echo \yii\helpers\Html::encode($this->title);
+                    echo Html::encode($this->title);
                 } ?>
             </h1>
 
-            <?= \yii\widgets\Breadcrumbs::widget([
+            <?= Breadcrumbs::widget([
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
             ]) ?>
         </section>
 
         <section class="content">
-            <?= \app\widgets\Alert::widget() ?>
+            <?= Alert::widget() ?>
             <?= $content ?>
         </section>
     </div>
@@ -117,7 +122,7 @@ $user = Yii::$app->user->identity;
         <div class="row">
             <div class="col-lg-6">
                 <strong>
-                    <?= \app\modules\admin\widgets\PoweredBy::widget() ?>
+                    <?= PoweredBy::widget() ?>
                 </strong>
             </div>
             <div class="col-lg-6 text-right">

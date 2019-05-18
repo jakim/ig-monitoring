@@ -8,7 +8,6 @@
 namespace app\modules\admin\widgets;
 
 
-use app\models\UserAccount;
 use yii\base\Widget;
 
 class AccountProfileBox extends Widget

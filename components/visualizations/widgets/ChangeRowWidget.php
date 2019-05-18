@@ -11,6 +11,7 @@ namespace app\components\visualizations\widgets;
 use app\components\stats\traits\StatsAttributesTrait;
 use app\components\traits\SetAccountTrait;
 use app\modules\admin\widgets\ChangeInfoBox;
+use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -38,11 +39,11 @@ class ChangeRowWidget extends Widget
     public function init()
     {
         parent::init();
-        $this->diff = \Yii::createObject(ArrayHelper::merge($this->diff, [
+        $this->diff = Yii::createObject(ArrayHelper::merge($this->diff, [
             'account' => $this->account,
             'statsAttributes' => array_keys($this->statsAttributes),
         ]));
-        $this->formatter = \Yii::$app->formatter;
+        $this->formatter = Yii::$app->formatter;
     }
 
     public function run()

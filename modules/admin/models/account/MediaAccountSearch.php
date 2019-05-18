@@ -11,6 +11,7 @@ namespace app\modules\admin\models\account;
 use app\components\stats\providers\AccountAccountsDataProvider;
 use app\components\visualizations\DateHelper;
 use app\models\Account;
+use Yii;
 
 class MediaAccountSearch extends StatsSearch
 {
@@ -19,7 +20,7 @@ class MediaAccountSearch extends StatsSearch
         $dateRange = DateHelper::getRangeFromUrl();
         list($from, $to) = DateHelper::normalizeRange($dateRange);
 
-        $dataProvider = \Yii::createObject([
+        $dataProvider = Yii::createObject([
             'class' => AccountAccountsDataProvider::class,
             'account' => $model,
             'from' => $from,

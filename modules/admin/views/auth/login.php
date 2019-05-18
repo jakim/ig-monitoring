@@ -19,7 +19,7 @@ use yii\helpers\Html;
 <?php foreach ($authAuthChoice->getClients() as $client): ?>
     <div class="form-group text-center">
         <?php if ($client->getId() == 'google'): ?>
-            <?= Html::a(Html::img('/img/btn_google_signin.png'), ['/admin/auth/auth', 'authclient' => $client->getName(),]) ?>
+            <?= Html::a(Html::img('/img/btn_google_sign_in.png'), ['/admin/auth/auth', 'authclient' => $client->getName(),]) ?>
         <?php else: ?>
             <?= Html::a("<span class='fa fa-$client->name'></span> Sign in with " . $client->getTitle(), ['/admin/auth/auth', 'authclient' => $client->getName(),], ['class' => "btn btn-block btn-social btn-$client->name "]) ?>
         <?php endif; ?>

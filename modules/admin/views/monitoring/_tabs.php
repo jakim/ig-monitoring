@@ -1,4 +1,9 @@
-<?= \yii\bootstrap\Nav::widget([
+<?php
+
+use yii\bootstrap\Nav;
+
+?>
+<?= Nav::widget([
     'items' => [
         ['label' => 'Accounts', 'url' => ['/admin/monitoring/accounts']],
         ['label' => 'Tags', 'url' => ['/admin/monitoring/tags']],

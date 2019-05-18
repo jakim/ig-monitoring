@@ -9,6 +9,8 @@ namespace app\components\http;
 
 
 use app\models\Proxy;
+use DateTime;
+use Yii;
 use yii\base\Component;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -23,13 +25,13 @@ class ProxyManager extends Component
 
         $condition = $this->prepareCondition($model);
 
-        $sql = \Yii::$app->db->createCommand()
+        $sql = Yii::$app->db->createCommand()
             ->update('proxy', [
                 'reservation_uid' => $uid,
-                'updated_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                'updated_at' => (new DateTime())->format('Y-m-d H:i:s'),
             ], $condition)->rawSql;
 
-        $n = \Yii::$app->db->createCommand("{$sql} ORDER BY [[updated_at]] ASC LIMIT 1")
+        $n = Yii::$app->db->createCommand("{$sql} ORDER BY [[updated_at]] ASC LIMIT 1")
             ->execute();
 
         if (empty($n)) {
@@ -52,7 +54,7 @@ class ProxyManager extends Component
 
     protected function generateUid()
     {
-        return sprintf('%s_%s', \Yii::$app->security->generateRandomString(64), time());
+        return sprintf('%s_%s', Yii::$app->security->generateRandomString(64), time());
     }
 
     private function prepareCondition($model)
@@ -61,7 +63,7 @@ class ProxyManager extends Component
             'and',
             ['active' => 1],
             ['reservation_uid' => null],
-            ['<=', 'updated_at', (new \DateTime(sprintf('-%d seconds', (int) $this->restTime)))->format('Y-m-d H:i:s')],
+            ['<=', 'updated_at', (new DateTime(sprintf('-%d seconds', (int) $this->restTime)))->format('Y-m-d H:i:s')],
         ];
 
         if ($model->proxy_id) {

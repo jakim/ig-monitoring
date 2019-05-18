@@ -12,6 +12,7 @@ use app\components\stats\providers\AccountDataProvider;
 use app\components\visualizations\contracts\DataProviderInterface;
 use app\components\visualizations\traits\AccountDataProviderTrait;
 use app\dictionaries\Color;
+use Yii;
 use yii\helpers\ArrayHelper;
 
 class AccountTrendsDataProvider extends AccountDataProvider implements DataProviderInterface
@@ -54,7 +55,7 @@ class AccountTrendsDataProvider extends AccountDataProvider implements DataProvi
 
     protected function prepareLabels()
     {
-        $formatter = \Yii::$app->formatter;
+        $formatter = Yii::$app->formatter;
 
         return array_map(function ($label) use ($formatter) {
             return $formatter->format($label, $this->labelFormat);

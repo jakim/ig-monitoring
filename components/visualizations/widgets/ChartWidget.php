@@ -11,6 +11,7 @@ namespace app\components\visualizations\widgets;
 use app\dictionaries\ChartType;
 use Carbon\Carbon;
 use dosamigos\chartjs\ChartJs;
+use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -56,12 +57,12 @@ class ChartWidget extends Widget
         parent::init();
         $this->setId(sprintf('%s_chart', $this->getId()));
 
-        $this->dataProvider = \Yii::createObject(ArrayHelper::merge($this->dataProvider, [
+        $this->dataProvider = Yii::createObject(ArrayHelper::merge($this->dataProvider, [
             'account' => $this->model,
             'from' => $this->from,
             'to' => $this->to,
         ]));
-        $this->formatter = \Yii::$app->formatter;
+        $this->formatter = Yii::$app->formatter;
     }
 
     public function run()

@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "account_invalidation_type".
@@ -12,7 +12,7 @@ use Yii;
  *
  * @property Account[] $accounts
  */
-class AccountInvalidationType extends \yii\db\ActiveRecord
+class AccountInvalidationType extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -49,6 +49,6 @@ class AccountInvalidationType extends \yii\db\ActiveRecord
      */
     public function getAccounts()
     {
-        return $this->hasMany(Account::className(), ['invalidation_type_id' => 'id']);
+        return $this->hasMany(Account::class, ['invalidation_type_id' => 'id']);
     }
 }

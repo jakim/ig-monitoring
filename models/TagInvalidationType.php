@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tag_invalidation_type".
@@ -12,7 +12,7 @@ use Yii;
  *
  * @property Tag[] $tags
  */
-class TagInvalidationType extends \yii\db\ActiveRecord
+class TagInvalidationType extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -49,6 +49,6 @@ class TagInvalidationType extends \yii\db\ActiveRecord
      */
     public function getTags()
     {
-        return $this->hasMany(Tag::className(), ['invalidation_type_id' => 'id']);
+        return $this->hasMany(Tag::class, ['invalidation_type_id' => 'id']);
     }
 }

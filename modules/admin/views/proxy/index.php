@@ -1,7 +1,7 @@
 <?php
 
-use app\components\ArrayHelper;
 use app\models\Proxy;
+use yii\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -16,6 +16,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="box-body">
 
+        <div class="row">
+
+            <div class="col-lg-12 text-right">
+                <?= Html::a('Add proxy', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
+            </div>
+        </div>
+
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
@@ -25,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'ip',
                     'format' => 'html',
-                    'value' => function(Proxy $model) {
+                    'value' => function (Proxy $model) {
                         return Html::a($model->ip, ['proxy/update', 'id' => $model->id]);
                     },
                 ],
@@ -33,14 +40,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'created_at:date',
 
                 [
-                    'class' => \yii\grid\ActionColumn::class,
+                    'class' => ActionColumn::class,
                     'template' => '{update} {delete}',
                 ],
             ],
         ]); ?>
-
-        <p>
-            <?= Html::a('Create', ['create'], ['class' => 'btn btn-success btn-sm']) ?>
-        </p>
     </div>
 </div>

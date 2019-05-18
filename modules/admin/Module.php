@@ -1,6 +1,7 @@
 <?php
 
 namespace app\modules\admin;
+use Yii;
 use yii\filters\AccessControl;
 
 /**
@@ -38,6 +39,6 @@ class Module extends \yii\base\Module
     {
         parent::init();
 
-        \Yii::$app->homeUrl = '/admin/monitoring/accounts';
+        Yii::$app->homeUrl = '/admin/monitoring/accounts';
     }
 }

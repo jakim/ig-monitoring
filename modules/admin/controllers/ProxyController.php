@@ -2,13 +2,10 @@
 
 namespace app\modules\admin\controllers;
 
-use app\components\ArrayHelper;
 use app\modules\admin\models\Proxy;
 use app\modules\admin\models\ProxySearch;
-use app\modules\admin\models\Tag;
 use Yii;
 use yii\filters\VerbFilter;
-use yii\helpers\Inflector;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -66,7 +63,6 @@ class ProxyController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'selectData' => $this->selectData(),
         ]);
     }
 
@@ -88,7 +84,6 @@ class ProxyController extends Controller
 
         return $this->render('update', [
             'model' => $model,
-            'selectData' => $this->selectData(),
         ]);
     }
 
@@ -124,16 +119,5 @@ class ProxyController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
-    }
-
-    /**
-     * @return array
-     */
-    private function selectData(): array
-    {
-        return \app\models\Tag::find()
-            ->indexBy('name')
-            ->select('name')
-            ->column();
     }
 }

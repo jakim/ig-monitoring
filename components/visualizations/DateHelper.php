@@ -10,6 +10,7 @@ namespace app\components\visualizations;
 
 use app\components\ArrayHelper;
 use Carbon\Carbon;
+use Yii;
 use yii\helpers\StringHelper;
 
 class DateHelper
@@ -30,7 +31,7 @@ class DateHelper
     {
         $dateRangeDefaultValue = static::getDefaultRange();
 
-        return \Yii::$app->request->get($getParamName, $dateRangeDefaultValue);
+        return Yii::$app->request->get($getParamName, $dateRangeDefaultValue);
     }
 
     /**

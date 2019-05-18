@@ -6,6 +6,7 @@ use app\components\ArrayHelper;
 use Yii;
 use yii\behaviors\AttributeBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -24,7 +25,7 @@ use yii\web\IdentityInterface;
  *
  * @property AccountCategory[] $accountCategories
  */
-class User extends \yii\db\ActiveRecord implements IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
 
     public function behaviors()

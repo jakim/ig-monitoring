@@ -11,6 +11,7 @@ namespace app\modules\admin\models\account;
 use app\components\stats\providers\AccountTagsDataProvider;
 use app\components\visualizations\DateHelper;
 use app\models\Account;
+use Yii;
 use yii\base\Model;
 
 class MediaTagSearch extends Model
@@ -20,7 +21,7 @@ class MediaTagSearch extends Model
         $dateRange = DateHelper::getRangeFromUrl();
         list($from, $to) = DateHelper::normalizeRange($dateRange);
 
-        $dataProvider = \Yii::createObject([
+        $dataProvider = Yii::createObject([
             'class' => AccountTagsDataProvider::class,
             'account' => $model,
             'from' => $from,

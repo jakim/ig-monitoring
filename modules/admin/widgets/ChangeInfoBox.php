@@ -8,6 +8,7 @@
 namespace app\modules\admin\widgets;
 
 
+use Yii;
 use yii\base\Widget;
 
 class ChangeInfoBox extends Widget
@@ -25,7 +26,7 @@ class ChangeInfoBox extends Widget
 
     public function init()
     {
-        $this->formatter = \Yii::$app->formatter;
+        $this->formatter = Yii::$app->formatter;
         parent::init();
         $this->number = $this->formatter->asChange($this->number, false, $this->format);
         if ($this->number > 0) {

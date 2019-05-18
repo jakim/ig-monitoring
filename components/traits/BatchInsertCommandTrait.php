@@ -9,6 +9,8 @@ namespace app\components\traits;
 
 
 
+use Yii;
+
 trait BatchInsertCommandTrait
 {
     /**
@@ -19,10 +21,10 @@ trait BatchInsertCommandTrait
      */
     public function batchInsertIgnoreCommand(string $table, array $columns, array $rows)
     {
-        $sql = \Yii::$app->db->queryBuilder
+        $sql = Yii::$app->db->queryBuilder
             ->batchInsert($table, $columns, $rows);
         $sql = str_replace('INSERT INTO ', 'INSERT IGNORE INTO ', $sql);
 
-        return \Yii::$app->db->createCommand($sql);
+        return Yii::$app->db->createCommand($sql);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -18,7 +18,7 @@ use yii\helpers\ArrayHelper;
  * @property Account $account
  * @property User $user
  */
-class AccountNote extends \yii\db\ActiveRecord
+class AccountNote extends ActiveRecord
 {
     public function behaviors()
     {

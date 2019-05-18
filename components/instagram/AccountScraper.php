@@ -12,6 +12,7 @@ use app\components\instagram\base\Scraper;
 use app\components\instagram\contracts\AccountScraperInterface;
 use app\components\instagram\models\Account as IgAccount;
 use Jakim\Query\AccountQuery;
+use Yii;
 
 class AccountScraper extends Scraper implements AccountScraperInterface
 {
@@ -46,6 +47,7 @@ class AccountScraper extends Scraper implements AccountScraperInterface
     /**
      * @param string $username
      * @return \app\components\instagram\models\Post[]
+     * @throws \Jakim\Exception\EmptyContentException
      */
     public function fetchLastPosts(string $username): array
     {
@@ -63,7 +65,7 @@ class AccountScraper extends Scraper implements AccountScraperInterface
         $filename = explode('?', $filename)['0'];
         $path = sprintf('/uploads/%s', substr($username, 0, 2));
 
-        $fullPath = \Yii::getAlias("@app/web/{$path}");
+        $fullPath = Yii::getAlias("@app/web/{$path}");
         @mkdir($fullPath);
         @chmod($fullPath, 0777);
 

@@ -10,6 +10,7 @@ namespace app\modules\admin\controllers;
 
 use app\components\ArrayHelper;
 use app\models\User;
+use Yii;
 use yii\authclient\AuthAction;
 use yii\authclient\ClientInterface;
 use yii\filters\VerbFilter;
@@ -39,7 +40,7 @@ class AuthController extends Controller
 
     public function actionLogout()
     {
-        \Yii::$app->user->logout();
+        Yii::$app->user->logout();
 
         return $this->goHome();
     }
@@ -90,7 +91,7 @@ class AuthController extends Controller
             return $this->redirect(['auth/info']);
         }
 
-        \Yii::$app->user->login($user);
+        Yii::$app->user->login($user);
     }
 
     private function updateImage(string $image, string $username, User $user): void
@@ -99,7 +100,7 @@ class AuthController extends Controller
         if ($content) {
             $uid = sprintf("%s_%s", $username, md5($image));
             $ext = explode('?', pathinfo($image, PATHINFO_EXTENSION))['0'];
-            $path = \Yii::getAlias("@webroot/uploads/{$uid}.{$ext}");
+            $path = Yii::getAlias("@webroot/uploads/{$uid}.{$ext}");
             if (file_put_contents($path, $content)) {
                 $user->image = "/uploads/{$uid}.{$ext}";
                 $user->update(false);

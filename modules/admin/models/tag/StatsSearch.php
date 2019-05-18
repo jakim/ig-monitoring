@@ -15,7 +15,7 @@ use yii\data\ActiveDataProvider;
 
 class StatsSearch extends Model
 {
-    public function search(Tag $model, array $params = [])
+    public function search(Tag $model)
     {
         $query = $model->getTagStats();
 

@@ -11,6 +11,7 @@ namespace app\components\updaters;
 use app\components\instagram\models\Post;
 use app\components\traits\SaveModelTrait;
 use app\models\Media;
+use DateTime;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 
@@ -51,6 +52,6 @@ class MediaUpdater extends Component
 
     protected function getNormalizedTakenAt(Post $post): string
     {
-        return (new \DateTime('@' . $post->takenAt))->format('Y-m-d H:i:s');
+        return (new DateTime('@' . $post->takenAt))->format('Y-m-d H:i:s');
     }
 }

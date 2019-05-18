@@ -1,7 +1,10 @@
 <?php
 
+use yii\mutex\MysqlMutex;
+use yii\queue\db\Queue;
+
 return [
-    'class' => \yii\queue\db\Queue::class,
+    'class' => Queue::class,
     'attempts' => 5,
-    'mutex' => \yii\mutex\MysqlMutex::class,
+    'mutex' => MysqlMutex::class,
 ];

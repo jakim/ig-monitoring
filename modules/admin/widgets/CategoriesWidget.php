@@ -10,11 +10,9 @@ namespace app\modules\admin\widgets;
 
 use app\components\ArrayHelper;
 use app\components\CategoryManager;
-use app\models\Account;
-use app\models\AccountTag;
-use app\modules\admin\models\Tag;
 use app\modules\admin\widgets\base\ProfileSideWidget;
 use kartik\select2\Select2;
+use Yii;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
 
@@ -55,9 +53,9 @@ class CategoriesWidget extends ProfileSideWidget
 
     public function run()
     {
-        $categoryManager = \Yii::createObject(CategoryManager::class);
+        $categoryManager = Yii::createObject(CategoryManager::class);
         /** @var \app\models\User $identity */
-        $identity = \Yii::$app->user->identity;
+        $identity = Yii::$app->user->identity;
 
         $this->categories = $categoryManager->getForUser($identity);
         $this->modelCategories = $categoryManager->getForUserAccounts($identity, $this->model);
@@ -71,7 +69,7 @@ class CategoriesWidget extends ProfileSideWidget
             echo sprintf('<span class="label label-default">%s</span> ', Html::encode($tag->name));
         }
         if (!$this->modelCategories) {
-            echo \Yii::$app->formatter->nullDisplay;
+            echo Yii::$app->formatter->nullDisplay;
         }
         echo "</p>";
     }

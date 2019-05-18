@@ -1,14 +1,14 @@
 <?php
 
 namespace app\models;
-use app\modules\api\v1\models\Account;
+use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[Account]].
  *
  * @see Account
  */
-class AccountQuery extends \yii\db\ActiveQuery
+class AccountQuery extends ActiveQuery
 {
     public function monitoring()
     {

@@ -18,7 +18,7 @@ trait NextUpdateCalculatorTrait
      *
      * @param \app\models\Account|\app\models\Tag|ActiveRecord $model
      * @param int $interval
-     * @return null|\yii\db\Expression
+     * @return \yii\db\Expression|null
      */
     protected function getNextUpdateDate(ActiveRecord $model, $interval = null)
     {

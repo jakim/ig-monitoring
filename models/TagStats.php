@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -22,7 +22,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property Tag $tag
  */
-class TagStats extends \yii\db\ActiveRecord
+class TagStats extends ActiveRecord
 {
 
     public function behaviors()

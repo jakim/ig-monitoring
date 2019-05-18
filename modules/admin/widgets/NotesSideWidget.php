@@ -10,6 +10,7 @@ namespace app\modules\admin\widgets;
 
 use app\models\AccountNote;
 use app\modules\admin\widgets\base\ProfileSideWidget;
+use Yii;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -65,7 +66,7 @@ class NotesSideWidget extends ProfileSideWidget
     protected function renderBoxContent()
     {
         echo "<p class=\"text-muted\">\n";
-        echo \Yii::$app->formatter->asNtext($this->note);
+        echo Yii::$app->formatter->asNtext($this->note);
         echo "</p>\n";
     }
 }

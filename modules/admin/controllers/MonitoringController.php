@@ -57,7 +57,7 @@ class MonitoringController extends Controller
             'er',
         ];
 
-        $dailyDiff = \Yii::createObject([
+        $dailyDiff = Yii::createObject([
             'class' => MultiAccountsDiff::class,
             'accounts' => $dataProvider->models,
             'from' => Carbon::yesterday()->subDay(),
@@ -65,7 +65,7 @@ class MonitoringController extends Controller
             'statsAttributes' => $statsAttributes,
         ]);
 
-        $monthlyDiff = \Yii::createObject([
+        $monthlyDiff = Yii::createObject([
             'class' => MultiAccountsDiff::class,
             'accounts' => $dataProvider->models,
             'from' => Carbon::yesterday()->subMonth()->endOfMonth(),
@@ -84,7 +84,7 @@ class MonitoringController extends Controller
     public function actionTags()
     {
         $searchModel = new TagSearch();
-        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['tag.monitoring' => 1]);
 
         $statsAttributes = [
@@ -97,7 +97,7 @@ class MonitoringController extends Controller
             'max_comments',
         ];
 
-        $dailyDiff = \Yii::createObject([
+        $dailyDiff = Yii::createObject([
             'class' => MultipleTagsDiff::class,
             'tags' => $dataProvider->models,
             'from' => Carbon::yesterday()->subDay(),
@@ -105,7 +105,7 @@ class MonitoringController extends Controller
             'statsAttributes' => $statsAttributes,
         ]);
 
-        $monthlyDiff = \Yii::createObject([
+        $monthlyDiff = Yii::createObject([
             'class' => MultipleTagsDiff::class,
             'tags' => $dataProvider->models,
             'from' => Carbon::yesterday()->subMonth()->endOfMonth(),
@@ -147,7 +147,7 @@ class MonitoringController extends Controller
                     if ($categories) {
                         /** @var \app\models\User $identity */
                         $identity = Yii::$app->user->identity;
-                        $categoryManager = \Yii::createObject(CategoryManager::class);
+                        $categoryManager = Yii::createObject(CategoryManager::class);
                         $categoryManager->addToAccount($account, $categories, $identity);
                     }
                 } else {

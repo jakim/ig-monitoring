@@ -2,12 +2,12 @@
 
 namespace app\modules\admin\controllers;
 
+use app\components\JobFactory;
 use app\components\updaters\TagUpdater;
 use app\models\TagStats;
 use app\modules\admin\models\Tag;
 use app\modules\admin\models\tag\StatsSearch;
 use Yii;
-use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -29,9 +29,28 @@ class TagController extends Controller
                 'actions' => [
                     'monitoring' => ['POST'],
                     'delete-stats' => ['POST'],
+                    'force-update' => ['POST'],
                 ],
             ],
         ];
+    }
+
+    public function actionForceUpdate($id)
+    {
+        $model = $this->findModel($id);
+        if (!$model->is_valid) {
+            $tagUpdater = Yii::createObject([
+                'class' => TagUpdater::class,
+                'tag' => $model,
+            ]);
+            $tagUpdater->setIsValid()
+                ->save();
+
+            $job = JobFactory::createTagUpdate($model);
+            /** @var \yii\queue\Queue $queue */
+            $queue = Yii::$app->queue;
+            $queue->push($job);
+        }
     }
 
     public function actionDeleteStats($id)

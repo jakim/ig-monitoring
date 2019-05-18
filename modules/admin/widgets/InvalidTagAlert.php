@@ -9,6 +9,7 @@ namespace app\modules\admin\widgets;
 
 
 use app\dictionaries\TagInvalidationType;
+use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 
@@ -29,12 +30,13 @@ class InvalidTagAlert extends Widget
             'icon' => $icon,
             'header' => 'Invalid tag',
             'lines' => $this->lines(),
+            'updateUrl' => ['tag/force-update', 'id' => $this->model->id],
         ]);
     }
 
     protected function lines()
     {
-        $formatter = \Yii::$app->formatter;
+        $formatter = Yii::$app->formatter;
 
         return [
             sprintf('type: %s', ArrayHelper::getValue(TagInvalidationType::labels(), $this->model->invalidation_type_id, 'Unknown reason')),

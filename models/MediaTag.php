@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -16,7 +16,7 @@ use yii\helpers\ArrayHelper;
  * @property Media $media
  * @property Tag $tag
  */
-class MediaTag extends \yii\db\ActiveRecord
+class MediaTag extends ActiveRecord
 {
 
     public function behaviors()

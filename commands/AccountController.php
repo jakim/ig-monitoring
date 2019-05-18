@@ -9,7 +9,6 @@ namespace app\commands;
 
 
 use app\models\Account;
-use app\models\Tag;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\helpers\Console;
@@ -25,6 +24,11 @@ class AccountController extends Controller
     /**
      * Update account usernames.
      * format: username1_from,username1_to1,name1;username2_from,username2_to,name2;username3_from,username3_to,name3
+     *
+     * @param $names
+     * @return int
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionUpdateName($names)
     {

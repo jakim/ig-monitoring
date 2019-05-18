@@ -9,9 +9,9 @@ namespace app\modules\admin\controllers;
 
 
 use app\models\Favorite;
+use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\web\Controller;
 
 class FavoriteController extends Controller
@@ -31,17 +31,17 @@ class FavoriteController extends Controller
 
     public function actionCreate()
     {
-        $request = \Yii::$app->request;
+        $request = Yii::$app->request;
         $model = new Favorite();
         $model->load($request->post(), $request->isAjax ? '' : null);
-        $model->user_id = \Yii::$app->user->id;
+        $model->user_id = Yii::$app->user->id;
         $model->label = $request->post('prefix', '') . $model->label;
 
         if ($model->save()) {
-            \Yii::$app->session->setFlash('success', 'OK!');
+            Yii::$app->session->setFlash('success', 'OK!');
         } else {
 
-            \Yii::$app->session->setFlash('error', 'ERROR!');
+            Yii::$app->session->setFlash('error', 'ERROR!');
         }
 
         if ($request->isAjax) {
@@ -54,7 +54,7 @@ class FavoriteController extends Controller
     public function actionDelete($id)
     {
         Favorite::deleteAll([
-            'user_id' => \Yii::$app->user->id,
+            'user_id' => Yii::$app->user->id,
             'id' => $id,
         ]);
     }

@@ -16,6 +16,7 @@ use app\components\updaters\TagUpdater;
 use app\dictionaries\TagInvalidationType;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use Yii;
 
 class TagFullUpdate implements ServiceInterface
 {
@@ -26,8 +27,8 @@ class TagFullUpdate implements ServiceInterface
 
     public function run()
     {
-        $proxyManager = \Yii::createObject(ProxyManager::class);
-        $tagUpdater = \Yii::createObject([
+        $proxyManager = Yii::createObject(ProxyManager::class);
+        $tagUpdater = Yii::createObject([
             'class' => TagUpdater::class,
             'tag' => $this->tag,
         ]);
@@ -36,7 +37,7 @@ class TagFullUpdate implements ServiceInterface
             $proxy = $proxyManager->reserve($this->tag);
             $httpClient = Client::factory($proxy, [], 3600);
 
-            $scraper = \Yii::createObject(TagScraper::class, [
+            $scraper = Yii::createObject(TagScraper::class, [
                 $httpClient,
             ]);
 

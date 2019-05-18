@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection ALL */
+
 /**
  * Created for IG Monitoring.
  * User: jakim <pawel@jakimowski.info>
@@ -10,6 +11,7 @@ namespace app\jobs;
 
 use app\components\services\AccountFullUpdate;
 use app\models\Account;
+use Yii;
 use yii\queue\JobInterface;
 
 class AccountUpdate implements JobInterface
@@ -27,7 +29,7 @@ class AccountUpdate implements JobInterface
         $account = Account::findOne($this->id);
         if ($account && !$account->disabled) {
 
-            $service = \Yii::createObject([
+            $service = Yii::createObject([
                 'class' => AccountFullUpdate::class,
                 'account' => $account,
             ]);

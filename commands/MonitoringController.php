@@ -9,13 +9,9 @@ namespace app\commands;
 
 
 use app\models\Account;
-use app\models\Proxy;
 use app\models\Tag;
 use yii\console\Controller;
-use yii\console\ExitCode;
 use yii\console\widgets\Table;
-use yii\helpers\Console;
-use yii\helpers\Inflector;
 
 class MonitoringController extends Controller
 {

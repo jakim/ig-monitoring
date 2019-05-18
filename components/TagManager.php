@@ -15,6 +15,7 @@ use app\models\Media;
 use app\models\MediaTag;
 use app\models\Tag;
 use DateTime;
+use Yii;
 use yii\base\Component;
 use yii\helpers\Inflector;
 
@@ -27,7 +28,7 @@ class TagManager extends Component
         /** @var Tag $tag */
         $tag = $this->findOrCreate(['name' => $name], Tag::class);
 
-        $tagUpdater = \Yii::createObject([
+        $tagUpdater = Yii::createObject([
             'class' => TagUpdater::class,
             'tag' => $tag,
         ]);

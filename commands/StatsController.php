@@ -11,6 +11,7 @@ namespace app\commands;
 use app\components\JobFactory;
 use app\models\Account;
 use app\models\Tag;
+use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\db\Expression;
@@ -40,7 +41,7 @@ class StatsController extends Controller
         }
 
         /** @var \yii\queue\Queue $queue */
-        $queue = \Yii::$app->queue;
+        $queue = Yii::$app->queue;
         foreach ($query->column() as $tagId) {
             $queue->push(JobFactory::createTagUpdate($tagId));
         }
@@ -65,7 +66,7 @@ class StatsController extends Controller
         }
 
         /** @var \yii\queue\Queue $queue */
-        $queue = \Yii::$app->queue;
+        $queue = Yii::$app->queue;
         $queue->push(JobFactory::createTagUpdate($tag->id));
         $this->stdout("OK!\n");
 
@@ -92,7 +93,7 @@ class StatsController extends Controller
         }
 
         /** @var \yii\queue\Queue $queue */
-        $queue = \Yii::$app->queue;
+        $queue = Yii::$app->queue;
         foreach ($query->column() as $accountId) {
             $queue->push(JobFactory::createAccountUpdate($accountId));
         }
@@ -111,7 +112,7 @@ class StatsController extends Controller
         }
 
         /** @var \yii\queue\Queue $queue */
-        $queue = \Yii::$app->queue;
+        $queue = Yii::$app->queue;
         $queue->push(JobFactory::createAccountUpdate($account->id));
         $this->stdout("OK!\n");
 

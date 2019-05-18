@@ -1,5 +1,7 @@
 <?php
 
+use yii\helpers\ArrayHelper;
+
 $webConfig = require __DIR__.'/web.php';
 
 $db = require __DIR__ . '/test_db.php';
@@ -40,7 +42,7 @@ $config = [
     'params' => $params,
 ];
 
-return \yii\helpers\ArrayHelper::merge(
+return ArrayHelper::merge(
     $webConfig,
     $config
 );

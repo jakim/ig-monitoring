@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "proxy".
@@ -20,7 +21,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property string $curlString
  */
-class Proxy extends \yii\db\ActiveRecord
+class Proxy extends ActiveRecord
 {
 
     public function getCurlString()

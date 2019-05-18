@@ -12,8 +12,8 @@ use app\components\ArrayHelper;
 use app\models\Favorite;
 use app\modules\admin\widgets\AjaxButton;
 use dmstr\widgets\Menu;
+use Yii;
 use yii\helpers\Url;
-use yii\web\JsExpression;
 
 class SideMenu extends Menu
 {
@@ -31,7 +31,7 @@ class SideMenu extends Menu
     {
         $favorites = Favorite::find()
             ->andWhere([
-                'user_id' => \Yii::$app->user->id,
+                'user_id' => Yii::$app->user->id,
             ])
             ->orderBy('label ASC')
             ->all();
@@ -58,7 +58,7 @@ class SideMenu extends Menu
             return true;
         }
         if (isset($item['url'])) {
-            $url = Url::to(["/admin/{$this->view->context->id}/dashboard", 'id' => \Yii::$app->request->get('id')]);
+            $url = Url::to(["/admin/{$this->view->context->id}/dashboard", 'id' => Yii::$app->request->get('id')]);
 
             return $item['url'] == $url;
         }

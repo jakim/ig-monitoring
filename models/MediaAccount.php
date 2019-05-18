@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "media_account".
@@ -14,7 +14,7 @@ use Yii;
  * @property Account $account
  * @property Media $media
  */
-class MediaAccount extends \yii\db\ActiveRecord
+class MediaAccount extends ActiveRecord
 {
     /**
      * @inheritdoc

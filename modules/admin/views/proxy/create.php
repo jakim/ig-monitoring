@@ -4,7 +4,7 @@
 /* @var $this yii\web\View */
 /* @var $model app\models\Proxy */
 
-$this->title = 'Create Proxy';
+$this->title = 'Add proxy';
 $this->params['breadcrumbs'][] = ['label' => 'Proxies', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -13,8 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?= $this->render('_form', [
             'model' => $model,
-            'selectData' => $selectData,
-
         ]) ?>
 
     </div>

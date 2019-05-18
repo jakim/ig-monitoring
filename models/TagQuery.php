@@ -2,12 +2,14 @@
 
 namespace app\models;
 
+use yii\db\ActiveQuery;
+
 /**
  * This is the ActiveQuery class for [[Tag]].
  *
  * @see Tag
  */
-class TagQuery extends \yii\db\ActiveQuery
+class TagQuery extends ActiveQuery
 {
     public function monitoring()
     {

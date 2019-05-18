@@ -3,7 +3,6 @@
 namespace app\models;
 
 use app\components\UidAttributeBehavior;
-use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
@@ -157,6 +156,7 @@ class Account extends ActiveRecord
 
     /**
      * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public function getCategories()
     {

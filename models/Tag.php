@@ -2,10 +2,9 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\db\Expression;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -35,7 +34,6 @@ use yii\helpers\ArrayHelper;
  *
  * @property TagStats $lastTagStats
  *
- * @property AccountTag[] $accountTags
  * @property Account[] $accounts
  * @property MediaTag[] $mediaTags
  * @property Media[] $media
@@ -43,7 +41,7 @@ use yii\helpers\ArrayHelper;
  * @property TagInvalidationType $invalidationType
  * @property TagStats[] $tagStats
  */
-class Tag extends \yii\db\ActiveRecord
+class Tag extends ActiveRecord
 {
     const SCENARIO_UPDATE = 'update';
 
@@ -114,14 +112,7 @@ class Tag extends \yii\db\ActiveRecord
 
     /**
      * @return \yii\db\ActiveQuery
-     */
-    public function getAccountTags()
-    {
-        return $this->hasMany(AccountTag::class, ['tag_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public function getAccounts()
     {
@@ -138,6 +129,7 @@ class Tag extends \yii\db\ActiveRecord
 
     /**
      * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public function getMedia()
     {
@@ -154,7 +146,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public function getInvalidationType()
     {
-        return $this->hasOne(TagInvalidationType::className(), ['id' => 'invalidation_type_id']);
+        return $this->hasOne(TagInvalidationType::class, ['id' => 'invalidation_type_id']);
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -21,7 +21,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property Account $account
  */
-class AccountStats extends \yii\db\ActiveRecord
+class AccountStats extends ActiveRecord
 {
     /**
      * @var string Y-m-d
