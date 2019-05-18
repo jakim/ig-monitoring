@@ -5,11 +5,13 @@ namespace app\modules\admin\controllers;
 use app\components\updaters\TagUpdater;
 use app\models\TagStats;
 use app\modules\admin\models\Tag;
+use app\modules\admin\models\tag\StatsSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii2tech\csvgrid\CsvGrid;
 
 /**
  * TagController implements the CRUD actions for Tag model.
@@ -73,12 +75,26 @@ class TagController extends Controller
     {
         $model = $this->findModel($id);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $model->getTagStats(),
-            'sort' => [
-                'defaultOrder' => ['created_at' => SORT_DESC],
-            ],
-        ]);
+        $searchModel = new StatsSearch();
+        $dataProvider = $searchModel->search($model);
+
+        if (Yii::$app->request->get('export')) {
+            $csv = new CsvGrid([
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    'media',
+                    'likes',
+                    'min_likes',
+                    'max_likes',
+                    'comments',
+                    'min_comments',
+                    'max_comments',
+                    'created_at',
+                ],
+            ]);
+
+            return $csv->export()->send(sprintf('%s_stats_%s.csv', mb_strtolower($model->slug), date('Y-m-d')));
+        }
 
         return $this->render('stats', [
             'model' => $model,

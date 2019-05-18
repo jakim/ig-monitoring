@@ -1,5 +1,8 @@
 <?php
 
+use yii\grid\GridView;
+use yii\grid\SerialColumn;
+
 /* @var $this yii\web\View */
 /* @var $model app\models\Tag */
 
@@ -10,6 +13,7 @@ $this->params['breadcrumbs'][] = 'Statistics';
 
 $formatter = Yii::$app->formatter;
 $lastAccountStats = $model->lastTagStats;
+
 ?>
 <div class="account-view">
     <div class="row">
@@ -20,10 +24,19 @@ $lastAccountStats = $model->lastTagStats;
             <div class="nav-tabs-custom">
                 <?= $this->render('_tabs', ['model' => $model]) ?>
                 <div class="tab-content">
-                    <?= \yii\grid\GridView::widget([
+
+                    <?= $this->render('_tools-header', [
+                        'model' => $model,
+                        'routes' => [
+                            'table' => '/admin/tag/stats',
+                            'download' => ['/admin/tag/stats', 'export' => 1],
+                        ],
+                    ]) ?>
+
+                    <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'columns' => [
-                            ['class' => \yii\grid\SerialColumn::class],
+                            ['class' => SerialColumn::class],
                             'media:integer',
                             'likes:integer',
                             'min_likes:integer',
@@ -31,7 +44,7 @@ $lastAccountStats = $model->lastTagStats;
                             'comments:integer',
                             'min_comments:integer',
                             'max_comments:integer',
-                            'created_at:dateTime',
+                            'created_at:date',
                         ],
                     ]) ?>
                 </div>

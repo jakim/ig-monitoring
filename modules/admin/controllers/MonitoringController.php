@@ -12,8 +12,7 @@ use app\components\AccountManager;
 use app\components\CategoryManager;
 use app\components\JobFactory;
 use app\components\stats\diffs\MultiAccountsDiff;
-use app\components\stats\TagDailyDiff;
-use app\components\stats\TagMonthlyDiff;
+use app\components\stats\diffs\MultipleTagsDiff;
 use app\components\TagManager;
 use app\dictionaries\TrackerType;
 use app\models\Account;
@@ -85,20 +84,34 @@ class MonitoringController extends Controller
     public function actionTags()
     {
         $searchModel = new TagSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['tag.monitoring' => 1]);
 
-        $dailyDiff = Yii::createObject([
-            'class' => TagDailyDiff::class,
-            'models' => $dataProvider->models,
-        ]);
-        $dailyDiff->initLastDiff();
+        $statsAttributes = [
+            'media',
+            'likes',
+            'comments',
+            'min_likes',
+            'max_likes',
+            'min_comments',
+            'max_comments',
+        ];
 
-        $monthlyDiff = Yii::createObject([
-            'class' => TagMonthlyDiff::class,
-            'models' => $dataProvider->models,
+        $dailyDiff = \Yii::createObject([
+            'class' => MultipleTagsDiff::class,
+            'tags' => $dataProvider->models,
+            'from' => Carbon::yesterday()->subDay(),
+            'to' => Carbon::yesterday(),
+            'statsAttributes' => $statsAttributes,
         ]);
-        $monthlyDiff->initLastDiff();
+
+        $monthlyDiff = \Yii::createObject([
+            'class' => MultipleTagsDiff::class,
+            'tags' => $dataProvider->models,
+            'from' => Carbon::yesterday()->subMonth()->endOfMonth(),
+            'to' => Carbon::yesterday(),
+            'statsAttributes' => $statsAttributes,
+        ]);
 
         return $this->render('tags', [
             'searchModel' => $searchModel,

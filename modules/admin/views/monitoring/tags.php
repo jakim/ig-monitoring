@@ -1,12 +1,11 @@
 <?php
 
-use app\dictionaries\TagInvalidationType;
-use app\modules\admin\components\grid\OldStatsColumn;
-use jakim\ig\Url;
-use yii\helpers\Html;
-use yii\grid\GridView;
-use app\modules\admin\widgets\CreateMonitoringModal;
 use app\dictionaries\TrackerType;
+use app\modules\admin\components\grid\GridView;
+use app\modules\admin\components\grid\StatsColumn;
+use app\modules\admin\components\grid\TagColumn;
+use app\modules\admin\widgets\CreateMonitoringModal;
+use yii\grid\SerialColumn;
 
 /**
  * @var yii\web\View $this
@@ -24,113 +23,97 @@ $this->params['breadcrumbs'][] = 'Tags';
 
         <?= $this->render('_tabs') ?>
 
-        <div class="tab-content table-responsive">
-
-            <?= GridView::widget([
-                'dataProvider' => $dataProvider,
-                'filterModel' => $searchModel,
-                'emptyText' => sprintf('<p class="lead">This is a screen where you can compare metrics for multiple tags.</p>%s',
-                    CreateMonitoringModal::widget([
-                        'trackerType' => TrackerType::TAG,
-                        'modalToggleButton' => [
-                            'label' => 'Add first tag',
-                            'class' => 'btn btn-lg btn-success',
-                        ],
-                    ])),
-                'emptyTextOptions' => [
-                    'class' => 'text-center empty',
-                ],
-                'columns' => [
-                    ['class' => \yii\grid\SerialColumn::class],
-
-                    [
-                        'attribute' => 'name',
-                        'content' => function (\app\models\Tag $model) {
-                            $html = [];
-                            $html[] = Html::a($model->namePrefixed, ['tag/stats', 'id' => $model->id]);
-                            $html[] = Html::a('<span class="fa fa-external-link text-sm"></span>', Url::tag($model->name), ['target' => '_blank']);
-
-                            if (!$model->is_valid) {
-                                $html[] = sprintf(
-                                    '<span class="fa fa-exclamation-triangle text-danger pull-right" data-toggle="tooltip" data-placement="top"  title="%s, attempts: %s"></span>',
-                                    TagInvalidationType::getLabel($model->invalidation_type_id, 'Unknown reason'),
-                                    $model->invalidation_count
-                                );
-                            }
-                            if ($model->disabled) {
-                                $html[] = '<span class="fa fa-exclamation-triangle text-danger pull-right" title="Not found."></span>';
-                            }
-
-                            return implode(" \n", $html);
-                        },
-                    ],
-                    [
-                        'class' => OldStatsColumn::class,
-                        'statsAttribute' => 'media',
-                        'attribute' => 'ts_media',
-                        'dailyDiff' => $dailyDiff,
-                        'monthlyDiff' => $monthlyDiff,
-                    ],
-                    [
-                        'class' => OldStatsColumn::class,
-                        'statsAttribute' => 'likes',
-                        'attribute' => 'ts_likes',
-                        'dailyDiff' => $dailyDiff,
-                        'monthlyDiff' => $monthlyDiff,
-                    ],
-                    [
-                        'class' => OldStatsColumn::class,
-                        'statsAttribute' => 'comments',
-                        'attribute' => 'ts_comments',
-                        'dailyDiff' => $dailyDiff,
-                        'monthlyDiff' => $monthlyDiff,
-                    ],
-                    [
-                        'class' => OldStatsColumn::class,
-                        'statsAttribute' => 'min_likes',
-                        'attribute' => 'ts_min_likes',
-                        'dailyDiff' => $dailyDiff,
-                        'monthlyDiff' => $monthlyDiff,
-                    ],
-                    [
-                        'class' => OldStatsColumn::class,
-                        'statsAttribute' => 'max_likes',
-                        'attribute' => 'ts_max_likes',
-                        'dailyDiff' => $dailyDiff,
-                        'monthlyDiff' => $monthlyDiff,
-                    ],
-                    [
-                        'class' => OldStatsColumn::class,
-                        'statsAttribute' => 'min_comments',
-                        'attribute' => 'ts_min_comments',
-                        'dailyDiff' => $dailyDiff,
-                        'monthlyDiff' => $monthlyDiff,
-                    ],
-                    [
-                        'class' => OldStatsColumn::class,
-                        'statsAttribute' => 'max_comments',
-                        'attribute' => 'ts_max_comments',
-                        'dailyDiff' => $dailyDiff,
-                        'monthlyDiff' => $monthlyDiff,
-                    ],
-                    [
-                        'attribute' => 'ts_created_at',
-                        'label' => 'Updated At',
-                        'format' => 'date',
-                    ],
-                    [
-                        'attribute' => 'created_at',
-                        'format' => 'date',
-                    ],
-                ],
-            ]); ?>
+        <div class="tab-content">
 
             <?php if ($dataProvider->totalCount): ?>
-                <?= CreateMonitoringModal::widget([
-                    'trackerType' => TrackerType::TAG,
-                    'modalToggleButton' => ['label' => 'Add tags'],
-                ]) ?>
+                <div class="row" style="margin-bottom: 10px">
+                    <div class="col-lg-12 text-right">
+                        <?= CreateMonitoringModal::widget([
+                            'trackerType' => TrackerType::TAG,
+                            'modalToggleButton' => ['label' => 'Add tags'],
+                        ]) ?>
+                    </div>
+                </div>
             <?php endif; ?>
+
+            <div class="table-responsive">
+
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'emptyText' => sprintf('<p class="lead">This is a screen where you can compare metrics for multiple tags.</p>%s',
+                        CreateMonitoringModal::widget([
+                            'trackerType' => TrackerType::TAG,
+                            'modalToggleButton' => [
+                                'label' => 'Add first tag',
+                                'class' => 'btn btn-lg btn-success',
+                            ],
+                        ])),
+                    'emptyTextOptions' => [
+                        'class' => 'text-center empty',
+                    ],
+                    'columns' => [
+                        ['class' => SerialColumn::class],
+                        [
+                            'class' => TagColumn::class,
+                            'attribute' => 'name',
+                            'displayDashboardLink' => true,
+                            'visible' => true,
+                        ],
+                        [
+                            'class' => StatsColumn::class,
+                            'attribute' => 'media',
+                            'dailyDiff' => $dailyDiff,
+                            'monthlyDiff' => $monthlyDiff,
+                        ],
+                        [
+                            'class' => StatsColumn::class,
+                            'attribute' => 'likes',
+                            'dailyDiff' => $dailyDiff,
+                            'monthlyDiff' => $monthlyDiff,
+                        ],
+                        [
+                            'class' => StatsColumn::class,
+                            'attribute' => 'comments',
+                            'dailyDiff' => $dailyDiff,
+                            'monthlyDiff' => $monthlyDiff,
+                        ],
+                        [
+                            'class' => StatsColumn::class,
+                            'attribute' => 'min_likes',
+                            'dailyDiff' => $dailyDiff,
+                            'monthlyDiff' => $monthlyDiff,
+                        ],
+                        [
+                            'class' => StatsColumn::class,
+                            'attribute' => 'max_likes',
+                            'dailyDiff' => $dailyDiff,
+                            'monthlyDiff' => $monthlyDiff,
+                        ],
+                        [
+                            'class' => StatsColumn::class,
+                            'attribute' => 'min_comments',
+                            'dailyDiff' => $dailyDiff,
+                            'monthlyDiff' => $monthlyDiff,
+                        ],
+                        [
+                            'class' => StatsColumn::class,
+                            'attribute' => 'max_comments',
+                            'dailyDiff' => $dailyDiff,
+                            'monthlyDiff' => $monthlyDiff,
+                        ],
+                        [
+                            'attribute' => 'stats_updated_at',
+                            'label' => 'Updated At',
+                            'format' => 'date',
+                        ],
+                        [
+                            'attribute' => 'created_at',
+                            'format' => 'date',
+                        ],
+                    ],
+                ]); ?>
+            </div>
         </div>
     </div>
 
