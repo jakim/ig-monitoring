@@ -73,14 +73,14 @@ class AjaxButton extends Widget
         $r = <<<JS
 const l = Ladda.create(this);
 l.start();
-jQuery.ajax($options;)
+jQuery.ajax($options)
 .always(function() { l.stop(); });         
 JS;
 
         $js = <<<JS
 jQuery('#{$this->getId()}').click(function(e){
     e.preventDefault();
-    if ({$this->confirm};){
+    if ({$this->confirm}){
         if(confirm("{$this->confirmMessage}")){
             $r
         }
