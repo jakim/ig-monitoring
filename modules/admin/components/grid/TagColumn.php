@@ -35,9 +35,6 @@ class TagColumn extends DataColumn
                 $model->invalidation_count
             );
         }
-        if ($model->disabled) {
-            $html[] = '<span class="fa fa-exclamation-triangle text-danger pull-right" title="Not found."></span>';
-        }
 
         return implode(" \n", $html);
     }

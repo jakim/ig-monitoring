@@ -136,7 +136,6 @@ class MonitoringController extends Controller
 
             foreach ($usernames as $username) {
                 $account = $accountManager->startMonitoring($username, $form->proxy_id);
-                $account->disabled = 0;
                 if (!$account->hasErrors()) {
                     Yii::$app->session->setFlash('success', 'OK!');
 

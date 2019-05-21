@@ -22,7 +22,6 @@ class Account extends \app\models\Account
         $scenarios[self::SCENARIO_UPDATE] = [
             'name',
             'is_valid',
-            'disabled',
             'proxy_id'
         ];
 
@@ -34,7 +33,6 @@ class Account extends \app\models\Account
         return ArrayHelper::merge(parent::attributeLabels(), [
             's_categories' => 'Categories',
             'is_valid' => 'Is Valid - an exclamation triangle in the list of accounts, is set automatically if the account is not reachable. Check this option if you are sure that this account is valid and want to try to refresh stats again.',
-            'disabled' => 'Disabled - the account will disappear from the monitoring list and will be ignored even if it is automatically discovered.',
         ]);
     }
 

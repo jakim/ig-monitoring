@@ -33,7 +33,6 @@ $lastAccountStats = $model->lastAccountStats;
 
                             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                             <?= $form->field($model, 'is_valid')->checkbox() ?>
-                            <?= $form->field($model, 'disabled')->checkbox() ?>
                             <?= $form->field($model, 'proxy_id')->widget(Select2::class, [
                                 'options' => [
                                     'prompt' => 'Select dedicated proxy...',

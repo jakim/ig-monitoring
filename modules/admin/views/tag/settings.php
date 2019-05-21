@@ -28,7 +28,6 @@ $lastTagStats = $model->lastTagStats;
                             <?php $form = ActiveForm::begin(); ?>
 
                             <?= $form->field($model, 'is_valid')->checkbox() ?>
-                            <?= $form->field($model, 'disabled')->checkbox() ?>
 
                             <div class="form-group">
                                 <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>

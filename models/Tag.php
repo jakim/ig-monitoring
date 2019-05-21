@@ -21,7 +21,6 @@ use yii\helpers\ArrayHelper;
  * @property int $invalidation_type_id
  * @property int $invalidation_count
  * @property string $update_stats_after
- * @property bool $disabled
  * @property int $likes [int(11)]
  * @property int $min_likes [int(11)]
  * @property int $max_likes [int(11)]
@@ -80,7 +79,7 @@ class Tag extends ActiveRecord
     {
         return [
             [['monitoring', 'proxy_id', 'occurs', 'invalidation_type_id', 'invalidation_count', 'media', 'likes', 'min_likes', 'max_likes', 'comments', 'min_comments', 'max_comments'], 'integer'],
-            [['is_valid', 'disabled'], 'boolean'],
+            [['is_valid'], 'boolean'],
             [['updated_at', 'created_at', 'update_stats_after', 'stats_updated_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['name'], 'unique'],
@@ -106,7 +105,6 @@ class Tag extends ActiveRecord
             'invalidation_type_id' => 'Invalidation Type ID',
             'invalidation_count' => 'Invalidation Count',
             'update_stats_after' => 'Update Stats After',
-            'disabled' => 'Disabled',
         ];
     }
 

@@ -26,7 +26,6 @@ class Tag extends \app\models\Tag
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_UPDATE] = [
             'is_valid',
-            'disabled',
         ];
 
         return $scenarios;
@@ -44,7 +43,6 @@ class Tag extends \app\models\Tag
             'ts_max_comments' => 'Max Comments',
             'ts_created_at' => 'Created At',
             'is_valid' => 'Is Valid - an exclamation triangle in the list of tags, is set automatically if the tag is not reachable. Check this option if you are sure that this tag is valid and want to try to refresh stats again.',
-            'disabled' => 'Disabled - the tag will disappear from the monitoring list.',
         ]);
     }
 }

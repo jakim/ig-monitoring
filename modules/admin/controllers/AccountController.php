@@ -96,10 +96,7 @@ class AccountController extends Controller
         $model->setScenario(Account::SCENARIO_UPDATE);
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->disabled) {
-                $model->monitoring = 0;
-                $model->save();
-            } elseif ($model->is_valid) {
+            if ($model->is_valid) {
                 $accountUpdater = Yii::createObject([
                     'class' => AccountUpdater::class,
                     'account' => $model,

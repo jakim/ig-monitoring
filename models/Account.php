@@ -23,7 +23,6 @@ use yii\helpers\ArrayHelper;
  * @property string $created_at
  * @property bool $monitoring
  * @property int $proxy_id
- * @property bool $disabled
  * @property bool $is_valid [tinyint(1)]
  * @property int $invalidation_type_id [int(11)]
  * @property int $invalidation_count [int(11)]
@@ -95,7 +94,7 @@ class Account extends ActiveRecord
             [['proxy_id', 'occurs', 'followed_by', 'follows', 'media'], 'integer'],
             [['er', 'avg_likes', 'avg_comments'], 'number'],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', '!uid', 'business_category'], 'string', 'max' => 255],
-            [['monitoring', 'disabled', 'is_valid', 'is_valid', 'is_business'], 'boolean'],
+            [['monitoring', 'is_valid', 'is_valid', 'is_business'], 'boolean'],
             [['username'], 'unique'],
             [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
         ];

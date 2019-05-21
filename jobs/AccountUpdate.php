@@ -27,7 +27,7 @@ class AccountUpdate implements JobInterface
     public function execute($queue)
     {
         $account = Account::findOne($this->id);
-        if ($account && !$account->disabled) {
+        if ($account) {
 
             $service = Yii::createObject([
                 'class' => AccountFullUpdate::class,
