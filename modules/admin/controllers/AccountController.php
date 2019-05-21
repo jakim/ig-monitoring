@@ -12,6 +12,7 @@ use app\modules\admin\models\account\MediaAccountSearch;
 use app\modules\admin\models\account\MediaTagSearch;
 use app\modules\admin\models\account\StatsSearch;
 use app\modules\admin\models\AccountStats;
+use app\modules\admin\models\Proxy;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -114,8 +115,13 @@ class AccountController extends Controller
             return $this->redirect(['account/dashboard', 'id' => $model->id]);
         }
 
+        $proxies = Proxy::find()
+            ->active()
+            ->all();
+
         return $this->render('settings', [
             'model' => $model,
+            'proxies' => $proxies,
         ]);
     }
 

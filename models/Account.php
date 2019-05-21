@@ -118,7 +118,7 @@ class Account extends ActiveRecord
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
             'monitoring' => 'Monitoring',
-            'proxy_id' => 'Proxy ID',
+            'proxy_id' => 'Proxy',
             'er' => 'Engagement',
         ];
     }

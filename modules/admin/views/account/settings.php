@@ -1,10 +1,14 @@
 <?php
 
+use app\modules\admin\models\Proxy;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Account */
+/** @var array|\app\modules\admin\models\Proxy $proxies [] */
 
 $this->title = "{$model->usernamePrefixed} :: Statistics";
 $this->params['breadcrumbs'][] = ['label' => 'Monitoring', 'url' => ['monitoring/accounts']];
@@ -30,6 +34,17 @@ $lastAccountStats = $model->lastAccountStats;
                             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                             <?= $form->field($model, 'is_valid')->checkbox() ?>
                             <?= $form->field($model, 'disabled')->checkbox() ?>
+                            <?= $form->field($model, 'proxy_id')->widget(Select2::class, [
+                                'options' => [
+                                    'prompt' => 'Select dedicated proxy...',
+                                ],
+                                'pluginOptions' => [
+                                    'allowClear' => true,
+                                ],
+                                'data' => ArrayHelper::map($proxies, 'id', function (Proxy $proxy) {
+                                    return "{$proxy->ip}:{$proxy->port}";
+                                }),
+                            ]) ?>
 
                             <div class="form-group">
                                 <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>

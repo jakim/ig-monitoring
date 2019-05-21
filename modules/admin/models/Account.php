@@ -23,6 +23,7 @@ class Account extends \app\models\Account
             'name',
             'is_valid',
             'disabled',
+            'proxy_id'
         ];
 
         return $scenarios;
