@@ -83,13 +83,8 @@ class TagController extends Controller
             return $this->redirect(['tag/stats', 'id' => $model->id]);
         }
 
-        $proxies = Proxy::find()
-            ->active()
-            ->all();
-
         return $this->render('settings', [
             'model' => $model,
-            'proxies' => $proxies,
         ]);
     }
 
