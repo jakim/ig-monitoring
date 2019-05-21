@@ -112,13 +112,8 @@ class AccountController extends Controller
             return $this->redirect(['account/dashboard', 'id' => $model->id]);
         }
 
-        $proxies = Proxy::find()
-            ->active()
-            ->all();
-
         return $this->render('settings', [
             'model' => $model,
-            'proxies' => $proxies,
         ]);
     }
 
