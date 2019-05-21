@@ -18,6 +18,7 @@ use app\components\updaters\AccountUpdater;
 use app\dictionaries\AccountInvalidationType;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use Jakim\Exception\RestrictedProfileException;
 use Yii;
 use yii\base\BaseObject;
 use yii\web\NotFoundHttpException;
@@ -74,6 +75,11 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
         } catch (NotFoundHttpException $exception) {
             $accountUpdater
                 ->setIsInValid(AccountInvalidationType::NOT_FOUND)
+                ->setNextStatsUpdate(true)
+                ->save();
+        } catch (RestrictedProfileException $exception) {
+            $accountUpdater
+                ->setIsInValid(AccountInvalidationType::RESTRICTED_PROFILE)
                 ->setNextStatsUpdate(true)
                 ->save();
         } catch (RequestException $exception) {

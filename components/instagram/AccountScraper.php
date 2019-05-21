@@ -48,6 +48,7 @@ class AccountScraper extends Scraper implements AccountScraperInterface
      * @param string $username
      * @return \app\components\instagram\models\Post[]
      * @throws \Jakim\Exception\EmptyContentException
+     * @throws \Jakim\Exception\RestrictedProfileException
      */
     public function fetchLastPosts(string $username): array
     {
