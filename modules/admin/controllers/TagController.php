@@ -5,6 +5,7 @@ namespace app\modules\admin\controllers;
 use app\components\JobFactory;
 use app\components\updaters\TagUpdater;
 use app\models\TagStats;
+use app\modules\admin\models\Proxy;
 use app\modules\admin\models\Tag;
 use app\modules\admin\models\tag\StatsSearch;
 use Yii;
@@ -82,8 +83,13 @@ class TagController extends Controller
             return $this->redirect(['tag/stats', 'id' => $model->id]);
         }
 
+        $proxies = Proxy::find()
+            ->active()
+            ->all();
+
         return $this->render('settings', [
             'model' => $model,
+            'proxies' => $proxies,
         ]);
     }
 
