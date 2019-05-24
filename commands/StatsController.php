@@ -19,58 +19,10 @@ use yii\helpers\Console;
 
 class StatsController extends Controller
 {
-    /**
-     * Create update jobs.
-     *
-     * @param int $force ignore interval
-     * @return int
-     */
-    public function actionUpdateTags($force = 0)
+    public function actionUpdate($force = 0)
     {
-        $query = Tag::find()
-            ->select('id')
-            ->monitoring();
-
-        if (!$force) {
-            if (!$force) {
-                $query->andWhere(['or',
-                    $this->updateAfterExpression(),
-                    ['update_stats_after' => null],
-                ]);
-            }
-        }
-
-        /** @var \yii\queue\Queue $queue */
-        $queue = Yii::$app->queue;
-        foreach ($query->column() as $tagId) {
-            $queue->push(JobFactory::createTagUpdate($tagId));
-        }
-        $this->stdout("OK!\n");
-
-        return ExitCode::OK;
-    }
-
-    /**
-     * Update on run.
-     *
-     * @param $name
-     * @return int
-     */
-    public function actionUpdateTag($name)
-    {
-        $tag = Tag::findOne(['name' => $name]);
-        if ($tag === null) {
-            $this->stdout("Tag '$name' not found.\n", Console::FG_RED);
-
-            return ExitCode::UNSPECIFIED_ERROR;
-        }
-
-        /** @var \yii\queue\Queue $queue */
-        $queue = Yii::$app->queue;
-        $queue->push(JobFactory::createTagUpdate($tag->id));
-        $this->stdout("OK!\n");
-
-        return ExitCode::OK;
+        $this->actionUpdateAccounts($force);
+        $this->actionUpdateTags($force);
     }
 
     /**
@@ -97,7 +49,7 @@ class StatsController extends Controller
         foreach ($query->column() as $accountId) {
             $queue->push(JobFactory::createAccountUpdate($accountId));
         }
-        $this->stdout("OK!\n");
+        $this->stdout("Accounts - OK!\n");
 
         return ExitCode::OK;
     }
@@ -114,6 +66,60 @@ class StatsController extends Controller
         /** @var \yii\queue\Queue $queue */
         $queue = Yii::$app->queue;
         $queue->push(JobFactory::createAccountUpdate($account->id));
+        $this->stdout("OK!\n");
+
+        return ExitCode::OK;
+    }
+
+    /**
+     * Create update jobs.
+     *
+     * @param int $force ignore interval
+     * @return int
+     */
+    public function actionUpdateTags($force = 0)
+    {
+        $query = Tag::find()
+            ->select('id')
+            ->monitoring();
+
+        if (!$force) {
+            if (!$force) {
+                $query->andWhere(['or',
+                    $this->updateAfterExpression(),
+                    ['update_stats_after' => null],
+                ]);
+            }
+        }
+
+        /** @var \yii\queue\Queue $queue */
+        $queue = Yii::$app->queue;
+        foreach ($query->column() as $tagId) {
+            $queue->push(JobFactory::createTagUpdate($tagId));
+        }
+        $this->stdout("Tags - OK!\n");
+
+        return ExitCode::OK;
+    }
+
+    /**
+     * Update on run.
+     *
+     * @param $name
+     * @return int
+     */
+    public function actionUpdateTag($name)
+    {
+        $tag = Tag::findOne(['name' => $name]);
+        if ($tag === null) {
+            $this->stdout("Tag '$name' not found.\n", Console::FG_RED);
+
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
+
+        /** @var \yii\queue\Queue $queue */
+        $queue = Yii::$app->queue;
+        $queue->push(JobFactory::createTagUpdate($tag->id));
         $this->stdout("OK!\n");
 
         return ExitCode::OK;
