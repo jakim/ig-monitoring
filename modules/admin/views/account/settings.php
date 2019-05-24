@@ -42,8 +42,8 @@ $lastAccountStats = $model->lastAccountStats;
                         </div>
                         <div class="col-lg-4 col-lg-offset-2">
                             <p>
-                                <?= Html::a('Delete statistics history', ['account/delete-stats', 'id' => $model->id], [
-                                    'class' => 'btn btn-danger',
+                                <?= Html::a('Delete statistics history', '#', [
+                                    'class' => 'btn btn-danger disabled',
                                     'data' => [
                                         'method' => 'post',
                                         'confirm' => 'Statistical data will be permanently deleted, are you sure?',
@@ -51,8 +51,8 @@ $lastAccountStats = $model->lastAccountStats;
                                 ]) ?>
                             </p>
                             <p>
-                                <?= Html::a('Delete associated data', ['account/delete-associated', 'id' => $model->id], [
-                                    'class' => 'btn btn-danger',
+                                <?= Html::a('Delete associated data', '#', [
+                                    'class' => 'btn btn-danger disabled',
                                     'data' => [
                                         'method' => 'post',
                                         'confirm' => 'Associated data (media tags, media accounts) will be permanently deleted, are you sure?',
@@ -60,8 +60,8 @@ $lastAccountStats = $model->lastAccountStats;
                                 ]) ?>
                             </p>
                             <p>
-                                <?= Html::a('Delete account', ['account/delete', 'id' => $model->id], [
-                                    'class' => 'btn btn-danger',
+                                <?= Html::a('Delete account', '#', [
+                                    'class' => 'btn btn-danger disabled',
                                     'data' => [
                                         'method' => 'post',
                                         'confirm' => 'Account and all associated data will be permanently deleted, are you sure?',

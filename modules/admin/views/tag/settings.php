@@ -41,8 +41,8 @@ $lastTagStats = $model->lastTagStats;
                         </div>
                         <div class="col-lg-4 col-lg-offset-2">
                             <p>
-                                <?= Html::a('Delete statistics history', ['tag/delete-stats', 'id' => $model->id], [
-                                    'class' => 'btn btn-danger',
+                                <?= Html::a('Delete statistics history', '#', [
+                                    'class' => 'btn btn-danger disabled',
                                     'data' => [
                                         'method' => 'post',
                                         'confirm' => 'Statistical data will be permanently deleted, are you sure?',
