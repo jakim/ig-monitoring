@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Tag;
+use app\modules\admin\components\grid\TagColumn;
 use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\widgets\OnOffMonitoringButton;
 use yii\grid\GridView;
@@ -41,7 +42,10 @@ $lastAccountStats = $model->lastAccountStats;
                         'dataProvider' => $dataProvider,
                         'columns' => [
                             ['class' => SerialColumn::class],
-                            'name',
+                            [
+                                'class' => TagColumn::class,
+                                'attribute' => 'name',
+                            ],
                             'occurs',
                             [
                                 'attribute' => 'ts_avg_likes',
