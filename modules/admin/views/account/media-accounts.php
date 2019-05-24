@@ -14,7 +14,7 @@ use yii\web\JsExpression;
 /* @var $model app\models\Account */
 /* @var $categories app\models\Category[] */
 
-$this->title = "{$model->usernamePrefixed} :: Media Accounts";
+$this->title = "{$model->usernamePrefixed} :: Mentioned Accounts";
 $this->params['breadcrumbs'][] = ['label' => 'Monitoring', 'url' => ['monitoring/accounts']];
 $this->params['breadcrumbs'][] = ['label' => $model->usernamePrefixed, 'url' => ['dashboard', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Media Accounts';

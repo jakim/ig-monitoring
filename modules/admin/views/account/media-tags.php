@@ -11,7 +11,7 @@ use yii\web\JsExpression;
 /* @var $this yii\web\View */
 /* @var $model app\models\Account */
 
-$this->title = "{$model->usernamePrefixed} :: Media Tags";
+$this->title = "{$model->usernamePrefixed} :: Used Tags";
 $this->params['breadcrumbs'][] = ['label' => 'Monitoring', 'url' => ['monitoring/accounts']];
 $this->params['breadcrumbs'][] = ['label' => $model->usernamePrefixed, 'url' => ['dashboard', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Media Tags';
