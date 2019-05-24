@@ -88,6 +88,8 @@ $user = Yii::$app->user->identity;
                 'items' => [
                     ['label' => 'Resources', 'options' => ['class' => 'header']],
                     ['label' => 'Premium Proxies', 'icon' => 'star-o', 'url' => ['/admin/resource/proxy']],
+                    ['label' => 'igmonitoring.com', 'icon' => 'star-o', 'url' => 'https://igmonitoring.com/'],
+                    ['label' => '@IgMonitoring', 'icon' => 'twitter', 'url' => 'https://twitter.com/IgMonitoring'],
                 ],
             ]) ?>
 
@@ -98,6 +100,23 @@ $user = Yii::$app->user->identity;
 
     <div class="content-wrapper">
         <?= ProxyAlert::widget() ?>
+        <div class="alert alert-success">
+            <p><strong><span class="fa fa-bullhorn"></span> NOTE:</strong> It's just a demo of open source version.</p>
+            <ul>
+                <li>If you have any ideas, comments or you want to help development, feel free to create issue or PR at
+                    <?= Html::a('<span class="fa fa-github"></span> github', 'https://github.com/jakim/ig-monitoring/issues') ?>
+                    .
+                </li>
+                <li>Follow IG Monitoring
+                    on <?= Html::a('<span class="fa fa-twitter"></span> twitter', 'https://twitter.com/IgMonitoring') ?>
+                    to be informed about latest changes and plans.
+                </li>
+                <li><?= Html::a('Get a cloud version', 'https://igmonitoring.com/') ?> with
+                    <?= Html::a('additional features <span class="fa fa-external-link-square"></span>', 'https://igmonitoring.com/versions-comparison') ?>
+                    .
+                </li>
+            </ul>
+        </div>
         <section class="content-header">
             <h1>
                 <?php
