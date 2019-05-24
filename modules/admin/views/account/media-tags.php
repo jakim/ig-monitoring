@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Tag;
+use app\modules\admin\components\grid\TagColumn;
 use app\modules\admin\models\MonitoringForm;
 use app\modules\admin\widgets\OnOffMonitoringButton;
 use yii\grid\GridView;
@@ -10,7 +11,7 @@ use yii\web\JsExpression;
 /* @var $this yii\web\View */
 /* @var $model app\models\Account */
 
-$this->title = "{$model->usernamePrefixed} :: Media Tags";
+$this->title = "{$model->usernamePrefixed} :: Used Tags";
 $this->params['breadcrumbs'][] = ['label' => 'Monitoring', 'url' => ['monitoring/accounts']];
 $this->params['breadcrumbs'][] = ['label' => $model->usernamePrefixed, 'url' => ['dashboard', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Media Tags';
@@ -41,7 +42,10 @@ $lastAccountStats = $model->lastAccountStats;
                         'dataProvider' => $dataProvider,
                         'columns' => [
                             ['class' => SerialColumn::class],
-                            'name',
+                            [
+                                'class' => TagColumn::class,
+                                'attribute' => 'name',
+                            ],
                             'occurs',
                             [
                                 'attribute' => 'ts_avg_likes',
