@@ -12,7 +12,6 @@ class AccountQuery extends ActiveQuery
 {
     public function monitoring()
     {
-        return $this->andWhere(['account.monitoring' => 1])
-            ->andWhere(['disabled' => 0]);
+        return $this->andWhere(['account.monitoring' => 1]);
     }
 }
