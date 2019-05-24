@@ -11,7 +11,9 @@ namespace app\commands;
 use app\components\AccountManager;
 use app\components\TagManager;
 use app\models\Account;
+use app\models\AccountCategory;
 use app\models\AccountStats;
+use app\models\Favorite;
 use app\models\Media;
 use app\models\Tag;
 use app\models\TagStats;
@@ -50,6 +52,8 @@ class DemoController extends Controller
         TagStats::deleteAll(['<', 'created_at', new Expression('DATE_SUB(NOW(), INTERVAL 2 MONTH)')]);
 
         Media::deleteAll(['<', 'created_at', new Expression('DATE_SUB(NOW(), INTERVAL 2 MONTH)')]);
+        Favorite::deleteAll();
+        AccountCategory::deleteAll();
     }
 
     protected function resetMonitoring()
