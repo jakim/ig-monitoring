@@ -43,7 +43,7 @@ You need at least one, **WORKING proxy**.
 
 You need a server (vps will be ok) with linux, root access and configured LEMP, that is:
 
-- php minimum 7.1
+- php minimum 7.2
 - latest nginx, recommended server configuration https://www.yiiframework.com/doc/guide/2.0/en/start-installation#configuring-web-servers
 - mysql minimum 5.7 (or the appropriate mariadb, e.g. 10.3)
 - [installation instructions on Debian](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-on-debian-8) (there is no need for a firewall ;)
