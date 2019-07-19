@@ -1,3 +1,11 @@
+# Discount time!
+
+CODE 👉 **FC1B6352** 👈 [http://bit.ly/2Lx4TAX](bit.ly/2Lx4TAX)
+
+-10% for all new IGM Cloud subscribers 😀
+
+The coupon will be valid until the end of July
+
 # IG Monitoring Cloud
 
 Let me introduce you to a cloud version of a system I'm currently working on.
