@@ -1,6 +1,6 @@
 # Discount time!
 
-CODE 👉 **FC1B6352** 👈 [http://bit.ly/2Lx4TAX](bit.ly/2Lx4TAX)
+CODE 👉 **FC1B6352** 👈 [https://bit.ly/2Lx4TAX](https://bit.ly/2Lx4TAX)
 
 -10% for all new IGM Cloud subscribers 😀
 
