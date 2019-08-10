@@ -17,7 +17,7 @@ class m180111_102457_create_media_table extends Migration
             'account_id' => $this->integer(),
             'shortcode' => $this->string()->notNull()->unique(),
             'is_video' => $this->boolean(),
-            'caption' => $this->text(),
+            'caption' => $this->text()->append('CHARACTER SET utf8 COLLATE utf8_unicode_ci'),
             'instagram_id' => $this->string(),
             'taken_at' => $this->dateTime(),
             'updated_at' => $this->dateTime(),
