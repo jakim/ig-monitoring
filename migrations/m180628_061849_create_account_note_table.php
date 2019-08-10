@@ -16,7 +16,7 @@ class m180628_061849_create_account_note_table extends Migration
             'id' => $this->primaryKey(),
             'account_id' => $this->integer(),
             'user_id' => $this->integer(),
-            'note' => $this->string(),
+            'note' => $this->string()->append('CHARACTER SET utf8 COLLATE utf8_unicode_ci'),
             'created_at' => $this->dateTime(),
         ]);
 
