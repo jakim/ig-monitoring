@@ -14,8 +14,8 @@ class m180111_103924_create_tag_table extends Migration
     {
         $this->createTable('tag', [
             'id' => $this->primaryKey(),
-            'name' => $this->string()->unique(),
-            'slug' => $this->string(),
+            'name' => $this->string()->unique()->append('CHARACTER SET utf8 COLLATE utf8_unicode_ci'),
+            'slug' => $this->string()->append('CHARACTER SET utf8 COLLATE utf8_unicode_ci'),
             'main_tag_id' => $this->integer(),
             'updated_at' => $this->dateTime(),
             'created_at' => $this->dateTime(),
