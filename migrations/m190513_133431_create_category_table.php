@@ -14,7 +14,7 @@ class m190513_133431_create_category_table extends Migration
     {
         $this->createTable('{{%category}}', [
             'id' => $this->primaryKey(),
-            'name' => $this->string()->notNull()->unique(),
+            'name' => $this->string()->notNull()->unique()->append('CHARACTER SET utf8 COLLATE utf8_unicode_ci'),
         ]);
     }
 
