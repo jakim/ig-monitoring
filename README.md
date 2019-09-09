@@ -11,9 +11,13 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 [Screenshots](#screenshots)
 
-[Account statistics](#account-tracker)
+[Free DEMO](https://demo.igmonitoring.com)
 
-[Tag statistics](#tag-tracker)
+[Cloud Free Trial](https://app.igmonitoring.com/admin/auth/register)
+
+[Account statistics](https://igmonitoring.com/versions-comparison)
+
+[Tag statistics](https://igmonitoring.com/versions-comparison)
 
 [FAQ](#faq)
 
@@ -23,8 +27,6 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 # Version
 BETA stage.  **Use at your own risk.**
-
-Branch master is not suitable for production applications. 
 
 Branch 0.9 is the most stable.
 
@@ -100,33 +102,6 @@ This is an independent tool. **Use at your own risk.**
 ![dashboard_ig_monitoring](https://user-images.githubusercontent.com/839118/38170151-9680cb8a-357d-11e8-9cf4-b25b75ccbef6.png)
 ![image](https://user-images.githubusercontent.com/839118/37048055-0b5362f8-216d-11e8-9dab-a82304dd4353.png)
 ![image](https://user-images.githubusercontent.com/839118/37048109-3372280a-216d-11e8-988d-c825dfe2432c.png)
-
-## Account tracker
-
--   Followers
--   Followed
--   Media count
--   Engagement rate
--   Daily change of all above *(with chart)*
--   Multiple accounts compared on one screen
--   Daily/monthly fluctuations in the number of followers *(with chart)*
--   Accounts mentioned (with occurs counter)
--   Tags used (with occurs counter)
--   Locations used (with occurs counter) *`(cloud version)`*
--   **Public url to account statistics view (e.g. for the client)**
--   Access to historical data (if in the database, they are yours) *`(cloud version)`*
-
-#### Tag tracker  
-*(based on top 9 posts)*
-
--   Media count
--   Number of likes (total, min, max)
--   Number of comments (total, min, max)
--   Multiple tags compared on one screen
--   Accounts highlighted (with occurs counter) *`(cloud version)`*
--   Tags used (with occurs counter) *`(cloud version)`*
--   Locations used (with occurs counter) *`(cloud version)`*
--   Access to historical data (if in the database, they are yours) *`(cloud version)`*
 
 # FAQ
 Why did I build it?
