@@ -36,7 +36,7 @@ if ($categories !== false) {
             'placeholder' => 'Select categories...',
         ],
         'pluginOptions' => [
-            'categories' => true,
+            'tags' => true,
         ],
         'data' => $categories,
     ])->label(false);
