@@ -37,9 +37,9 @@ class InvalidAccountAlert extends Widget
     protected function lines()
     {
         $formatter = Yii::$app->formatter;
-
+        $reason = $this->model->last_invalidation_unknown ? $this->model->last_invalidation_unknown : "Unknown Reason";
         return [
-            sprintf('type: %s', ArrayHelper::getValue(AccountInvalidationType::labels(), $this->model->invalidation_type_id, 'Unknown reason')),
+            sprintf('type: %s', ArrayHelper::getValue(AccountInvalidationType::labels(), $this->model->invalidation_type_id, $reason)),
             sprintf('attempts: %s', $formatter->asInteger($this->model->invalidation_count)),
             sprintf('next try: %s', $formatter->asDatetime($this->model->update_stats_after)),
         ];

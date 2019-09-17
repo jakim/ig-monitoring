@@ -32,14 +32,20 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
 
     public function run()
     {
+        /**
+         * @var ProxyManager $proxyManager
+         */
         $proxyManager = Yii::createObject(ProxyManager::class);
+        /**
+         * @var AccountUpdater $accountUpdater
+         */
         $accountUpdater = Yii::createObject([
             'class' => AccountUpdater::class,
             'account' => $this->account,
         ]);
 
+        $proxy = $proxyManager->reserve($this->account);
         try {
-            $proxy = $proxyManager->reserve($this->account);
             $httpClient = Client::factory($proxy, [], 3600);
 
             $scraper = Yii::createObject(AccountScraper::class, [
@@ -83,10 +89,19 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
                 ->setNextStatsUpdate(true)
                 ->save();
         } catch (RequestException $exception) {
-            $accountUpdater
-                ->setIsInValid()
-                ->setNextStatsUpdate(true)
-                ->save();
+            if (isset($proxy) && (strpos($exception->getMessage(), "Failed to connect to " . $proxy->ip) !== false || strpos($exception->getMessage(), "malformed") !== false)) {
+                $type = strpos($exception->getMessage(), "malformed") !== false ? AccountInvalidationType::PROXY_ERROR : AccountInvalidationType::PROXY_TIMEOUT;
+                $proxyManager->invalidate($proxy);
+                $accountUpdater
+                    ->setIsInvalid($type)
+                    ->setNextStatsUpdate(true)
+                    ->save();
+            } else {
+                $accountUpdater
+                    ->setIsInvalidUnknown($exception->getMessage())
+                    ->setNextStatsUpdate(true)
+                    ->save();
+            }
         } finally {
             if (isset($proxy)) {
                 $proxyManager->release($proxy);

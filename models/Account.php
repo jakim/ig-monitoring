@@ -24,6 +24,7 @@ use yii\helpers\ArrayHelper;
  * @property bool $monitoring
  * @property int $proxy_id
  * @property bool $is_valid [tinyint(1)]
+ * @property string $last_invalidation_unknown
  * @property int $invalidation_type_id [int(11)]
  * @property int $invalidation_count [int(11)]
  * @property string $update_stats_after [datetime]

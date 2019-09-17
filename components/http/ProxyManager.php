@@ -52,6 +52,11 @@ class ProxyManager extends Component
         Proxy::updateAll(['reservation_uid' => null], 'reservation_uid=:reservation_uid', [':reservation_uid' => $proxy->reservation_uid]);
     }
 
+    public function invalidate(Proxy $proxy)
+    {
+        Proxy::updateAll(['active' => false], 'id=:id', [':id' => $proxy->id]);
+    }
+
     protected function generateUid()
     {
         return sprintf('%s_%s', Yii::$app->security->generateRandomString(64), time());

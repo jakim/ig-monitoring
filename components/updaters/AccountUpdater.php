@@ -90,6 +90,15 @@ class AccountUpdater extends Component
         return $this;
     }
 
+    public function setIsInvalidUnknown(string $message = null)
+    {
+        $this->account->is_valid = 0;
+        $this->account->invalidation_count = (int)$this->account->invalidation_count + 1;
+        $this->account->last_invalidation_unknown = $message;
+
+        return $this;
+    }
+
     /**
      * If true, then will be automatically calculate from invalidation_count
      *
