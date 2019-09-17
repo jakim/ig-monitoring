@@ -139,7 +139,7 @@ class MonitoringController extends Controller
                 if (!$account->hasErrors()) {
                     Yii::$app->session->setFlash('success', 'OK!');
 
-                    $job = JobFactory::createAccountUpdate($account);
+                    $job = JobFactory::updateAccount($account);
                     $queue->push($job);
 
                     $categories = array_filter((array)$form->categories);
@@ -178,7 +178,7 @@ class MonitoringController extends Controller
                 $tag = $tagManager->startMonitoring($name, $form->proxy_id);
                 if (!$tag->hasErrors()) {
                     Yii::$app->session->setFlash('success', 'OK!');
-                    $job = JobFactory::createTagUpdate($tag);
+                    $job = JobFactory::updateTag($tag);
                     $queue->push($job);
                 } else {
                     Yii::error('Validation error: ' . json_encode($tag->errors), __METHOD__);

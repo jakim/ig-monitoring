@@ -4,7 +4,7 @@ namespace app\modules\admin\controllers;
 
 use app\components\CategoryManager;
 use app\components\JobFactory;
-use app\components\updaters\AccountUpdater;
+use app\components\builders\AccountBuilder;
 use app\models\AccountNote;
 use app\models\Media;
 use app\modules\admin\models\Account;
@@ -49,13 +49,13 @@ class AccountController extends Controller
         $model = $this->findModel($id);
         if (!$model->is_valid) {
             $accountUpdater = Yii::createObject([
-                'class' => AccountUpdater::class,
+                'class' => AccountBuilder::class,
                 'account' => $model,
             ]);
             $accountUpdater->setIsValid()
                 ->save();
 
-            $job = JobFactory::createAccountUpdate($model);
+            $job = JobFactory::updateAccount($model);
             /** @var \yii\queue\Queue $queue */
             $queue = Yii::$app->queue;
             $queue->push($job);
@@ -98,7 +98,7 @@ class AccountController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->is_valid) {
                 $accountUpdater = Yii::createObject([
-                    'class' => AccountUpdater::class,
+                    'class' => AccountBuilder::class,
                     'account' => $model,
                 ]);
                 $accountUpdater

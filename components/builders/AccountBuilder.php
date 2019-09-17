@@ -5,7 +5,7 @@
  * Date: 12.06.2018
  */
 
-namespace app\components\updaters;
+namespace app\components\builders;
 
 
 use app\components\instagram\models\Account;
@@ -20,7 +20,7 @@ use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 use function count;
 
-class AccountUpdater extends Component
+class AccountBuilder extends Component
 {
     use SaveModelTrait, SetAccountTrait, NextUpdateCalculatorTrait;
 
