@@ -18,6 +18,7 @@ use app\components\updaters\AccountUpdater;
 use app\dictionaries\AccountInvalidationType;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use Jakim\Exception\LoginAndSignupPageException;
 use Jakim\Exception\RestrictedProfileException;
 use Yii;
 use yii\base\BaseObject;
@@ -39,9 +40,8 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
         ]);
 
         try {
-            $proxy = $proxyManager->reserve($this->account);
-            $httpClient = Client::factory($proxy, [], 3600);
-
+            $proxy = $proxyManager->reserve();
+            $httpClient = Client::factory($proxy);
             $scraper = Yii::createObject(AccountScraper::class, [
                 $httpClient,
             ]);
@@ -49,9 +49,8 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
             $accountData = $this->fetchAccountData($scraper);
             $posts = $scraper->fetchLastPosts($accountData->username);
 
-            $proxyManager->release($proxy);
+            $proxyManager->release($proxy, false);
             unset($proxy);
-
 
             if ($accountData->isPrivate) {
                 $accountUpdater
@@ -82,6 +81,13 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
                 ->setIsInValid(AccountInvalidationType::RESTRICTED_PROFILE)
                 ->setNextStatsUpdate(true)
                 ->save();
+        } catch (LoginAndSignupPageException $exception) {
+            $accountUpdater
+                ->setNextStatsUpdate(1)
+                ->save();
+            if (isset($proxy)) { // must be
+                $proxyManager->release($proxy, true);
+            }
         } catch (RequestException $exception) {
             $accountUpdater
                 ->setIsInValid()
@@ -99,7 +105,6 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
     {
         $idents = array_filter([
             $this->account->username,
-            $this->account->instagram_id,
         ]);
 
         foreach ($idents as $ident) {

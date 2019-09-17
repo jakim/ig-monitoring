@@ -33,7 +33,7 @@
         "2amigos/yii2-chartjs-widget": "^2.1",
         "jakim-pj/ua": "@dev",
         "jakim-pj/ig": "@dev",
-        "jakim-pj/ig-client": "@dev",
+        "jakim-pj/ig-client": "^1.4",
         "kevinrob/guzzle-cache-middleware": "^3.2",
         "nesbot/carbon": "^2.0.0",
         "bower-asset/ladda": "^2.0",
