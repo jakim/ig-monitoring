@@ -8,13 +8,13 @@
 namespace app\components\services;
 
 
+use app\components\builders\AccountBuilder;
 use app\components\http\Client;
 use app\components\http\ProxyManager;
 use app\components\instagram\AccountScraper;
 use app\components\instagram\models\Account;
 use app\components\MediaManager;
 use app\components\services\contracts\ServiceInterface;
-use app\components\updaters\AccountUpdater;
 use app\dictionaries\AccountInvalidationType;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -24,7 +24,7 @@ use Yii;
 use yii\base\BaseObject;
 use yii\web\NotFoundHttpException;
 
-class AccountFullUpdate extends BaseObject implements ServiceInterface
+class AccountUpdater extends BaseObject implements ServiceInterface
 {
     /**
      * @var \app\models\Account
@@ -34,8 +34,8 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
     public function run()
     {
         $proxyManager = Yii::createObject(ProxyManager::class);
-        $accountUpdater = Yii::createObject([
-            'class' => AccountUpdater::class,
+        $accountBuilder = Yii::createObject([
+            'class' => AccountBuilder::class,
             'account' => $this->account,
         ]);
 
@@ -53,12 +53,12 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
             unset($proxy);
 
             if ($accountData->isPrivate) {
-                $accountUpdater
+                $accountBuilder
                     ->setIsInValid(AccountInvalidationType::IS_PRIVATE)
                     ->setNextStatsUpdate(true)
                     ->save();
             } else {
-                $accountUpdater
+                $accountBuilder
                     ->setDetails($accountData)
                     ->setIdents($accountData)
                     ->setIsValid()
@@ -72,24 +72,24 @@ class AccountFullUpdate extends BaseObject implements ServiceInterface
             }
 
         } catch (NotFoundHttpException $exception) {
-            $accountUpdater
+            $accountBuilder
                 ->setIsInValid(AccountInvalidationType::NOT_FOUND)
                 ->setNextStatsUpdate(true)
                 ->save();
         } catch (RestrictedProfileException $exception) {
-            $accountUpdater
+            $accountBuilder
                 ->setIsInValid(AccountInvalidationType::RESTRICTED_PROFILE)
                 ->setNextStatsUpdate(true)
                 ->save();
         } catch (LoginAndSignupPageException $exception) {
-            $accountUpdater
+            $accountBuilder
                 ->setNextStatsUpdate(1)
                 ->save();
             if (isset($proxy)) { // must be
                 $proxyManager->release($proxy, true);
             }
         } catch (RequestException $exception) {
-            $accountUpdater
+            $accountBuilder
                 ->setIsInValid()
                 ->setNextStatsUpdate(true)
                 ->save();

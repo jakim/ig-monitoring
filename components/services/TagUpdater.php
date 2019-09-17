@@ -28,7 +28,7 @@ class TagUpdater implements ServiceInterface
     public function run()
     {
         $proxyManager = Yii::createObject(ProxyManager::class);
-        $tagUpdater = Yii::createObject([
+        $tagBuilder = Yii::createObject([
             'class' => TagBuilder::class,
             'tag' => $this->tag,
         ]);
@@ -46,19 +46,19 @@ class TagUpdater implements ServiceInterface
             $proxyManager->release($proxy);
             unset($proxy);
 
-            $tagUpdater
+            $tagBuilder
                 ->setIsValid()
                 ->setStats($tagData)
                 ->setNextStatsUpdate()
                 ->save();
 
         } catch (ClientException $exception) {
-            $tagUpdater
+            $tagBuilder
                 ->setIsInvalid(TagInvalidationType::NOT_FOUND)
                 ->setNextStatsUpdate(true)
                 ->save();
         } catch (RequestException $exception) {
-            $tagUpdater
+            $tagBuilder
                 ->setIsInvalid()
                 ->setNextStatsUpdate(true)
                 ->save();
