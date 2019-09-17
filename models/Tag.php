@@ -16,7 +16,6 @@ use yii\helpers\ArrayHelper;
  * @property string $updated_at
  * @property string $created_at
  * @property int $monitoring
- * @property int $proxy_id
  * @property bool $is_valid
  * @property int $invalidation_type_id
  * @property int $invalidation_count
@@ -36,7 +35,6 @@ use yii\helpers\ArrayHelper;
  * @property Account[] $accounts
  * @property MediaTag[] $mediaTags
  * @property Media[] $media
- * @property Proxy $proxy
  * @property TagInvalidationType $invalidationType
  * @property TagStats[] $tagStats
  */
@@ -78,13 +76,12 @@ class Tag extends ActiveRecord
     public function rules()
     {
         return [
-            [['monitoring', 'proxy_id', 'occurs', 'invalidation_type_id', 'invalidation_count', 'media', 'likes', 'min_likes', 'max_likes', 'comments', 'min_comments', 'max_comments'], 'integer'],
+            [['monitoring', 'occurs', 'invalidation_type_id', 'invalidation_count', 'media', 'likes', 'min_likes', 'max_likes', 'comments', 'min_comments', 'max_comments'], 'integer'],
             [['is_valid'], 'boolean'],
             [['updated_at', 'created_at', 'update_stats_after', 'stats_updated_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['name'], 'unique'],
             [['invalidation_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => TagInvalidationType::class, 'targetAttribute' => ['invalidation_type_id' => 'id']],
-            [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
         ];
     }
 
@@ -100,7 +97,6 @@ class Tag extends ActiveRecord
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
             'monitoring' => 'Monitoring',
-            'proxy_id' => 'Proxy ID',
             'is_valid' => 'Is Valid',
             'invalidation_type_id' => 'Invalidation Type ID',
             'invalidation_count' => 'Invalidation Count',
@@ -132,11 +128,6 @@ class Tag extends ActiveRecord
     public function getMedia()
     {
         return $this->hasMany(Media::class, ['id' => 'media_id'])->viaTable('media_tag', ['tag_id' => 'id']);
-    }
-
-    public function getProxy()
-    {
-        return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
     }
 
     /**

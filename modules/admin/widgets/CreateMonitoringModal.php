@@ -40,7 +40,6 @@ class CreateMonitoringModal extends ModalWidget
             'formAction' => ["monitoring/create-{$this->trackerType}"],
             'model' => $this->form,
             'categories' => $this->getCategories(),
-            'proxies' => $this->getProxyPairs(),
         ]);
     }
 
@@ -59,15 +58,4 @@ class CreateMonitoringModal extends ModalWidget
 
         return false;
     }
-
-    /**
-     * @return array
-     */
-    protected function getProxyPairs(): array
-    {
-        static::$proxies = static::$proxies ?? Proxy::find()->active()->all();
-
-        return ArrayHelper::map(static::$proxies, 'id', 'ip');
-    }
-
 }

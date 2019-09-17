@@ -23,7 +23,7 @@ class TagManager extends Component
 {
     use FindOrCreateTrait, BatchInsertCommandTrait;
 
-    public function startMonitoring(string $name, $proxyId = null): Tag
+    public function startMonitoring(string $name): Tag
     {
         /** @var Tag $tag */
         $tag = $this->findOrCreate(['name' => $name], Tag::class);
@@ -33,7 +33,7 @@ class TagManager extends Component
             'tag' => $tag,
         ]);
         $tagUpdater
-            ->setMonitoring($proxyId)
+            ->setMonitoring()
             ->save();
 
         return $tag;

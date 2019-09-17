@@ -15,7 +15,6 @@ use yii\widgets\ActiveForm;
  * @var array|string $formAction
  * @var string $title
  * @var array|false $categories
- * @var array $proxies
  */
 
 $form = ActiveForm::begin([
@@ -42,26 +41,6 @@ if ($categories !== false) {
     ])->label(false);
 }
 ?>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">Proxy settings</div>
-        <div class="panel-body">
-            <?= $form->field($model, 'proxy_id')->widget(Select2::class, [
-                'data' => $proxies,
-                'options' => [
-                    'id' => "proxy_id_{$form->getId()}",
-                    'placeholder' => 'Select dedicated proxy...',
-                ],
-                'pluginOptions' => [
-                    'allowClear' => true,
-                ],
-            ])->label(false) ?>
-            <div class="form-group-sm">or</div>
-            <div class="well well-sm">
-                leave empty if you want to use the random one
-            </div>
-        </div>
-    </div>
 
 <?= Html::submitButton('Create', ['class' => 'btn btn-primary']); ?>
 

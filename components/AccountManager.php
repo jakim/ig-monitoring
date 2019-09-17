@@ -25,7 +25,7 @@ class AccountManager extends Component
 {
     use FindOrCreateTrait, BatchInsertCommandTrait;
 
-    public function startMonitoring($account, $proxyId = null): Account
+    public function startMonitoring($account): Account
     {
         if (is_string($account)) {
             /** @var Account $account */
@@ -37,7 +37,7 @@ class AccountManager extends Component
             'account' => $account,
         ]);
         $accountUpdater
-            ->setMonitoring($proxyId)
+            ->setMonitoring()
             ->setIsValid()
             ->save();
 

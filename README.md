@@ -41,7 +41,7 @@ Branch 0.9 is the most stable.
 
 ## Before you start
 
-You need at least one, **WORKING proxy**.
+You need **WORKING proxies (at least 2)**. ([I recommend the private, dedicated ones [aff link]](https://billing.blazingseollc.com/hosting/aff.php?aff=303))
 
 You need a server (vps will be ok) with linux, root access and configured LEMP, that is:
 
@@ -91,6 +91,7 @@ You need a server (vps will be ok) with linux, root access and configured LEMP, 
 - write a review 
 - tell your friends about the system
 - star the project on github :)
+- [support the project by taking the cloud version](https://igmonitoring.com/versions-comparison)
 
 # Legal
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries.
@@ -144,9 +145,6 @@ If you do not know how to get into the installation, I can do it for you. As par
 - other software integration 
 
 # Troubleshooting
-**Error: redirect_uri_mismatch**
-
-https://github.com/yiisoft/yii2-authclient/issues/241
 
 **'SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes**
 
