@@ -22,7 +22,6 @@ class Account extends \app\models\Account
         $scenarios[self::SCENARIO_UPDATE] = [
             'name',
             'is_valid',
-            'proxy_id'
         ];
 
         return $scenarios;

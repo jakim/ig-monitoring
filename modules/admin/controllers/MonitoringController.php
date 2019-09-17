@@ -135,7 +135,7 @@ class MonitoringController extends Controller
             $queue = Yii::$app->queue;
 
             foreach ($usernames as $username) {
-                $account = $accountManager->startMonitoring($username, $form->proxy_id);
+                $account = $accountManager->startMonitoring($username);
                 if (!$account->hasErrors()) {
                     Yii::$app->session->setFlash('success', 'OK!');
 
@@ -175,7 +175,7 @@ class MonitoringController extends Controller
             $queue = Yii::$app->queue;
 
             foreach ($names as $name) {
-                $tag = $tagManager->startMonitoring($name, $form->proxy_id);
+                $tag = $tagManager->startMonitoring($name);
                 if (!$tag->hasErrors()) {
                     Yii::$app->session->setFlash('success', 'OK!');
                     $job = JobFactory::updateTag($tag);

@@ -62,7 +62,6 @@ class OnOffMonitoringButton extends Widget
         $form = $this->form ?: new MonitoringForm([
             'scenario' => $this->trackerType,
             'names' => $this->getIdent(),
-            'proxy_id' => $this->model->proxy_id,
             'categories' => $this->trackerType == TrackerType::ACCOUNT ? ArrayHelper::getColumn($this->model->categories, 'name') : null,
         ]);
 

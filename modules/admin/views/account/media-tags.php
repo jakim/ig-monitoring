@@ -59,7 +59,6 @@ $lastAccountStats = $model->lastAccountStats;
                                         'model' => $tag,
                                         'form' => new MonitoringForm([
                                             'names' => $tag->name,
-                                            'proxy_id' => $model->proxy_id,
                                         ]),
                                         'btnCssClass' => 'btn btn-xs',
                                         'offAjaxOptions' => [

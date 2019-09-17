@@ -64,10 +64,9 @@ class AccountBuilder extends Component
         return $this;
     }
 
-    public function setMonitoring($proxyId = null)
+    public function setMonitoring()
     {
         $this->account->monitoring = 1;
-        $this->account->proxy_id = $proxyId;
 
         return $this;
     }

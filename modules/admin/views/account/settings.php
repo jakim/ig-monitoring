@@ -33,17 +33,6 @@ $lastAccountStats = $model->lastAccountStats;
 
                             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                             <?= $form->field($model, 'is_valid')->checkbox() ?>
-                            <?= $form->field($model, 'proxy_id')->widget(Select2::class, [
-                                'options' => [
-                                    'prompt' => 'Select dedicated proxy...',
-                                ],
-                                'pluginOptions' => [
-                                    'allowClear' => true,
-                                ],
-                                'data' => ArrayHelper::map($proxies, 'id', function (Proxy $proxy) {
-                                    return "{$proxy->ip}:{$proxy->port}";
-                                }),
-                            ]) ?>
 
                             <div class="form-group">
                                 <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>

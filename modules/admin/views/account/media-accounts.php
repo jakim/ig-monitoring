@@ -66,7 +66,6 @@ $formatter = Yii::$app->formatter;
                                             'form' => new MonitoringForm([
                                                 'names' => $account->username,
                                                 'categories' => ArrayHelper::getColumn($categories, 'name'),
-                                                'proxy_id' => $model->proxy_id,
                                             ]),
                                             'btnCssClass' => 'btn btn-xs',
                                             'offAjaxOptions' => [

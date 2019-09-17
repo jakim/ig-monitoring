@@ -39,10 +39,9 @@ class TagBuilder extends Component
         return $this;
     }
 
-    public function setMonitoring($proxyId = null)
+    public function setMonitoring()
     {
         $this->tag->monitoring = 1;
-        $this->tag->proxy_id = $proxyId;
 
         return $this;
     }
