@@ -12,13 +12,13 @@ use app\components\http\Client;
 use app\components\http\ProxyManager;
 use app\components\instagram\TagScraper;
 use app\components\services\contracts\ServiceInterface;
-use app\components\updaters\TagUpdater;
+use app\components\builders\TagBuilder;
 use app\dictionaries\TagInvalidationType;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use Yii;
 
-class TagFullUpdate implements ServiceInterface
+class TagUpdater implements ServiceInterface
 {
     /**
      * @var \app\models\Tag
@@ -29,7 +29,7 @@ class TagFullUpdate implements ServiceInterface
     {
         $proxyManager = Yii::createObject(ProxyManager::class);
         $tagUpdater = Yii::createObject([
-            'class' => TagUpdater::class,
+            'class' => TagBuilder::class,
             'tag' => $this->tag,
         ]);
 

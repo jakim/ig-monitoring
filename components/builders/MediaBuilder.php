@@ -5,7 +5,7 @@
  * Date: 12.06.2018
  */
 
-namespace app\components\updaters;
+namespace app\components\builders;
 
 
 use app\components\instagram\models\Post;
@@ -15,7 +15,7 @@ use DateTime;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 
-class MediaUpdater extends Component
+class MediaBuilder extends Component
 {
     use SaveModelTrait;
 
@@ -32,10 +32,17 @@ class MediaUpdater extends Component
         }
     }
 
-    public function setDetails(Post $post)
+    public function setIdents(Post $post)
     {
         $this->media->instagram_id = $post->id;
         $this->media->shortcode = $post->shortcode;
+
+        return $this;
+    }
+
+    public function setDetails(Post $post)
+    {
+        $this->setIdents($post);
         $this->media->is_video = $post->isVideo;
         $this->media->caption = $post->caption;
         $this->media->taken_at = $this->getNormalizedTakenAt($post);
