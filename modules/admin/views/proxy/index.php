@@ -38,7 +38,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'port',
                 'created_at:date',
-
+                'rests',
+                'rest_until:dateTime',
                 [
                     'class' => ActionColumn::class,
                     'template' => '{update} {delete}',

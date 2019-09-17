@@ -2,6 +2,7 @@
 
 use pahanini\log\ConsoleTarget;
 use yii\faker\FixtureController;
+use yii\log\FileTarget;
 
 date_default_timezone_set('UTC');
 
@@ -20,33 +21,47 @@ $config = [
         'log' => [
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => FileTarget::class,
                     'levels' => ['error', 'warning'],
                     'fileMode' => 0777,
+                    'dirMode' => 0777,
                 ],
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => FileTarget::class,
                     'levels' => ['profile'],
                     'categories' => ['yii\db\*'],
+                    'dirMode' => 0777,
                     'fileMode' => 0777,
                     'logFile' => '@runtime/logs/profile.log',
                     'logVars' => [],
                 ],
                 [
-                    'class' => yii\log\FileTarget::class,
-                    'levels' => ['error', 'warning', 'info'],
+                    'class' => FileTarget::class,
                     'categories' => [
-                        'app\components\instagram\AccountScraper*',
+                        'app\components\instagram\*',
                     ],
-                    'logFile' => '@runtime/logs/ig_requests.log',
+                    'logFile' => '@runtime/logs/instagram.log',
                     'logVars' => [],
+                    'dirMode' => 0777,
+                    'fileMode' => 0777,
+                ],
+                [
+                    'class' => FileTarget::class,
+                    'categories' => [
+                        'app\components\services\*',
+                    ],
+                    'logFile' => '@runtime/logs/services.log',
+                    'logVars' => [],
+                    'dirMode' => 0777,
+                    'fileMode' => 0777,
                 ],
                 [
                     'class' => ConsoleTarget::class,
-                    'levels' => ['error', 'warning', 'info'],
+                    'levels' => ['error', 'warning', 'info', 'trace'],
                     'categories' => [
-                        'app\components\AccountManager*',
-                        'app\components\instagram\*',
+                        'app\components\instagram*',
+                        'app\components\services*',
+                        'app\components\http*',
                     ],
                     'logVars' => [],
                 ],
