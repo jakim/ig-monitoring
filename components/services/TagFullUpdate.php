@@ -34,7 +34,7 @@ class TagFullUpdate implements ServiceInterface
         ]);
 
         try {
-            $proxy = $proxyManager->reserve($this->tag);
+            $proxy = $proxyManager->reserve(true);
             $httpClient = Client::factory($proxy, [], 3600);
 
             $scraper = Yii::createObject(TagScraper::class, [

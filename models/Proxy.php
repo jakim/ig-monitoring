@@ -18,6 +18,8 @@ use yii\db\ActiveRecord;
  * @property string $updated_at
  * @property string $created_at
  * @property string $reservation_uid
+ * @property int $rests [int(11)]
+ * @property string $rest_until [datetime]
  *
  * @property string $curlString
  */
@@ -57,8 +59,8 @@ class Proxy extends ActiveRecord
         return [
             [['ip', 'port'], 'required'],
             [['ip'], 'ip'],
-            [['port'], 'integer'],
-            [['updated_at', 'created_at'], 'safe'],
+            [['port', 'rests'], 'integer'],
+            [['updated_at', 'created_at', 'rest_until'], 'safe'],
             [['ip', 'username', 'password', 'reservation_uid'], 'string', 'max' => 255],
             [['active'], 'boolean'],
         ];

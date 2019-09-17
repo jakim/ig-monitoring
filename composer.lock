@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4db3e536f43b491105cbfebc35b57eab",
+    "content-hash": "f110e26fc40bd562dba013de6656f2e5",
     "packages": [
         {
             "name": "2amigos/yii2-chartjs-widget",
@@ -832,16 +832,16 @@
         },
         {
             "name": "jakim-pj/ig-client",
-            "version": "dev-master",
+            "version": "1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jakim/ig-client.git",
-                "reference": "9fe695a221176d329cd747fbae227d5bc10ec288"
+                "reference": "20f019904806e3b403bdd3053f6c5399b4c391af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jakim/ig-client/zipball/9fe695a221176d329cd747fbae227d5bc10ec288",
-                "reference": "9fe695a221176d329cd747fbae227d5bc10ec288",
+                "url": "https://api.github.com/repos/jakim/ig-client/zipball/20f019904806e3b403bdd3053f6c5399b4c391af",
+                "reference": "20f019904806e3b403bdd3053f6c5399b4c391af",
                 "shasum": ""
             },
             "require": {
@@ -869,7 +869,7 @@
                 }
             ],
             "description": "Instagram public web api client",
-            "time": "2019-09-09T12:24:22+00:00"
+            "time": "2019-09-07T10:43:16+00:00"
         },
         {
             "name": "jakim-pj/ua",
@@ -4907,8 +4907,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "jakim-pj/ua": 20,
-        "jakim-pj/ig": 20,
-        "jakim-pj/ig-client": 20
+        "jakim-pj/ig": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
