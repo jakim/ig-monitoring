@@ -11,9 +11,13 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 [Screenshots](#screenshots)
 
-[Account statistics](#account-tracker)
+[Free DEMO](https://demo.igmonitoring.com)
 
-[Tag statistics](#tag-tracker)
+[Cloud Free Trial](https://app.igmonitoring.com/admin/auth/register)
+
+[Account statistics](https://igmonitoring.com/versions-comparison)
+
+[Tag statistics](https://igmonitoring.com/versions-comparison)
 
 [FAQ](#faq)
 
@@ -23,8 +27,6 @@ Perhaps it will answer your needs. That will be more featured version of the sys
 
 # Version
 BETA stage.  **Use at your own risk.**
-
-Branch master is not suitable for production applications. 
 
 Branch 0.9 is the most stable.
 
@@ -39,11 +41,11 @@ Branch 0.9 is the most stable.
 
 ## Before you start
 
-You need at least one, **WORKING proxy**.
+You need **WORKING proxies (at least 2)**. ([I recommend the private, dedicated ones [aff link]](https://billing.blazingseollc.com/hosting/aff.php?aff=303))
 
 You need a server (vps will be ok) with linux, root access and configured LEMP, that is:
 
-- php minimum 7.1
+- php minimum 7.2
 - latest nginx, recommended server configuration https://www.yiiframework.com/doc/guide/2.0/en/start-installation#configuring-web-servers
 - mysql minimum 5.7 (or the appropriate mariadb, e.g. 10.3)
 - [installation instructions on Debian](https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-on-debian-8) (there is no need for a firewall ;)
@@ -89,6 +91,7 @@ You need a server (vps will be ok) with linux, root access and configured LEMP, 
 - write a review 
 - tell your friends about the system
 - star the project on github :)
+- [support the project by taking the cloud version](https://igmonitoring.com/versions-comparison)
 
 # Legal
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram or any of its affiliates or subsidiaries.
@@ -100,33 +103,6 @@ This is an independent tool. **Use at your own risk.**
 ![dashboard_ig_monitoring](https://user-images.githubusercontent.com/839118/38170151-9680cb8a-357d-11e8-9cf4-b25b75ccbef6.png)
 ![image](https://user-images.githubusercontent.com/839118/37048055-0b5362f8-216d-11e8-9dab-a82304dd4353.png)
 ![image](https://user-images.githubusercontent.com/839118/37048109-3372280a-216d-11e8-988d-c825dfe2432c.png)
-
-## Account tracker
-
--   Followers
--   Followed
--   Media count
--   Engagement rate
--   Daily change of all above *(with chart)*
--   Multiple accounts compared on one screen
--   Daily/monthly fluctuations in the number of followers *(with chart)*
--   Accounts mentioned (with occurs counter)
--   Tags used (with occurs counter)
--   Locations used (with occurs counter) *`(cloud version)`*
--   **Public url to account statistics view (e.g. for the client)**
--   Access to historical data (if in the database, they are yours) *`(cloud version)`*
-
-#### Tag tracker  
-*(based on top 9 posts)*
-
--   Media count
--   Number of likes (total, min, max)
--   Number of comments (total, min, max)
--   Multiple tags compared on one screen
--   Accounts highlighted (with occurs counter) *`(cloud version)`*
--   Tags used (with occurs counter) *`(cloud version)`*
--   Locations used (with occurs counter) *`(cloud version)`*
--   Access to historical data (if in the database, they are yours) *`(cloud version)`*
 
 # FAQ
 Why did I build it?
@@ -169,9 +145,6 @@ If you do not know how to get into the installation, I can do it for you. As par
 - other software integration 
 
 # Troubleshooting
-**Error: redirect_uri_mismatch**
-
-https://github.com/yiisoft/yii2-authclient/issues/241
 
 **'SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes**
 

@@ -5,7 +5,7 @@
  * Date: 21.06.2018
  */
 
-namespace app\components\updaters;
+namespace app\components\builders;
 
 
 use app\components\instagram\models\Tag;
@@ -15,7 +15,7 @@ use app\components\traits\SetTagTrait;
 use app\models\TagStats;
 use yii\base\Component;
 
-class TagUpdater extends Component
+class TagBuilder extends Component
 {
     use SaveModelTrait, SetTagTrait, NextUpdateCalculatorTrait;
 
@@ -25,17 +25,23 @@ class TagUpdater extends Component
         $this->throwExceptionIfTagIsEmpty();
     }
 
-    public function setDetails(Tag $tag)
+    public function setIdents(Tag $tag)
     {
         $this->tag->name = $tag->name;
 
         return $this;
     }
 
-    public function setMonitoring($proxyId = null)
+    public function setDetails(Tag $tag)
+    {
+        $this->setIdents($tag);
+
+        return $this;
+    }
+
+    public function setMonitoring()
     {
         $this->tag->monitoring = 1;
-        $this->tag->proxy_id = $proxyId;
 
         return $this;
     }

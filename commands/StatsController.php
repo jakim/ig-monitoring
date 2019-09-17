@@ -47,7 +47,7 @@ class StatsController extends Controller
         /** @var \yii\queue\Queue $queue */
         $queue = Yii::$app->queue;
         foreach ($query->column() as $accountId) {
-            $queue->push(JobFactory::createAccountUpdate($accountId));
+            $queue->push(JobFactory::updateAccount($accountId));
         }
         $this->stdout("Accounts - OK!\n");
 
@@ -65,7 +65,7 @@ class StatsController extends Controller
 
         /** @var \yii\queue\Queue $queue */
         $queue = Yii::$app->queue;
-        $queue->push(JobFactory::createAccountUpdate($account->id));
+        $queue->push(JobFactory::updateAccount($account->id));
         $this->stdout("OK!\n");
 
         return ExitCode::OK;
@@ -95,7 +95,7 @@ class StatsController extends Controller
         /** @var \yii\queue\Queue $queue */
         $queue = Yii::$app->queue;
         foreach ($query->column() as $tagId) {
-            $queue->push(JobFactory::createTagUpdate($tagId));
+            $queue->push(JobFactory::updateTag($tagId));
         }
         $this->stdout("Tags - OK!\n");
 
@@ -119,7 +119,7 @@ class StatsController extends Controller
 
         /** @var \yii\queue\Queue $queue */
         $queue = Yii::$app->queue;
-        $queue->push(JobFactory::createTagUpdate($tag->id));
+        $queue->push(JobFactory::updateTag($tag->id));
         $this->stdout("OK!\n");
 
         return ExitCode::OK;

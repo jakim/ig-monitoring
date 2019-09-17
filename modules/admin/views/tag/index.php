@@ -30,7 +30,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'updated_at',
                 // 'created_at',
                 // 'monitoring',
-                // 'proxy_id',
 
                 ['class' => 'yii\grid\ActionColumn'],
             ],

@@ -26,7 +26,6 @@ class Tag extends \app\models\Tag
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_UPDATE] = [
             'is_valid',
-            'proxy_id',
         ];
 
         return $scenarios;

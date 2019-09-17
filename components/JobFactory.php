@@ -8,25 +8,25 @@
 namespace app\components;
 
 
-use app\jobs\AccountUpdate;
-use app\jobs\TagUpdate;
+use app\jobs\UpdateAccountJob;
+use app\jobs\UpdateTagJob;
 use app\models\Account;
 use app\models\Tag;
 
 class JobFactory
 {
 
-    public static function createAccountUpdate($accountId): AccountUpdate
+    public static function updateAccount($accountId): UpdateAccountJob
     {
-        $job = new AccountUpdate();
+        $job = new UpdateAccountJob();
         $job->id = $accountId instanceof Account ? $accountId->id : $accountId;
 
         return $job;
     }
 
-    public static function createTagUpdate($tagId): TagUpdate
+    public static function updateTag($tagId): UpdateTagJob
     {
-        $job = new TagUpdate();
+        $job = new UpdateTagJob();
         $job->id = $tagId instanceof Tag ? $tagId->id : $tagId;
 
         return $job;

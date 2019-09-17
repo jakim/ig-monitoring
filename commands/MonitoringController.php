@@ -27,13 +27,11 @@ class MonitoringController extends Controller
             'headers' => [
                 'ID',
                 'Username',
-                'Proxy ID',
             ],
             'rows' => Account::find()
                 ->select([
                     'id',
                     'username',
-                    'proxy_id',
                 ])
                 ->monitoring()
                 ->asArray()
@@ -47,13 +45,11 @@ class MonitoringController extends Controller
             'headers' => [
                 'ID',
                 'Tag',
-                'Proxy ID',
             ],
             'rows' => Tag::find()
                 ->select([
                     'id',
                     'name',
-                    'proxy_id',
                 ])
                 ->monitoring()
                 ->asArray()

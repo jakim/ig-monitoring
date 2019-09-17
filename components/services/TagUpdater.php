@@ -12,13 +12,13 @@ use app\components\http\Client;
 use app\components\http\ProxyManager;
 use app\components\instagram\TagScraper;
 use app\components\services\contracts\ServiceInterface;
-use app\components\updaters\TagUpdater;
+use app\components\builders\TagBuilder;
 use app\dictionaries\TagInvalidationType;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use Yii;
 
-class TagFullUpdate implements ServiceInterface
+class TagUpdater implements ServiceInterface
 {
     /**
      * @var \app\models\Tag
@@ -28,13 +28,13 @@ class TagFullUpdate implements ServiceInterface
     public function run()
     {
         $proxyManager = Yii::createObject(ProxyManager::class);
-        $tagUpdater = Yii::createObject([
-            'class' => TagUpdater::class,
+        $tagBuilder = Yii::createObject([
+            'class' => TagBuilder::class,
             'tag' => $this->tag,
         ]);
 
         try {
-            $proxy = $proxyManager->reserve($this->tag);
+            $proxy = $proxyManager->reserve(true);
             $httpClient = Client::factory($proxy, [], 3600);
 
             $scraper = Yii::createObject(TagScraper::class, [
@@ -46,19 +46,19 @@ class TagFullUpdate implements ServiceInterface
             $proxyManager->release($proxy);
             unset($proxy);
 
-            $tagUpdater
+            $tagBuilder
                 ->setIsValid()
                 ->setStats($tagData)
                 ->setNextStatsUpdate()
                 ->save();
 
         } catch (ClientException $exception) {
-            $tagUpdater
+            $tagBuilder
                 ->setIsInvalid(TagInvalidationType::NOT_FOUND)
                 ->setNextStatsUpdate(true)
                 ->save();
         } catch (RequestException $exception) {
-            $tagUpdater
+            $tagBuilder
                 ->setIsInvalid()
                 ->setNextStatsUpdate(true)
                 ->save();

@@ -9,7 +9,7 @@ namespace app\components;
 
 
 use app\components\traits\FindOrCreateTrait;
-use app\components\updaters\MediaUpdater;
+use app\components\builders\MediaBuilder;
 use app\models\Account;
 use app\models\Media;
 use jakim\ig\Text;
@@ -38,9 +38,9 @@ class MediaManager extends Component
                 'account_id' => $account->id,
                 'shortcode' => $post->shortcode,
             ], Media::class);
-            /** @var \app\components\updaters\MediaUpdater $updater */
+            /** @var \app\components\builders\MediaBuilder $updater */
             $updater = Yii::createObject([
-                'class' => MediaUpdater::class,
+                'class' => MediaBuilder::class,
                 'media' => $media,
             ]);
             $updater->setDetails($post)

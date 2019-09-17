@@ -10,7 +10,7 @@ namespace app\components;
 
 use app\components\traits\BatchInsertCommandTrait;
 use app\components\traits\FindOrCreateTrait;
-use app\components\updaters\AccountUpdater;
+use app\components\builders\AccountBuilder;
 use app\models\Account;
 use app\models\AccountCategory;
 use app\models\Media;
@@ -25,7 +25,7 @@ class AccountManager extends Component
 {
     use FindOrCreateTrait, BatchInsertCommandTrait;
 
-    public function startMonitoring($account, $proxyId = null): Account
+    public function startMonitoring($account): Account
     {
         if (is_string($account)) {
             /** @var Account $account */
@@ -33,11 +33,11 @@ class AccountManager extends Component
         }
 
         $accountUpdater = Yii::createObject([
-            'class' => AccountUpdater::class,
+            'class' => AccountBuilder::class,
             'account' => $account,
         ]);
         $accountUpdater
-            ->setMonitoring($proxyId)
+            ->setMonitoring()
             ->setIsValid()
             ->save();
 

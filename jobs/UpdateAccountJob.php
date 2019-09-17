@@ -9,12 +9,12 @@
 namespace app\jobs;
 
 
-use app\components\services\AccountFullUpdate;
+use app\components\services\AccountUpdater;
 use app\models\Account;
 use Yii;
 use yii\queue\JobInterface;
 
-class AccountUpdate implements JobInterface
+class UpdateAccountJob implements JobInterface
 {
     public $id;
 
@@ -30,7 +30,7 @@ class AccountUpdate implements JobInterface
         if ($account) {
 
             $service = Yii::createObject([
-                'class' => AccountFullUpdate::class,
+                'class' => AccountUpdater::class,
                 'account' => $account,
             ]);
             $service->run();

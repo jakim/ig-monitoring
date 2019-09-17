@@ -16,13 +16,12 @@ class MonitoringForm extends Model
 {
     public $names;
     public $categories;
-    public $proxy_id;
 
     public function rules()
     {
         return [
             ['names', 'required'],
-            [['names', 'categories', 'proxy_id'], 'safe'],
+            [['names', 'categories'], 'safe'],
         ];
     }
 
@@ -31,11 +30,10 @@ class MonitoringForm extends Model
         return [
             TrackerType::ACCOUNT => [
                 'names',
-                'categories', 'proxy_id'
+                'categories'
             ],
             TrackerType::TAG => [
                 'names',
-                'proxy_id'
             ],
         ];
     }

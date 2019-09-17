@@ -10,7 +10,7 @@ namespace app\components;
 
 use app\components\traits\BatchInsertCommandTrait;
 use app\components\traits\FindOrCreateTrait;
-use app\components\updaters\TagUpdater;
+use app\components\builders\TagBuilder;
 use app\models\Media;
 use app\models\MediaTag;
 use app\models\Tag;
@@ -23,17 +23,17 @@ class TagManager extends Component
 {
     use FindOrCreateTrait, BatchInsertCommandTrait;
 
-    public function startMonitoring(string $name, $proxyId = null): Tag
+    public function startMonitoring(string $name): Tag
     {
         /** @var Tag $tag */
         $tag = $this->findOrCreate(['name' => $name], Tag::class);
 
         $tagUpdater = Yii::createObject([
-            'class' => TagUpdater::class,
+            'class' => TagBuilder::class,
             'tag' => $tag,
         ]);
         $tagUpdater
-            ->setMonitoring($proxyId)
+            ->setMonitoring()
             ->save();
 
         return $tag;

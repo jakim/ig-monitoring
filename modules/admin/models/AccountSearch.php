@@ -22,7 +22,7 @@ class AccountSearch extends Account
     public function rules()
     {
         return [
-            [['id', 'monitoring', 'proxy_id'], 'integer'],
+            [['id', 'monitoring'], 'integer'],
             [['username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', 's_categories'], 'safe'],
         ];
     }

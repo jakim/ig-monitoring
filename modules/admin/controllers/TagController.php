@@ -3,7 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use app\components\JobFactory;
-use app\components\updaters\TagUpdater;
+use app\components\builders\TagBuilder;
 use app\models\TagStats;
 use app\modules\admin\models\Proxy;
 use app\modules\admin\models\Tag;
@@ -41,13 +41,13 @@ class TagController extends Controller
         $model = $this->findModel($id);
         if (!$model->is_valid) {
             $tagUpdater = Yii::createObject([
-                'class' => TagUpdater::class,
+                'class' => TagBuilder::class,
                 'tag' => $model,
             ]);
             $tagUpdater->setIsValid()
                 ->save();
 
-            $job = JobFactory::createTagUpdate($model);
+            $job = JobFactory::updateTag($model);
             /** @var \yii\queue\Queue $queue */
             $queue = Yii::$app->queue;
             $queue->push($job);
@@ -69,7 +69,7 @@ class TagController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->is_valid) {
                 $tagUpdater = Yii::createObject([
-                    'class' => TagUpdater::class,
+                    'class' => TagBuilder::class,
                     'tag' => $model,
                 ]);
                 $tagUpdater

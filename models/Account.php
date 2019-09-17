@@ -22,7 +22,6 @@ use yii\helpers\ArrayHelper;
  * @property string $updated_at
  * @property string $created_at
  * @property bool $monitoring
- * @property int $proxy_id
  * @property bool $is_valid [tinyint(1)]
  * @property int $invalidation_type_id [int(11)]
  * @property int $invalidation_count [int(11)]
@@ -44,7 +43,6 @@ use yii\helpers\ArrayHelper;
  * @property AccountStats $lastAccountStats
  *
  * @property AccountInvalidationType $invalidationType
- * @property Proxy $proxy
  * @property AccountCategory[] $accountCategories
  * @property Category[] $categories
  * @property AccountNote[] $accountNotes
@@ -91,12 +89,11 @@ class Account extends ActiveRecord
         return [
             [['username'], 'required'],
             [['updated_at', 'created_at', 'stats_updated_at', 'last_post_taken_at'], 'safe'],
-            [['proxy_id', 'occurs', 'followed_by', 'follows', 'media'], 'integer'],
+            [['occurs', 'followed_by', 'follows', 'media'], 'integer'],
             [['er', 'avg_likes', 'avg_comments'], 'number'],
             [['name', 'username', 'profile_pic_url', 'full_name', 'biography', 'external_url', 'instagram_id', '!uid', 'business_category'], 'string', 'max' => 255],
             [['monitoring', 'is_valid', 'is_valid', 'is_business'], 'boolean'],
             [['username'], 'unique'],
-            [['proxy_id'], 'exist', 'skipOnError' => true, 'targetClass' => Proxy::class, 'targetAttribute' => ['proxy_id' => 'id']],
         ];
     }
 
@@ -117,7 +114,6 @@ class Account extends ActiveRecord
             'updated_at' => 'Updated At',
             'created_at' => 'Created At',
             'monitoring' => 'Monitoring',
-            'proxy_id' => 'Proxy',
             'er' => 'Engagement',
         ];
     }
@@ -135,14 +131,6 @@ class Account extends ActiveRecord
     public function getInvalidationType()
     {
         return $this->hasOne(AccountInvalidationType::class, ['id' => 'invalidation_type_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProxy()
-    {
-        return $this->hasOne(Proxy::class, ['id' => 'proxy_id']);
     }
 
     /**

@@ -15,7 +15,6 @@ use yii\widgets\ActiveForm;
  * @var array|string $formAction
  * @var string $title
  * @var array|false $categories
- * @var array $proxies
  */
 
 $form = ActiveForm::begin([
@@ -36,7 +35,7 @@ if ($categories !== false) {
             'placeholder' => 'Select categories...',
         ],
         'pluginOptions' => [
-            'categories' => true,
+            'tags' => true,
         ],
         'data' => $categories,
     ])->label(false);
