@@ -1,87 +1,87 @@
 {
-  "name": "yiisoft/yii2-app-basic",
-  "description": "Yii 2 Basic Project Template",
-  "keywords": [
-    "yii2",
-    "framework",
-    "basic",
-    "project template"
-  ],
-  "homepage": "http://www.yiiframework.com/",
-  "type": "project",
-  "license": "BSD-3-Clause",
-  "support": {
-    "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-    "forum": "http://www.yiiframework.com/forum/",
-    "wiki": "http://www.yiiframework.com/wiki/",
-    "irc": "irc://irc.freenode.net/yii",
-    "source": "https://github.com/yiisoft/yii2"
-  },
-  "minimum-stability": "stable",
-  "require": {
-    "php": ">=7.2.0",
-    "ext-json": "*",
-    "yiisoft/yii2": "^2.0.15",
-    "yiisoft/yii2-bootstrap": "~2.0.0",
-    "yiisoft/yii2-swiftmailer": "~2.0.0",
-    "yiisoft/yii2-queue": "^2.0",
-    "yiisoft/yii2-authclient": "^2.1",
-    "guzzlehttp/guzzle": "^6.3",
-    "dmstr/yii2-adminlte-asset": "^2.6",
-    "kartik-v/yii2-widget-select2": "^2.1",
-    "pahanini/yii2-consolelog": "^3.0",
-    "2amigos/yii2-chartjs-widget": "^2.1",
-    "jakim-pj/ua": "@dev",
-    "jakim-pj/ig": "@dev",
-    "jakim-pj/ig-client": "@dev",
-    "kevinrob/guzzle-cache-middleware": "^3.2",
-    "nesbot/carbon": "^1.29",
-    "bower-asset/ladda": "^2.0",
-    "bower-asset/spin": "^1.1",
-    "denostr/yii2-bootstrap-social": "^1.0",
-    "yii2tech/csv-grid": "^1.0",
-    "kartik-v/yii2-date-range": "^1.6"
-  },
-  "require-dev": {
-    "yiisoft/yii2-debug": "~2.0.0",
-    "yiisoft/yii2-gii": "~2.0.0",
-    "yiisoft/yii2-faker": "~2.0.0",
-    "codeception/base": "^2.2.3",
-    "codeception/verify": "~0.3.1",
-    "codeception/specify": "~0.4.3"
-  },
-  "config": {
-    "process-timeout": 1800
-  },
-  "scripts": {
-    "post-install-cmd": [
-      "yii\\composer\\Installer::postInstall"
+    "name": "yiisoft/yii2-app-basic",
+    "description": "Yii 2 Basic Project Template",
+    "keywords": [
+        "yii2",
+        "framework",
+        "basic",
+        "project template"
     ],
-    "post-create-project-cmd": [
-      "yii\\composer\\Installer::postCreateProject",
-      "yii\\composer\\Installer::postInstall"
-    ]
-  },
-  "extra": {
-    "yii\\composer\\Installer::postCreateProject": {
-      "setPermission": [
-        {
-          "runtime": "0777",
-          "web/assets": "0777",
-          "yii": "0755"
-        }
-      ]
+    "homepage": "http://www.yiiframework.com/",
+    "type": "project",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "http://www.yiiframework.com/wiki/",
+        "irc": "irc://irc.freenode.net/yii",
+        "source": "https://github.com/yiisoft/yii2"
     },
-    "yii\\composer\\Installer::postInstall": {
-      "generateCookieValidationKey": [
-        "config/web.php"
-      ]
-    }
-  },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://asset-packagist.org"
-    }
-  ]
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.2.0",
+        "ext-json": "*",
+        "yiisoft/yii2": "^2.0.15",
+        "yiisoft/yii2-bootstrap": "~2.0.0",
+        "yiisoft/yii2-swiftmailer": "~2.0.0",
+        "yiisoft/yii2-queue": "^2.0",
+        "yiisoft/yii2-authclient": "^2.1",
+        "guzzlehttp/guzzle": "^6.3",
+        "dmstr/yii2-adminlte-asset": "^2.6",
+        "kartik-v/yii2-widget-select2": "^2.1",
+        "pahanini/yii2-consolelog": "^3.0",
+        "2amigos/yii2-chartjs-widget": "^2.1",
+        "jakim-pj/ua": "@dev",
+        "jakim-pj/ig": "@dev",
+        "jakim-pj/ig-client": "@dev",
+        "kevinrob/guzzle-cache-middleware": "^3.2",
+        "nesbot/carbon": "^2.0.0",
+        "bower-asset/ladda": "^2.0",
+        "bower-asset/spin": "^1.1",
+        "denostr/yii2-bootstrap-social": "^1.0",
+        "yii2tech/csv-grid": "^1.0",
+        "kartik-v/yii2-date-range": "^1.6"
+    },
+    "require-dev": {
+        "yiisoft/yii2-debug": "~2.0.0",
+        "yiisoft/yii2-gii": "~2.0.0",
+        "yiisoft/yii2-faker": "~2.0.0",
+        "codeception/base": "^2.2.3",
+        "codeception/verify": "~0.3.1",
+        "codeception/specify": "~0.4.3"
+    },
+    "config": {
+        "process-timeout": 1800
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "yii\\composer\\Installer::postInstall"
+        ],
+        "post-create-project-cmd": [
+            "yii\\composer\\Installer::postCreateProject",
+            "yii\\composer\\Installer::postInstall"
+        ]
+    },
+    "extra": {
+        "yii\\composer\\Installer::postCreateProject": {
+            "setPermission": [
+                {
+                    "runtime": "0777",
+                    "web/assets": "0777",
+                    "yii": "0755"
+                }
+            ]
+        },
+        "yii\\composer\\Installer::postInstall": {
+            "generateCookieValidationKey": [
+                "config/web.php"
+            ]
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
 }

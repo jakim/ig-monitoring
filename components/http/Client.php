@@ -24,7 +24,7 @@ class Client
                 new GreedyCacheStrategy(
                     new CacheStorage(), $cacheTtl)
             ), 'cache');
-            $config = ['handler' => $stack];
+            $config['handler'] = $stack;
         }
 
         $config = ArrayHelper::merge([
