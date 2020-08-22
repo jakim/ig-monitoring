@@ -1,3 +1,8 @@
+# 🚨 [IG Monitoring ends its way](https://github.com/jakim/ig-monitoring/issues/138) 🚨
+
+The open source version will still be available on github, but will no longer be developed or actively supported.
+
+
 # IG Monitoring Cloud
 
 Let me introduce you to a cloud version of a system I'm currently working on.
